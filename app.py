@@ -1080,7 +1080,7 @@ def decisiontree(parsetrees, sent, urlprm):
 	featurenames = ['[%s %s]' % (label, ' '.join(sent[n] for n in leaves))
 			for label, leaves in features]
 	data = np.array([[n in spans[span] for span in features]
-			for n in range(len(parsetrees))], dtype=np.bool)
+			for n in range(len(parsetrees))], dtype=bool)
 	estimator = DecisionTreeClassifier(random_state=0)
 	estimator.fit(data, range(len(parsetrees)),
 			sample_weight=[prob for prob, _, _, _ in parsetrees])
