@@ -1,5 +1,11 @@
 """Web interface for treebank annotation.
 
+TODO:
+ensure functions are always present
+check coindexation
+double-click sentence at top to make it editable? new sentence with direct entry at end of workset?
+EVENTUALLY: fields for comments, original sentence with punctuation (in the meantime, use a spreadsheet)
+
 Design notes:
 
 - settings.cfg: The sentences, grammar, user accounts, and other fixed
@@ -413,7 +419,7 @@ def annotate(sentno):
 			totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			annotationhelp=ANNOTATIONHELP,
-			sent=' '.join(x for x in senttok if not isGapToken(x))
+			sent=' '.join(x for x in senttok if not isGapToken(x)))
 
 
 @app.route('/annotate/parse')
@@ -898,7 +904,8 @@ def accept():
 		tree, senttok = discbrackettree(request.args.get('tree'))
 		# the tokenization may have been updated with gaps, so store the new one
 		SENTENCES[lineno] = ' '.join(senttok)
-		reversetransform(tree, senttok, ('APPEND-FUNC', 'addCase'))
+		if False:
+			reversetransform(tree, senttok, ('APPEND-FUNC', 'addCase'))
 	else:
 		n = int(request.args.get('n', 0))
 		require = request.args.get('require', '')
@@ -909,8 +916,10 @@ def accept():
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
-		for node in tree.subtrees():
-			node.label = LABELRE.match(node.label).group(1)
+		if False:
+			# strip function tags
+			for node in tree.subtrees():
+				node.label = LABELRE.match(node.label).group(1)
 	actions[NBEST] = n
 	session.modified = True
 	block = writetree(tree, senttok, str(lineno + 1), 'export',
