@@ -56,7 +56,10 @@ app = Flask(__name__)  # pylint: disable=invalid-name
 WORKERS = {}  # dict mapping username to process pool
 SENTENCES = None
 QUEUE = None
-ANNOTATIONHELP = ''
+ANNOTATIONHELP = """
+- If altering the tokenization, ensure that tokens are numbered sequentially.
+- Use _. as the token for a gap.
+"""
 (NBEST, CONSTRAINTS, DECTREE, REATTACH, RELABEL, REPARSE, EDITDIST, TIME
 		) = range(8)
 # e.g., "NN-SB/Nom" => ('NN', '-SB', '/Nom')
@@ -410,7 +413,7 @@ def annotate(sentno):
 			totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			annotationhelp=ANNOTATIONHELP,
-			sent=' '.join(senttok))
+			sent=' '.join(x for x in senttok if not isGapToken(x))))
 
 
 @app.route('/annotate/parse')
@@ -613,19 +616,20 @@ def redraw():
 	"""Validate and re-draw tree."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	senttok, _ = worker.postokenize(sent)
+	orig_senttok, _ = worker.postokenize(sent)
 	treestr = request.args.get('tree')
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	try:
-		tree, _sent1 = validate(treestr, senttok)
+		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
 		return str(err)
 	oldtree = request.args.get('oldtree', '')
 	if oldtree and treestr != oldtree:
 		session['actions'][EDITDIST] += editdistance(treestr, oldtree)
 		session.modified = True
-	return Markup('%s\n\n%s' % (
+	return Markup('%s\n\n%s\n\n%s' % (
+			msg,
 			link,
 			# DrawTree(tree, senttok).svg(funcsep='-', hscale=45)
 			DrawTree(tree, senttok).text(
@@ -640,10 +644,10 @@ def newlabel():
 	"""Re-draw tree with newly picked label."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	senttok, _ = worker.postokenize(sent)
+	orig_senttok, _ = worker.postokenize(sent)
 	treestr = request.args.get('tree', '')
 	try:
-		tree, _sent1 = validate(treestr, senttok)
+		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
 		return str(err)
 	# FIXME: re-factor; check label AFTER replacing it
@@ -682,7 +686,8 @@ def newlabel():
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	session['actions'][RELABEL] += 1
 	session.modified = True
-	return Markup('%s\n\n%s\t%s' % (
+	return Markup('%s\n\n%s\n\n%s\t%s' % (
+			msg,
 			link,
 			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
 				nodeprops='t0'),
@@ -695,10 +700,10 @@ def reattach():
 	"""Re-draw tree after re-attaching node under new parent."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	senttok, _ = worker.postokenize(sent)
+	orig_senttok, _ = worker.postokenize(sent)
 	treestr = request.args.get('tree', '')
 	try:
-		tree, _sent1 = validate(treestr, senttok)
+		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
 		return str(err)
 	dt = DrawTree(tree, senttok)
@@ -768,7 +773,8 @@ def reattach():
 	if error == '':
 		session['actions'][REATTACH] += 1
 		session.modified = True
-	return Markup('%s\n\n%s%s\t%s' % (
+	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+			msg,
 			link, error,
 			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
 				nodeprops='t0'),
@@ -781,11 +787,11 @@ def reparsesubtree():
 	"""Re-parse selected subtree."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	senttok, _ = worker.postokenize(sent)
+	orig_senttok, _ = worker.postokenize(sent)
 	username = session['username']
 	treestr = request.args.get('tree', '')
 	try:
-		tree, _sent1 = validate(treestr, senttok)
+		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
 		return str(err)
 	error = ''
@@ -832,11 +838,11 @@ def replacesubtree():
 	n = int(request.args.get('n', 0))
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	senttok, _ = worker.postokenize(sent)
+	orig_senttok, _ = worker.postokenize(sent)
 	username = session['username']
 	treestr = request.args.get('tree', '')
 	try:
-		tree, _sent1 = validate(treestr, senttok)
+		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
 		return str(err)
 	error = ''
@@ -865,7 +871,8 @@ def replacesubtree():
 	session.modified = True
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
-	return Markup('%s\n\n%s%s\t%s' % (
+	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+			msg,
 			link, error,
 			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
 				nodeprops='t0'),
@@ -889,6 +896,8 @@ def accept():
 	if 'tree' in request.args:
 		n = 0
 		tree, senttok = discbrackettree(request.args.get('tree'))
+		# the tokenization may have been updated with gaps, so store the new one
+		SENTENCES[lineno] = ' '.join(senttok)
 		reversetransform(tree, senttok, ('APPEND-FUNC', 'addCase'))
 	else:
 		n = int(request.args.get('n', 0))
@@ -952,19 +961,33 @@ def stylecss():
 	return send_from_directory(os.path.join(app.root_path, 'static'),
 			'style.css', mimetype='text/css')
 
+def isGapToken(tok):
+	return tok.startswith('_.')
 
 # tree functions
+ALLOW_EDIT_SENT = True
+ALLOW_EDIT_GAPS = True
 def validate(treestr, senttok):
 	"""Verify whether a user-supplied tree is well-formed."""
+	msg = ''
 	try:
 		tree, sent1 = discbrackettree(treestr)
 	except Exception as err:
 		raise ValueError('ERROR: cannot parse tree bracketing\n%s' % err)
 	# check that sent is not modified
-	if senttok != tuple(sent1):
-		raise ValueError('ERROR: sentence was modified.\n'
-				'got:\t%s\nshould be:\t%s' % (
-				' '.join(a or '' for a in sent1), ' '.join(senttok)))
+	if senttok!=sent1:
+		if [x for x in senttok if not isGapToken(x)] == [x for x in sent1 if not isGapToken(x)] and ALLOW_EDIT_GAPS:
+			# change only to gaps, which is OK
+			pass
+		elif ALLOW_EDIT_SENT:
+			msg += 'Sentence has been modified. '
+		else:
+			raise ValueError('ERROR: sentence was modified.\n'
+					'got:\t%s\nshould be:\t%s' % (
+					' '.join(a or '' for a in sent1), ' '.join(senttok)))
+	nGaps = len(list(filter(isGapToken, sent1)))
+	if nGaps>0:
+		msg += f'Sentence contains {nGaps} gap(s). '
 	# check tree structure
 	for node in tree.subtrees():
 		match = LABELRE.match(node.label)
@@ -1007,7 +1030,8 @@ def validate(treestr, senttok):
 			raise ValueError(('ERROR: invalid function tag:\n%s\n'
 					'valid labels: %s' % (
 					node, ', '.join(sorted(workerattr('functiontags'))))))
-	return tree, sent1
+	msg = f'<font color=red>{msg}</font>' if msg else ''
+	return tree, sent1, msg
 
 
 def entropy(seq):
