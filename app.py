@@ -413,7 +413,7 @@ def annotate(sentno):
 			totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			annotationhelp=ANNOTATIONHELP,
-			sent=' '.join(x for x in senttok if not isGapToken(x))))
+			sent=' '.join(x for x in senttok if not isGapToken(x))
 
 
 @app.route('/annotate/parse')
@@ -467,7 +467,7 @@ def parse():
 					urlprm=urlencode(dict(urlprm, n=1)),
 					tree=DrawTree(tree, senttok).text(
 						unicodelines=True, html=True, funcsep='-',
-						morphsep='/', nodeprops='t1')))))
+						morphsep='/', nodeprops='t1', maxwidth=30)))))
 	msg = '\n'.join(messages)
 	elapsed = 'CPU time elapsed: %s => %gs' % (
 			' '.join('%gs' % a for a in elapsed), sum(elapsed))
@@ -528,7 +528,7 @@ def filterparsetrees():
 					urlprm=urlencode(dict(urlprm, n=n + 1)),
 					tree=DrawTree(tree, senttok).text(
 						unicodelines=True, html=True, funcsep='-', morphsep='/',
-						nodeprops='t%d' % (n + 1)))
+						nodeprops='t%d' % (n + 1), maxwidth=30))
 				for n, prob, tree, _treestr, fragments in parsetrees_)))
 	return nbest
 
@@ -556,7 +556,7 @@ def showderiv():
 				'%s\n%s' % (w, DrawTree(frag).text(unicodelines=True, html=True))
 				for frag, w in fragments or ()),
 			DrawTree(tree, senttok).text(
-				unicodelines=True, html=True, funcsep='-')))
+				unicodelines=True, html=True, funcsep='-', maxwidth=30)))
 
 
 @app.route('/annotate/edit')
@@ -634,7 +634,7 @@ def redraw():
 			# DrawTree(tree, senttok).svg(funcsep='-', hscale=45)
 			DrawTree(tree, senttok).text(
 				unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0')
+				nodeprops='t0', maxwidth=30)
 			))
 
 
@@ -690,7 +690,7 @@ def newlabel():
 			msg,
 			link,
 			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0'),
+				nodeprops='t0', maxwidth=30),
 			treestr))
 
 
@@ -777,7 +777,7 @@ def reattach():
 			msg,
 			link, error,
 			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0'),
+				nodeprops='t0', maxwidth=30),
 			treestr))
 
 
@@ -826,7 +826,7 @@ def reparsesubtree():
 					prob=probstr(prob),
 					tree=DrawTree(tree, subsent.split()).text(
 						unicodelines=True, html=True, funcsep='-',
-						morphsep='/', nodeprops='t%d' % (n + 1)))
+						morphsep='/', nodeprops='t%d' % (n + 1), maxwidth=30))
 				for n, (prob, tree, _treestr, fragments)
 				in enumerate(parsetrees))))
 	return nbest
@@ -875,7 +875,7 @@ def replacesubtree():
 			msg,
 			link, error,
 			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0'),
+				nodeprops='t0', maxwidth=30),
 			treestr))
 
 
@@ -1159,7 +1159,7 @@ def decisiontree(parsetrees, sent, urlprm):
 		_prob, xtree, _treestr, _fragments = parsetrees[x]
 		thistree = DrawTree(xtree, sent).text(
 				unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t%d' % (x + 1))
+				nodeprops='t%d' % (x + 1), maxwidth=30)
 		leaves.append('<span id="dd%d" style="display: none; ">%s</span>' %
 				(x, thistree))
 	return nodes + ''.join(leaves), estimator.tree_.max_depth, path
