@@ -50,10 +50,10 @@
 
 <div id=info>
 	<span data-id=deletenode ondragover="allowDrop(event);" ondrop="drop(event);">(drop node here to remove)</span>
-	<div>Constituent labels (drag and drop on a parent to add a new node):
+	<div>Constituent labels (drag and drop on a parent to add a new node; function will default to Head):
 		{% for label in phrasallabels -%}
 			{% if label != 'ROOT' -%}
-		<span class=n data-id="newlabel_{{ label }}" style="cursor: move; " draggable="true" ondragstart="drag(event);">{{ label }}</span> 
+		<span class=n data-id="newlabel_{{ label }}-Head" style="cursor: move; " draggable="true" ondragstart="drag(event);">{{ label }}</span> 
 			{%- endif %}
 		{% endfor -%}
 	</div>
