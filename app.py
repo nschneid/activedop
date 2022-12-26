@@ -347,7 +347,8 @@ def dologin():
 			for block in annotations.values():
 				item = exporttree(block.splitlines())
 				canonicalize(item.tree)
-				applyheadrules(item.tree, headrules)
+				if headrules:
+					applyheadrules(item.tree, headrules)
 				trees.append(item.tree)
 				sents.append(item.sent)
 			if False and app.config['DEBUG']:
