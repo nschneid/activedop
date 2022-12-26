@@ -598,9 +598,9 @@ def edit():
 			sentno=sentno, lineno=lineno + 1, totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			poslabels=sorted(workerattr('poslabels')),
-			phrasallabels=sorted(workerattr('phrasallabels')),
-			functiontags=sorted(workerattr('functiontags')
-				| set(app.config['FUNCTIONTAGWHITELIST'])),
+			phrasallabels=sorted(t for t in workerattr('phrasallabels') if '}' not in t),
+			functiontags=sorted(t for t in (workerattr('functiontags')
+				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t),
 			morphtags=sorted(workerattr('morphtags')),
 			annotationhelp=ANNOTATIONHELP,
 			rows=max(5, treestr.count('\n') + 1), cols=100,
