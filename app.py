@@ -1,10 +1,10 @@
 """Web interface for treebank annotation.
 
-TODO:
-ensure functions are always present
-check coindexation
-double-click sentence at top to make it editable? new sentence with direct entry at end of workset?
-EVENTUALLY: fields for comments, original sentence with punctuation (in the meantime, use a spreadsheet)
+TODO (nschneid):
+- ensure functions are always present
+- validate on accept without entering edit mode
+- double-click sentence at top to make it editable? new sentence with direct entry at end of workset?
+- EVENTUALLY: fields for comments, original sentence with punctuation (in the meantime, use a spreadsheet)
 
 Design notes:
 
@@ -38,7 +38,7 @@ from math import log
 from time import time
 from datetime import datetime
 from functools import wraps, lru_cache
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures.process import BrokenProcessPool
 from urllib.parse import urlparse, urlencode, urljoin
@@ -976,6 +976,7 @@ def isGapToken(tok):
 # tree functions
 ALLOW_EDIT_SENT = True
 ALLOW_EDIT_GAPS = True
+COIDXRE = re.compile(r'\.(\w+)')	# coindexation variable in constituent label
 def validate(treestr, senttok):
 	"""Verify whether a user-supplied tree is well-formed."""
 	msg = ''
@@ -998,12 +999,17 @@ def validate(treestr, senttok):
 	if nGaps>0:
 		msg += f'Sentence contains {nGaps} gap(s). '
 	# check tree structure
+	coindexed = defaultdict(set)	# {coindexationvar -> {labels}}
 	for node in tree.subtrees():
 		match = LABELRE.match(node.label)
 		if match is None:
 			raise ValueError('malformed label: %r\n'
 					'expected: cat-func/morph or cat-func; e.g. NN-SB/Nom'
 					% node.label)
+		else:
+			mCoidx = COIDXRE.search(node.label)
+			if mCoidx:
+				coindexed[mCoidx.group(1)].add(node.label)
 		if len(node) == 0:
 			raise ValueError(('ERROR: a constituent should have '
 					'one or more children:\n%s' % node))
@@ -1039,6 +1045,10 @@ def validate(treestr, senttok):
 			raise ValueError(('ERROR: invalid function tag:\n%s\n'
 					'valid labels: %s' % (
 					node, ', '.join(sorted(workerattr('functiontags'))))))
+	for coindexedset in coindexed.values():
+		if len(coindexedset)<2:
+			msg += f'ERROR: coindexation variable should have at least two (distinct) constituents: {coindexedset!r} '
+			# message not exception because exception blocks display of the tree
 	msg = f'<font color=red>{msg}</font>' if msg else ''
 	return tree, sent1, msg
 
