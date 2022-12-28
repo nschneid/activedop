@@ -419,7 +419,7 @@ def annotate(sentno):
 			totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			annotationhelp=ANNOTATIONHELP,
-			sent=' '.join(x for x in senttok if not isGapToken(x)))
+			sent=' '.join(senttok))	# includes any gaps
 
 
 @app.route('/annotate/parse')
