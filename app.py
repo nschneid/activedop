@@ -897,11 +897,13 @@ def accept():
 	username = session['username']
 	actions = session['actions']
 	actions[TIME] = int(round(time() - actions[TIME]))
+	treestr = None
 	if 'dec' in request.args:
 		actions[DECTREE] += int(request.args.get('dec', 0))
 	if 'tree' in request.args:
 		n = 0
-		tree, senttok = discbrackettree(request.args.get('tree'))
+		treestr = request.args.get('tree')
+		tree, senttok = discbrackettree(treestr)
 		# the tokenization may have been updated with gaps, so store the new one
 		SENTENCES[lineno] = ' '.join(senttok)
 		if False:
@@ -925,8 +927,15 @@ def accept():
 	block = writetree(tree, senttok, str(lineno + 1), 'export',
 			comment='%s %r' % (username, actions))
 	app.logger.info(block)
-	addentry(lineno, block, actions)
-	WORKERS[username].submit(worker.augment, [tree], [senttok])
+	addentry(lineno, block, actions)	# save annotation in the database
+	WORKERS[username].submit(worker.augment, [tree], [senttok])	# update the parser's grammar
+	
+	# validate and stay on this sentence if there are issues
+	if treestr:
+		_tree, _senttok, msg = validate(treestr, senttok)
+		if 'ERROR' in msg or 'WARNING' in msg:
+			flash('Your annotation for sentence %d was stored %r but may contain errors. Please click Validate to check.' % (sentno, actions))
+			return redirect(url_for('annotate', sentno=sentno))
 	flash('Your annotation for sentence %d was stored %r' % (sentno, actions))
 	return (redirect(url_for('annotate', sentno=sentno + 1))
 			if sentno < len(SENTENCES)
