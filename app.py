@@ -987,6 +987,7 @@ ALLOW_EDIT_SENT = True
 ALLOW_EDIT_GAPS = True
 ALLOW_MULTIWORD_POS = True
 ALLOW_UNSEEN_NONCE_CAT = True
+ALLOW_UNSEEN_VAR_CAT = True
 COIDXRE = re.compile(r'\.(\w+)')	# coindexation variable in constituent label
 def validate(treestr, senttok):
 	"""Verify whether a user-supplied tree is well-formed."""
@@ -1046,7 +1047,9 @@ def validate(treestr, senttok):
 			raise ValueError(('ERROR: a constituent cannot have a token '
 					'as child:\n%s' % node))
 		elif match.group(1) not in workerattr('phrasallabels') and (not ALLOW_MULTIWORD_POS or match.group(1) not in workerattr('poslabels')):
-			if ALLOW_UNSEEN_NONCE_CAT and '+' in match.group(1):
+			if ALLOW_UNSEEN_VAR_CAT and '.' in match.group(1):
+				msg += f'WARNING: unseen category with variable {match.group(1)} '
+			elif ALLOW_UNSEEN_NONCE_CAT and '+' in match.group(1):
 				msg += f'WARNING: unseen nonce category {match.group(1)} '
 			else:
 				raise ValueError(('ERROR: invalid constituent label:\n%s\n'
