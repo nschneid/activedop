@@ -363,6 +363,13 @@ def dologin():
 			trees, sents = [], []
 			headrules = pool.submit(worker.getprop, 'headrules').result()
 			for block in annotations.values():
+				# HOTFIX for ROOT error
+				blocklns = block.splitlines()
+				for iln,blockln in enumerate(blocklns):
+					if '\tROOT\t' in blockln and '\t0\t' not in blockln:
+						blocklns[iln].replace('\tROOT\t', '\tXXX-XXX\t')
+				block = '\n'.join(blocklns)
+
 				item = exporttree(block.splitlines())
 				canonicalize(item.tree)
 				if headrules:
