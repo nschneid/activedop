@@ -1025,6 +1025,8 @@ def validate(treestr, senttok):
 	# check tree structure
 	coindexed = defaultdict(set)	# {coindexationvar -> {labels}}
 	for node in tree.subtrees():
+		if node is not tree.root and node.label==tree.root.label:
+			raise ValueError(('ERROR: non-root node cannot have same label as root: '+node.label))
 		match = LABELRE.match(node.label)
 		if match is None:
 			raise ValueError('malformed label: %r\n'
