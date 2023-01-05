@@ -31,9 +31,12 @@ Design notes:
 """
 import os
 import re
+import sys
+import io
 import json
 import sqlite3
 import logging
+import traceback
 from math import log
 from time import time
 from datetime import datetime
@@ -57,6 +60,12 @@ from discodop.disambiguation import testconstraints
 from discodop.heads import applyheadrules
 from discodop.eval import editdistance
 import worker
+from pylatexenc.latexencode import unicode_to_latex
+sys.path.append('./cgel')
+try:
+	from activedopexport2cgel import load as load_as_cgel
+except ImportError:
+	load_as_cgel = None
 
 app = Flask(__name__)  # pylint: disable=invalid-name
 WORKERS = {}  # dict mapping username to process pool
@@ -935,6 +944,7 @@ def accept():
 	# validate and stay on this sentence if there are issues
 	if treestr:
 		_tree, _senttok, msg = validate(treestr, senttok)
+
 		if 'ERROR' in msg or 'WARNING' in msg:
 			flash('Your annotation for sentence %d was stored %r but may contain errors. Please click Validate to check.' % (sentno, actions))
 			return redirect(url_for('annotate', sentno=sentno))
@@ -1068,6 +1078,27 @@ def validate(treestr, senttok):
 		if len(coindexedset)<2:
 			msg += f'ERROR: coindexation variable should have at least two (distinct) constituents: {coindexedset!r} '
 			# message not exception because exception blocks display of the tree
+
+	# construct an export representation of this tree for validation purposes only
+	block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
+	block = io.StringIO(block)	# make it a file-like object
+
+	if load_as_cgel:	# run the CGEL validator
+		STDERR = sys.stderr
+		errS = io.StringIO()
+		sys.stderr = errS
+		try:
+			cgeltree = next(load_as_cgel(block))
+			nWarn = cgeltree.validate()
+		except AssertionError:
+			print(traceback.format_exc(), file=errS)
+		sys.stderr = STDERR
+		errS = errS.getvalue()
+		if errS:
+			msg += '\nCGEL VALIDATOR\n==============\n' + errS
+		else:
+			msg += '\nCGEL VALIDATOR: OK\n'
+
 	msg = f'<font color=red>{msg}</font>' if msg else ''
 	return tree, sent1, msg
 
