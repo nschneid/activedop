@@ -367,7 +367,7 @@ def dologin():
 				blocklns = block.splitlines()
 				for iln,blockln in enumerate(blocklns):
 					if '\tROOT\t' in blockln and '\t0\t' not in blockln:
-						blocklns[iln].replace('\tROOT\t', '\tXXX-XXX\t')
+						blocklns[iln] = blocklns[iln].replace('\tROOT\t', '\tXXX-XXX\t')
 				block = '\n'.join(blocklns)
 
 				item = exporttree(block.splitlines())
