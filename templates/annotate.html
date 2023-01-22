@@ -11,7 +11,7 @@
 		| <a href="{{ nextlink }}">next</a>
 		| {{ (100 * numannotated  / totalsents)|round(1) }} % done <progress value="{{ numannotated }}" max="{{ totalsents }}"></progress>
 		| <a href="/annotate/context/{{ lineno }}#{{ lineno }}">context</a>
-		| <a href="/annotate/export">export</a>
+		| <a href="/annotate/export">export all</a>
 		| <a href="javascript: toggle('help');">help</a>
 		| {% if not session.username -%}
 		<a href="{{ url_for('login') }}">log in</a>

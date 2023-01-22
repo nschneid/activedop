@@ -11,7 +11,8 @@
 	| <a href="{{ unextlink }}">next unannotated</a>
 	| {{ (100 * numannotated  / totalsents)|round(1) }} % done <progress value="{{ numannotated }}" max="{{ totalsents }}"></progress>
 	| <a href="/annotate/context/{{ lineno }}#{{ lineno }}">context</a>
-	| <a href="/annotate/export">export</a>
+	| <a href="/annotate/export" title="all saved annotations">export all</a>
+	| <a href="#" onclick="document.location='/annotate/exportcgeltree' + '?tree=' + encodeURIComponent(editor.getValue());" title=".cgel format of tree currently in text editor">export CGEL tree</a>
 	| <a href="javascript: toggle('help');">help</a>
 	| {% if not session.username -%}
 	<a href="{{ url_for('login') }}">log in</a>

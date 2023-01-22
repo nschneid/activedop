@@ -976,6 +976,19 @@ def export():
 			''.join(readannotations(session['username']).values()),
 			mimetype='text/plain')
 
+@app.route('/annotate/exportcgeltree')
+def exportcgeltree():
+	"""Produce single tree in .cgel format"""
+	assert load_as_cgel
+	treestr = request.args.get('tree')
+	try:
+		tree, senttok = discbrackettree(treestr)
+	except Exception as err:
+		raise ValueError('ERROR: cannot parse tree bracketing\n%s' % err)
+	block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
+	block = io.StringIO(block)	# make it a file-like object
+	cgeltree = next(load_as_cgel(block))
+	return Response(str(cgeltree), mimetype='text/plain')
 
 @app.route('/annotate/favicon.ico')
 @app.route('/favicon.ico')
@@ -1110,7 +1123,6 @@ def validate(treestr, senttok):
 
 	msg = f'<font color=red>{msg}</font>' if msg else ''
 	return tree, sent1, msg
-
 
 def entropy(seq):
 	"""Calculate entropy of a probability distribution.
