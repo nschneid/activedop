@@ -1019,8 +1019,19 @@ ALLOW_EDIT_SENT = True
 ALLOW_EDIT_GAPS = True
 ALLOW_MULTIWORD_POS = True
 ALLOW_UNSEEN_NONCE_CAT = True
+ALLOW_UNSEEN_NONCE_FXN = True
 ALLOW_UNSEEN_VAR_CAT = True
 COIDXRE = re.compile(r'\.(\w+)')	# coindexation variable in constituent label
+
+def isValidPOS(x):
+    return x in workerattr('poslabels')
+
+def isValidPhraseCat(x):
+    return x in workerattr('phrasallabels') or (ALLOW_MULTIWORD_POS and isValidPOS(x))
+
+def isValidFxn(x):
+    return x in workerattr('functiontags') or x in app.config['FUNCTIONTAGWHITELIST'] or (ALLOW_UNSEEN_NONCE_FXN and '+' in x)
+
 def validate(treestr, senttok):
 	"""Verify whether a user-supplied tree is well-formed."""
 	msg = ''
@@ -1061,15 +1072,12 @@ def validate(treestr, senttok):
 					'one or more children:\n%s' % node))
 		# a POS tag
 		elif isinstance(node[0], int):
-			if match.group(1) not in workerattr('poslabels'):
+			if not isValidPOS(match.group(1)):
 				raise ValueError(('ERROR: invalid POS tag: %s for %d=%s\n'
 						'valid POS tags: %s' % (
 						node.label, node[0], senttok[node[0]],
 						', '.join(sorted(workerattr('poslabels'))))))
-			elif (match.group(2)
-					and match.group(2)[1:] not in workerattr('functiontags')
-					and match.group(2)[1:]
-						not in app.config['FUNCTIONTAGWHITELIST']):
+			elif match.group(2) and not isValidFxn(match.group(2)[1:]):
 				raise ValueError(('ERROR: invalid function tag:\n%s\n'
 						'valid labels: %s' % (
 						node, ', '.join(sorted(workerattr('functiontags'))))))
@@ -1080,7 +1088,7 @@ def validate(treestr, senttok):
 		elif not all(isinstance(child, Tree) for child in node):
 			raise ValueError(('ERROR: a constituent cannot have a token '
 					'as child:\n%s' % node))
-		elif match.group(1) not in workerattr('phrasallabels') and (not ALLOW_MULTIWORD_POS or match.group(1) not in workerattr('poslabels')):
+		elif not isValidPhraseCat(match.group(1)):
 			if ALLOW_UNSEEN_VAR_CAT and '.' in match.group(1):
 				msg += f'WARNING: unseen category with variable {match.group(1)} '
 			elif ALLOW_UNSEEN_NONCE_CAT and '+' in match.group(1):
@@ -1089,10 +1097,7 @@ def validate(treestr, senttok):
 				raise ValueError(('ERROR: invalid constituent label:\n%s\n'
 						'valid labels: %s' % (
 						node, ', '.join(sorted(workerattr('phrasallabels'))))))
-		if (match.group(2)
-				and match.group(2)[1:] not in workerattr('functiontags')
-				and match.group(2)[1:]
-					not in app.config['FUNCTIONTAGWHITELIST']):
+		if match.group(2) and not isValidFxn(match.group(2)[1:]):
 			raise ValueError(('ERROR: invalid function tag:\n%s\n'
 					'valid labels: %s' % (
 					node, ', '.join(sorted(workerattr('functiontags'))))))
