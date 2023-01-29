@@ -679,28 +679,28 @@ def newlabel():
 	_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
 	nodeid = int(nodeid)
 	dt = DrawTree(tree, senttok)
-	match = LABELRE.match(dt.nodes[nodeid].label)
+	m = LABELRE.match(dt.nodes[nodeid].label)
 	if 'label' in request.args:
 		label = request.args.get('label', '')
 		dt.nodes[nodeid].label = (label
-				+ (match.group(2) or '')
-				+ (match.group(3) or ''))
+				+ (m.group(2) or '')
+				+ (m.group(3) or ''))
 	elif 'function' in request.args:
 		label = request.args.get('function', '')
 		if label == '':
 			dt.nodes[nodeid].label = '%s%s' % (
-					match.group(1), match.group(3) or '')
+					m.group(1), m.group(3) or '')
 		else:
 			dt.nodes[nodeid].label = '%s-%s%s' % (
-					match.group(1), label, match.group(3) or '')
+					m.group(1), label, m.group(3) or '')
 	elif 'morph' in request.args:
 		label = request.args.get('morph', '')
 		if label == '':
 			dt.nodes[nodeid].label = '%s%s' % (
-					match.group(1), match.group(2) or '')
+					m.group(1), m.group(2) or '')
 		else:
 			dt.nodes[nodeid].label = '%s%s/%s' % (
-					match.group(1), match.group(2) or '', label)
+					m.group(1), m.group(2) or '', label)
 	else:
 		raise ValueError('expected label or function argument')
 	tree = dt.nodes[0]
@@ -1058,8 +1058,8 @@ def validate(treestr, senttok):
 	for node in tree.subtrees():
 		if node is not tree.root and node.label==tree.root.label:
 			raise ValueError(('ERROR: non-root node cannot have same label as root: '+node.label))
-		match = LABELRE.match(node.label)
-		if match is None:
+		m = LABELRE.match(node.label)
+		if m is None:
 			raise ValueError('malformed label: %r\n'
 					'expected: cat-func/morph or cat-func; e.g. NN-SB/Nom'
 					% node.label)
@@ -1072,12 +1072,12 @@ def validate(treestr, senttok):
 					'one or more children:\n%s' % node))
 		# a POS tag
 		elif isinstance(node[0], int):
-			if not isValidPOS(match.group(1)):
+			if not isValidPOS(m.group(1)):
 				raise ValueError(('ERROR: invalid POS tag: %s for %d=%s\n'
 						'valid POS tags: %s' % (
 						node.label, node[0], senttok[node[0]],
 						', '.join(sorted(workerattr('poslabels'))))))
-			elif match.group(2) and not isValidFxn(match.group(2)[1:]):
+			elif m.group(2) and not isValidFxn(m.group(2)[1:]):
 				raise ValueError(('ERROR: invalid function tag:\n%s\n'
 						'valid labels: %s' % (
 						node, ', '.join(sorted(workerattr('functiontags'))))))
@@ -1088,16 +1088,16 @@ def validate(treestr, senttok):
 		elif not all(isinstance(child, Tree) for child in node):
 			raise ValueError(('ERROR: a constituent cannot have a token '
 					'as child:\n%s' % node))
-		elif not isValidPhraseCat(match.group(1)):
-			if ALLOW_UNSEEN_VAR_CAT and '.' in match.group(1):
-				msg += f'WARNING: unseen category with variable {match.group(1)} '
-			elif ALLOW_UNSEEN_NONCE_CAT and '+' in match.group(1):
-				msg += f'WARNING: unseen nonce category {match.group(1)} '
+		elif not isValidPhraseCat(m.group(1)):
+			if ALLOW_UNSEEN_VAR_CAT and '.' in m.group(1):
+				msg += f'WARNING: unseen category with variable {m.group(1)} '
+			elif ALLOW_UNSEEN_NONCE_CAT and '+' in m.group(1):
+				msg += f'WARNING: unseen nonce category {m.group(1)} '
 			else:
 				raise ValueError(('ERROR: invalid constituent label:\n%s\n'
 						'valid labels: %s' % (
 						node, ', '.join(sorted(workerattr('phrasallabels'))))))
-		if match.group(2) and not isValidFxn(match.group(2)[1:]):
+		if m.group(2) and not isValidFxn(m.group(2)[1:]):
 			raise ValueError(('ERROR: invalid function tag:\n%s\n'
 					'valid labels: %s' % (
 					node, ', '.join(sorted(workerattr('functiontags'))))))
