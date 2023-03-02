@@ -90,6 +90,7 @@ app.config.update(
 		SENTENCES=None,  # a filename with sentences to annotate, one per line.
 		ACCOUNTS=None,  # dictionary mapping usernames to passwords
 		ANNOTATIONHELP=None,  # plain text file summarizing the annotation scheme
+		CGELVALIDATE=None,  # whether to run the CGEL validator when editing
 		)
 app.config.from_pyfile('settings.cfg', silent=True)
 app.config.from_envvar('FLASK_SETTINGS', silent=True)
@@ -1116,15 +1117,18 @@ def validate(treestr, senttok):
 		sys.stderr = errS
 		try:
 			cgeltree = next(load_as_cgel(block))
-			nWarn = cgeltree.validate()
+			nWarn = cgeltree.validate() if app.config['CGELVALIDATE'] else None
 		except AssertionError:
 			print(traceback.format_exc(), file=errS)
 		sys.stderr = STDERR
-		errS = errS.getvalue()
-		if errS:
-			msg += '\nCGEL VALIDATOR\n==============\n' + errS
+		if not app.config['CGELVALIDATE']:
+			msg += '\n(CGEL VALIDATOR IS OFF)\n'
 		else:
-			msg += '\nCGEL VALIDATOR: OK\n'
+			errS = errS.getvalue()
+			if errS:
+				msg += '\nCGEL VALIDATOR\n==============\n' + errS
+			else:
+				msg += '\nCGEL VALIDATOR: OK\n'
 
 	msg = f'<font color=red>{msg}</font>' if msg else ''
 	return tree, sent1, msg
