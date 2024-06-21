@@ -4,6 +4,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.34.0/codemirror.min.js" type="text/javascript" charset="utf=8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.34.0/addon/edit/matchbrackets.min.js" type="text/javascript" charset="utf=8"></script>
 
+<div class="trash" style="position: fixed; top: 0; right: 0"
+	data-id=deletenode 
+	ondragover="allowDropTrash(event);" ondrop="dropTrash(event);" ondragleave="dragLeaveTrash(event);">🗑️</div>
+
 <div>
 	<a href="{{ prevlink }}">prev</a>
 	| {{ sentno }} / {{ totalsents }}
@@ -50,7 +54,8 @@
 </div>
 
 <div id=info>
-	<span data-id=deletenode ondragover="allowDrop(event);" ondrop="drop(event);">(drop node here to remove)</span>
+	<span class="trash" data-id=deletenode
+		ondragover="allowDropTrash(event);" ondrop="dropTrash(event);" ondragleave="dragLeaveTrash(event);">🗑️</span>
 	<div>Constituent labels (drag and drop on a parent to add a new node; function will default to Head):
 		{% for label in phrasallabels -%}
 			{% if label != 'ROOT' -%}

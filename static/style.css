@@ -11,6 +11,12 @@ span.m { color: Chocolate; }
                   border: 1px solid #aacbe2; }
 .error          { background: #f0d6d6; padding: 0.5em; }
 
+/* NSS: drop target for deleting a node */
+.trash {
+	font-size: 64pt;
+	opacity: .5;
+}
+
 pre, .mono, .deptree, span.tt {
 	font-family:
 		"Liberation Mono",
