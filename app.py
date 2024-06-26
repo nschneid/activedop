@@ -430,8 +430,8 @@ def annotate(sentno):
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
 	return render_template(
 			'annotate.html',
-			prevlink=str(sentno - 1) if sentno > 1 else '#',
-			nextlink=str(sentno + 1) if sentno < len(SENTENCES) else '#',
+			prevlink=str(sentno - 1) if sentno > 1 else str(len(SENTENCES)),
+			nextlink=str(sentno + 1) if sentno < len(SENTENCES) else str(1),
 			sentno=sentno, lineno=lineno + 1,
 			totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
@@ -617,9 +617,9 @@ def edit():
 
 	return render_template('edittree.html',
 			prevlink=('/annotate/annotate/%d' % (sentno - 1))
-				if sentno > 1 else '#',
+				if sentno > 1 else '/annotate/annotate/%d' % (len(SENTENCES)),
 			nextlink=('/annotate/annotate/%d' % (sentno + 1))
-				if sentno < len(SENTENCES) else '#',
+				if sentno < len(SENTENCES) else '/annotate/annotate/1',
 			unextlink=('/annotate/annotate/%d' % firstunannotated(username))
 				if sentno < len(SENTENCES) else '#',
 			treestr=treestr, senttok=' '.join(senttok),
@@ -957,10 +957,9 @@ def accept():
 			flash('Your annotation for sentence %d was stored %r but may contain errors. Please click Validate to check.' % (sentno, actions))
 			return redirect(url_for('annotate', sentno=sentno))
 	flash('Your annotation for sentence %d was stored %r' % (sentno, actions))
-	return (redirect(url_for('annotate', sentno=sentno + 1))
-			if sentno < len(SENTENCES)
-			else 'THANK YOU. THAT WAS THE LAST SENTENCE.')
-
+	return (redirect(url_for('annotate', sentno=1))
+		if sentno >= len(SENTENCES)
+		else redirect(url_for('annotate', sentno=sentno+1)))
 
 @app.route('/annotate/context/<int:lineno>')
 def context(lineno):
