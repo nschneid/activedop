@@ -1,5 +1,6 @@
 drop table if exists entries;
 create table entries (
+  id text not null,
   sentno integer not null,
   username text not null,
   tree text not null,
