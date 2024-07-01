@@ -29,12 +29,55 @@
 			<option value=rfe>RFE</option>
 			<option value=ewe>EWE</option>
 		</select>
-		<input type=hidden name=sent value="{{ sent }}" />
-		<input type=hidden name=sentno value="{{ sentno }}" />
-		<input type=submit value="Re-parse" /><br>
-	    {{ sent }}
+		<input type=hidden id=sent value="{{ sent }}" />
+		<input type=hidden id=sentno value="{{ sentno }}" />
+		<input type=submit value="Re-parse" /> <br>
+		<span id="editableSent" onclick="makeEditable()">{{ sent }}</span>
+		<input type="text" id="editInput" size=30 value="{{sent}}" style="display:none">
+		<button id="cancelButton" onclick="cancelEdit()" style="display:none">Cancel</button>
+		<button id= "reTokenizeButton" onclick="reTokenize()" style="display:none">Re-tokenize</button>
 	</div>
 </form>
+
+<script>
+	function makeEditable() {
+		event.preventDefault();
+		document.getElementById('editableSent').style.display = "none";
+		document.getElementById('editInput').style.display = "inline";
+		document.getElementById('cancelButton').style.display = "inline";
+		document.getElementById('reTokenizeButton').style.display = "inline";
+	}
+	
+	function cancelEdit() {
+		event.preventDefault();
+		document.getElementById('editableSent').style.display = "inline";
+		document.getElementById('editInput').style.display = "none";
+		document.getElementById('cancelButton').style.display = "none";
+		document.getElementById('reTokenizeButton').style.display = "none";
+	}
+	
+	function reTokenize(sentno) {
+		var newtext = document.getElementById('editInput').value;
+		var sentno = document.getElementById('sentno').value;
+		document.getElementById('editableSent').innerText = newtext;
+		document.getElementById('editableSent').style.display = "inline";
+		document.getElementById('editInput').style.display = "none";
+		document.getElementById('cancelButton').style.display = "none";
+		document.getElementById('reTokenizeButton').style.display = "none";
+		fetch('/retokenize', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({newtext: newtext, sentno: sentno}),
+		})
+		.then(response => response.json())
+		.then(data => console.log('Success:', data))
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+		}
+</script>
 
 <div style="display: none; " id=constraintdiv>
 	Required: [<span id=showrequire></span>]; Blocked: [<span id=showblock></span>]
