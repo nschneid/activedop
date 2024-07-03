@@ -1059,6 +1059,20 @@ def export():
 			''.join(readannotations(session['username']).values()),
 			mimetype='text/plain')
 
+@app.route('/annotate/exportallcgeltrees')
+def exportallcgeltrees():
+	"""Export all annotations by current user in .cgel format."""
+	assert load_as_cgel
+	username = session['username']
+	db = getdb()
+	cur = db.execute(
+			'select cgel_tree from entries where username = ? '
+			'order by sentno asc',
+			(username, ))
+	entries = [a[0] for a in cur]
+	cgeltrees = '\n'.join(entries)
+	return Response(cgeltrees, mimetype='text/plain')
+
 @app.route('/annotate/download_pdf')
 def download_pdf():
 	# file header -- forest package
