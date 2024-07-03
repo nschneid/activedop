@@ -454,6 +454,17 @@ def annotate(sentno):
 			annotationhelp=ANNOTATIONHELP,
 			sent=' '.join(senttok))	# includes any gaps
 
+@app.route('/undoaccept', methods=['POST'])
+def undoaccept():
+	sentid = request.json.get('sentid', 0)
+	username = session['username']
+	db = getdb()
+	db.execute(
+    'DELETE FROM entries WHERE username = ? AND id = ?',
+    (username, sentid))
+	db.commit()
+	return jsonify({"success": True})
+
 @app.route('/retokenize', methods=['POST'])
 def retokenize():
 	sentno = int(request.json.get('sentno', 0))
@@ -619,7 +630,7 @@ def edit():
 	msg = ''
 	if request.args.get('annotated', False):
 		msg = Markup('<font color=red>You have already annotated '
-				'this sentence.</font>')
+				'this sentence.</font><button id="undo" onclick="undoAccept()">Reset</button>')
 		tree, senttok = discbrackettree(request.args.get('tree'))
 	elif 'n' in request.args:
 		n = int(request.args.get('n', 1))
