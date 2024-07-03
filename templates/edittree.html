@@ -24,6 +24,8 @@
 	<a href="{{ url_for('logout') }}">log out</a>
 	{%- endif %}
 	<br>
+	<input type=hidden id=sentid value="{{ id }}" />
+	<input type=hidden id=sentno value="{{ sentno }}" />
 	{{ senttok }}
 </div>
 {{ msg }}
@@ -71,7 +73,9 @@
 
 <div id=edit>
 	<form name=queryform onSubmit="event.preventDefault(); replacetree(); return false; ">
-		<textarea name=tree rows={{ rows }} cols={{ cols }}>{{ treestr }}</textarea>
+		<textarea name=tree rows={{ rows }} cols={{ cols }}>
+{{ treestr }}
+</textarea>
 		<input type=hidden name=sentno value="{{ sentno }}" />
 		<input type=hidden name=senttok value="{{ senttok }}" />
 		<input type=submit value=Validate>
