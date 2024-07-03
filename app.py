@@ -38,6 +38,7 @@ import json
 import sqlite3
 import logging
 import traceback
+import subprocess
 from math import log
 from time import time
 from datetime import datetime
@@ -47,7 +48,7 @@ from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures.process import BrokenProcessPool
 from urllib.parse import urlparse, urlencode, urljoin
 from flask import (Flask, Markup, Response, jsonify, request, session, g, flash, abort,
-		redirect, url_for, render_template, send_from_directory,
+		redirect, url_for, render_template, send_file, send_from_directory,
 		stream_with_context)
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
@@ -1052,6 +1053,76 @@ def export():
 	return Response(
 			''.join(readannotations(session['username']).values()),
 			mimetype='text/plain')
+
+@app.route('/annotate/download_pdf')
+def download_pdf():
+	# file header -- forest package
+	HEADER = r"""
+	\documentclass[tikz,border=12pt]{standalone}
+	\usepackage[linguistics]{forest}
+	\usepackage{times}
+	\usepackage{textcomp}
+	\usepackage{xcolor}
+	\usepackage{soul}
+	\usepackage[T1]{fontenc}
+	\usepackage{marvosym}
+
+	\definecolor{orange}{HTML}{FFCCFF}
+	\definecolor{ltyellow}{HTML}{FFFFAA}
+	\definecolor{cgelblue}{HTML}{009EE0}
+
+	% text highlight color
+	% https://tex.stackexchange.com/a/352959
+	\newcommand{\hlc}[2][yellow]{{%
+		\colorlet{foo}{#1}%
+		\sethlcolor{foo}\hl{#2}}%
+	}
+	\newcommand{\hlgreen}[2][green]{{%
+		\colorlet{foo}{#1}%
+		\sethlcolor{foo}\hl{#2}}%
+	}
+
+	\pagestyle{empty}
+	%----------------------------------------------------------------------
+	% Node labels in CGEL trees are defined with \Node,
+	% which is defined so that \Node{Abcd}{Xyz} yields
+	% a label with the function Abcd on the top, in small
+	% sanserif font, followed by a colon, and the category
+	% Xyz on the bottom.
+	\newcommand{\Node}[2]{\small\textsf{#1:}\\{#2}}
+	% For commonly used functions this is defined with \(function)
+	\newcommand{\Head}[1]{\Node{Head}{#1}}
+	\newcommand{\Subj}[1]{\Node{Subj}{#1}}
+	\newcommand{\Comp}[1]{\Node{Comp}{#1}}
+	\newcommand{\Mod}[1]{\Node{Mod}{#1}}
+	\newcommand{\Det}[1]{\Node{Det}{#1}}
+	\newcommand{\PredComp}[1]{\Node{PredComp}{#1}}
+	\newcommand{\Crd}[1]{\Node{Coordinate}{#1}}
+	\newcommand{\Mk}[1]{\Node{Marker}{#1}}
+	\newcommand{\Obj}[1]{\Node{Obj}{#1}}
+	\newcommand{\Sup}[1]{\Node{Supplement}{#1}}
+	\newcommand{\idx}[1]{\textsubscript{\fcolorbox{red}{white}{\textcolor{red}{#1}}}}
+	%----------------------------------------------------------------------
+	\begin{document}
+	"""
+	
+	FOOTER = '''
+	\\end{document}
+	'''
+
+	cgeltree = request.args.get('tree')
+	inner_tex = cgel.parse(cgeltree)[0].drawtex()
+	cgel_latex = HEADER + inner_tex + FOOTER
+	output_dir = "pdf_tmp"
+
+	with open(os.path.join(output_dir, "file.tex"), 'w') as latex_file:
+		latex_file.write(cgel_latex)
+
+	subprocess.run(['pdflatex', '-output-directory', output_dir, os.path.join(output_dir, "file.tex")])
+
+	pdf_path = os.path.join(output_dir, "file.pdf")
+
+	return send_file(pdf_path, as_attachment=True, attachment_filename='downloaded_file.pdf')
 
 @app.route('/annotate/exportcgeltree')
 def exportcgeltree():
