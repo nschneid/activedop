@@ -64,8 +64,10 @@ import worker
 from pylatexenc.latexencode import unicode_to_latex
 sys.path.append('./cgel')
 try:
+	import cgel
 	from scripts.activedopexport2cgel import load as load_as_cgel
 except ImportError:
+	cgel = None
 	load_as_cgel = None
 
 
@@ -627,8 +629,14 @@ def edit():
 		tree, senttok = discbrackettree(request.args.get('tree'))
 	else:
 		return 'ERROR: pass n or tree argument.'
-	treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
-
+	if app.config['CGELVALIDATE'] is None:
+		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
+		rows = max(5, treestr.count('\n') + 1)
+	else: 
+		block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
+		block = io.StringIO(block)
+		treestr = next(load_as_cgel(block))
+		rows = max(5, treestr.depth)
 	return render_template('edittree.html',
 			prevlink=('/annotate/annotate/%d' % (sentno - 1))
 				if sentno > 1 else '/annotate/annotate/%d' % (len(SENTENCES)),
@@ -645,7 +653,7 @@ def edit():
 				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t),
 			morphtags=sorted(workerattr('morphtags')),
 			annotationhelp=ANNOTATIONHELP,
-			rows=max(5, treestr.count('\n') + 1), cols=100,
+			rows=rows, cols=100,
 			msg=msg)
 
 
@@ -656,9 +664,16 @@ def redraw():
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
 	orig_senttok, _ = worker.postokenize(sent)
-	treestr = request.args.get('tree')
-	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
+	if app.config['CGELVALIDATE'] is None:
+		treestr = request.args.get('tree')
+		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
+	else: 
+		cgel_tree = request.args.get('tree')
+		treestr = "(ROOT " + cgel.parse(cgel_tree)[0].ptb() + ")"
+		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
+		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
+			% urlencode(dict(sentno=sentno, tree=cgel_tree)))
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
@@ -684,7 +699,11 @@ def newlabel():
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
 	orig_senttok, _ = worker.postokenize(sent)
-	treestr = request.args.get('tree', '')
+	if app.config['CGELVALIDATE'] is None:
+		treestr = request.args.get('tree')
+	else: 
+		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
@@ -720,7 +739,12 @@ def newlabel():
 		raise ValueError('expected label or function argument')
 	tree = dt.nodes[0]
 	dt = DrawTree(tree, senttok)  # kludge..
-	treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
+	if app.config['CGELVALIDATE'] is None:
+		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
+	else:
+		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
+		block = io.StringIO(block)	# make it a file-like object
+		treestr = next(load_as_cgel(block))
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	session['actions'][RELABEL] += 1
@@ -740,7 +764,11 @@ def reattach():
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
 	orig_senttok, _ = worker.postokenize(sent)
-	treestr = request.args.get('tree', '')
+	if app.config['CGELVALIDATE'] is None:
+		treestr = request.args.get('tree')
+	else: 
+		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
@@ -806,7 +834,12 @@ def reattach():
 						error = ('ERROR: re-attaching only child creates'
 								' empty node %s; remove manually\n' % node)
 					break
-	treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
+	if app.config['CGELVALIDATE'] is None:
+		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
+	else:
+		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
+		block = io.StringIO(block)	# make it a file-like object
+		treestr = next(load_as_cgel(block))
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	if error == '':
@@ -879,7 +912,12 @@ def replacesubtree():
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
 	orig_senttok, _ = worker.postokenize(sent)
 	username = session['username']
-	treestr = request.args.get('tree', '')
+	treestr = request.args.get('tree')
+	if app.config['CGELVALIDATE'] is None:
+		treestr = request.args.get('tree')
+	else: 
+		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
 	except ValueError as err:
@@ -936,7 +974,12 @@ def accept():
 		actions[DECTREE] += int(request.args.get('dec', 0))
 	if 'tree' in request.args:
 		n = 0
-		treestr = request.args.get('tree')
+		if app.config['CGELVALIDATE'] is None:
+			treestr = request.args.get('tree')
+		else:
+			orig_senttok, _ = worker.postokenize(sent)
+			treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+			treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 		tree, senttok = discbrackettree(treestr)
 		# the tokenization may have been updated with gaps, so store the new one
 		SENTENCES[lineno] = ' '.join(senttok)
@@ -959,7 +1002,7 @@ def accept():
 	actions[NBEST] = n
 	session.modified = True
 	block = writetree(tree, senttok, str(lineno + 1), 'export',
-			comment='%s %r' % (username, actions))
+		comment='%s %r' % (username, actions))
 	app.logger.info(block)
 	addentry(id, lineno, block, actions)	# save annotation in the database
 	WORKERS[username].submit(worker.augment, [tree], [senttok])	# update the parser's grammar
@@ -994,16 +1037,8 @@ def export():
 @app.route('/annotate/exportcgeltree')
 def exportcgeltree():
 	"""Produce single tree in .cgel format"""
-	assert load_as_cgel
-	treestr = request.args.get('tree')
-	try:
-		tree, senttok = discbrackettree(treestr)
-	except Exception as err:
-		raise ValueError('ERROR: cannot parse tree bracketing\n%s' % err)
-	block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
-	block = io.StringIO(block)	# make it a file-like object
-	cgeltree = next(load_as_cgel(block))
-	return Response(str(cgeltree), mimetype='text/plain')
+	cgeltree = request.args.get('tree')
+	return Response(cgeltree, mimetype='text/plain')
 
 @app.route('/annotate/favicon.ico')
 @app.route('/favicon.ico')
