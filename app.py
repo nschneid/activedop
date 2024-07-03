@@ -273,13 +273,13 @@ def readannotations(username=None):
 	return OrderedDict(entries)
 
 
-def addentry(id, sentno, tree, actions):
+def addentry(id, sentno, tree, cgel_tree, actions):
 	"""Add an annotation to the database."""
 	db = getdb()
 	db.execute(
 			'insert or replace into entries '
-			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			(id, sentno, session['username'], tree, *actions,
+			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			(id, sentno, session['username'], tree, cgel_tree, *actions,
 			datetime.now().strftime('%F %H:%M:%S')))
 	db.commit()
 
@@ -1024,7 +1024,12 @@ def accept():
 	block = writetree(tree, senttok, str(lineno + 1), 'export',
 		comment='%s %r' % (username, actions))
 	app.logger.info(block)
-	addentry(id, lineno, block, actions)	# save annotation in the database
+	treeout = block
+	cgel_tree = "none"
+	if app.config['CGELVALIDATE'] is not None:
+		block = io.StringIO(block)	# make it a file-like object
+		cgel_tree = str(next(load_as_cgel(block)))
+	addentry(id, lineno, treeout, cgel_tree, actions)	# save annotation in the database
 	WORKERS[username].submit(worker.augment, [tree], [senttok])	# update the parser's grammar
 	
 	# validate and stay on this sentence if there are issues

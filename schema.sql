@@ -4,6 +4,7 @@ create table entries (
   sentno integer not null,
   username text not null,
   tree text not null,
+  cgel_tree text not null,
   nbest integer not null,
   constraints integer not null,
   dectree integer not null,
