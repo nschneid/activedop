@@ -622,6 +622,7 @@ def edit():
 	"""Edit tree manually."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	lineno = QUEUE[sentno - 1][0]
+	id = QUEUE[sentno - 1][3]
 	sent = SENTENCES[lineno]
 	username = session['username']
 	if 'dec' in request.args:
@@ -662,7 +663,7 @@ def edit():
 				if sentno < len(SENTENCES) else '/annotate/annotate/1',
 			unextlink=('/annotate/annotate/%d' % firstunannotated(username))
 				if sentno < len(SENTENCES) else '#',
-			treestr=treestr, senttok=' '.join(senttok),
+			treestr=treestr, senttok=' '.join(senttok), id=id,
 			sentno=sentno, lineno=lineno + 1, totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			poslabels=sorted(workerattr('poslabels')),
