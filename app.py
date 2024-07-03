@@ -51,7 +51,7 @@ from flask import (Flask, Markup, Response, jsonify, request, session, g, flash,
 		stream_with_context)
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-from discodop.tree import (Tree, DrawTree, DrawDependencies,
+from discodop.tree import (Tree, ParentedTree, DrawTree, DrawDependencies,
 		writediscbrackettree, discbrackettree)
 from discodop.treebank import writetree, writedependencies, exporttree
 from discodop.treetransforms import canonicalize
