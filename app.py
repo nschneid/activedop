@@ -219,6 +219,25 @@ def closedb(error):
 	if hasattr(g, 'sqlitedb'):
 		g.sqlitedb.close()
 
+@app.route('/annotate/get_data_psv')
+def get_data_psv():
+	username = session['username']
+	db = getdb()
+	cur = db.execute(
+		'SELECT * FROM entries WHERE username = ? ORDER BY sentno ASC',
+		(username, )
+	)
+	rows = cur.fetchall()
+	
+	csv_file_path = 'output.csv'
+	with open(csv_file_path, 'w', newline='') as out_file:
+		csv_writer = csv.writer(out_file, delimiter='|')
+		column_headers = [description[0] for description in cur.description]
+		csv_writer.writerow(column_headers)
+		for row in rows:
+			csv_writer.writerow(row)
+	
+	return send_file(csv_file_path, as_attachment=True, attachment_filename='data.csv')
 
 def firstunannotated(username):
 	"""Return index of first unannotated sentence,
