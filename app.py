@@ -63,7 +63,7 @@ import worker
 from pylatexenc.latexencode import unicode_to_latex
 sys.path.append('./cgel')
 try:
-	from activedopexport2cgel import load as load_as_cgel
+	from scripts.activedopexport2cgel import load as load_as_cgel
 except ImportError:
 	load_as_cgel = None
 
@@ -1116,7 +1116,7 @@ def validate(treestr, senttok):
 		sys.stderr = errS
 		try:
 			cgeltree = next(load_as_cgel(block))
-			nWarn = cgeltree.validate() if app.config['CGELVALIDATE'] else None
+			nWarn = cgeltree.validate(require_verb_xpos=False, require_num_xpos=False) if app.config['CGELVALIDATE'] else None
 		except AssertionError:
 			print(traceback.format_exc(), file=errS)
 		sys.stderr = STDERR

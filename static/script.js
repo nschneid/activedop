@@ -447,6 +447,21 @@ function allowDrop(ev) {
 	ev.preventDefault();
 }
 
+function allowDropTrash(ev) {
+	allowDrop(ev);
+	ev.target.style.opacity=1;
+}
+
+function dragLeaveTrash(ev) {
+	ev.preventDefault();
+	ev.target.style.opacity=.5;
+}
+
+function dropTrash(ev) {
+	drop(ev);
+	ev.target.style.opacity=.5;
+}
+
 function drop(ev) {
 	/* request tree where dragged "childid" is re-attached under "newparentid". */
     ev.preventDefault();
