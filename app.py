@@ -742,8 +742,20 @@ def newlabel():
 	orig_senttok, _ = worker.postokenize(sent)
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
-	else: 
-		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+	else:
+		cgel_tree = cgel.parse(request.args.get('tree'))[0]
+		tags = {}
+		keys = range(1,len(orig_senttok)+1)
+		cgel_tree_terminals = [node for node in cgel_tree.tokens.values() if node.text or node.constituent == 'GAP']
+		for i in keys:
+			tags[i] = {"note": None, "xpos" : None, "_lemma" : None}
+			if cgel_tree_terminals[i-1].note:
+				tags[i].update({"note": cgel_tree_terminals[i-1].note})
+			if cgel_tree_terminals[i-1].xpos:
+				tags[i].update({"xpos": cgel_tree_terminals[i-1].xpos})
+			if cgel_tree_terminals[i-1]._lemma:
+				tags[i].update({"_lemma": cgel_tree_terminals[i-1]._lemma})
+		treestr = "(ROOT " + cgel_tree.ptb() + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -786,6 +798,10 @@ def newlabel():
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
+		for i in tags.keys():
+			treestr.tokens[i].note = tags[i]['note']
+			treestr.tokens[i].xpos = tags[i]['xpos']
+			treestr.tokens[i]._lemma = tags[i]['_lemma']
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	session['actions'][RELABEL] += 1
@@ -807,8 +823,20 @@ def reattach():
 	orig_senttok, _ = worker.postokenize(sent)
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
-	else: 
-		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+	else:
+		cgel_tree = cgel.parse(request.args.get('tree'))[0]
+		tags = {}
+		keys = range(1,len(orig_senttok)+1)
+		cgel_tree_terminals = [node for node in cgel_tree.tokens.values() if node.text or node.constituent == 'GAP']
+		for i in keys:
+			tags[i] = {"note": None, "xpos" : None, "_lemma" : None}
+			if cgel_tree_terminals[i-1].note:
+				tags[i].update({"note": cgel_tree_terminals[i-1].note})
+			if cgel_tree_terminals[i-1].xpos:
+				tags[i].update({"xpos": cgel_tree_terminals[i-1].xpos})
+			if cgel_tree_terminals[i-1]._lemma:
+				tags[i].update({"_lemma": cgel_tree_terminals[i-1]._lemma})
+		treestr = "(ROOT " + cgel_tree.ptb() + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -881,6 +909,10 @@ def reattach():
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
+		for i in tags.keys():
+			treestr.tokens[i].note = tags[i]['note']
+			treestr.tokens[i].xpos = tags[i]['xpos']
+			treestr.tokens[i]._lemma = tags[i]['_lemma']
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	if error == '':
