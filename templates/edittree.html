@@ -33,6 +33,10 @@
 {{ msg }}
 
 <script>
+	function goback() {
+		var sentno = document.getElementById('sentno').value;
+		window.location.href = '/annotate/annotate/' + sentno;
+	}
 	function undoAccept() {
 		var sentid = document.getElementById('sentid').value;
 		var sentno = document.getElementById('sentno').value;
