@@ -120,7 +120,7 @@ def initpriorities():
 		raise ValueError('SENTENCES not configured')
 	sentences = []
 	with open(sentfilename, mode='r') as csv_file:
-		csv_reader = csv.DictReader(csv_file)
+		csv_reader = csv.DictReader(csv_file, delimiter='\t', quoting=csv.QUOTE_NONE)
 		for row in csv_reader:
 			if any(field.strip() for field in row.values()):
 				sentences.append(row)
@@ -165,7 +165,7 @@ def initapp():
 	# read sentences to annotate
 	sentences = []
 	with open(sentfilename, mode='r') as csv_file:
-		csv_reader = csv.DictReader(csv_file)
+		csv_reader = csv.DictReader(csv_file, delimiter='\t', quoting=csv.QUOTE_NONE)
 		for row in csv_reader:
 			if any(field.strip() for field in row.values()):
 				sentences.append(row['sentence'])
