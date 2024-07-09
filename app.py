@@ -33,6 +33,7 @@ import os
 import re
 import sys
 import io
+import csv
 import json
 import sqlite3
 import logging
@@ -66,6 +67,7 @@ try:
 	from scripts.activedopexport2cgel import load as load_as_cgel
 except ImportError:
 	load_as_cgel = None
+
 
 app = Flask(__name__)  # pylint: disable=invalid-name
 WORKERS = {}  # dict mapping username to process pool
@@ -116,12 +118,18 @@ def initpriorities():
 	sentfilename = app.config['SENTENCES']
 	if sentfilename is None:
 		raise ValueError('SENTENCES not configured')
-	with open(sentfilename) as sentfile:
-		sentences = sentfile.read().splitlines()
-	queue = []
+	sentences = []
+	with open(sentfilename, mode='r') as csv_file:
+		csv_reader = csv.DictReader(csv_file, delimiter='\t', quoting=csv.QUOTE_NONE)
+		for row in csv_reader:
+			if any(field.strip() for field in row.values()):
+				sentences.append(row)
 	# NB: here we do not use a subprocess to do the parsing
 	worker.loadgrammar(app.config['GRAMMAR'], app.config['LIMIT'])
-	for n, sent in enumerate(sentences):
+	queue = []
+	for n, entry in enumerate(sentences):
+		sent = entry['sentence']
+		id = entry['id']
 		try:
 			senttok, parsetrees, _messages, _elapsed = worker.getparses(sent)
 		except ValueError:
@@ -136,7 +144,7 @@ def initpriorities():
 				ent = entropy(probs)  # / log(len(parsetrees), 2)
 			except (ValueError, ZeroDivisionError):
 				pass
-		queue.append((n, ent, sent))
+		queue.append((n, ent, sent, id))
 	queue.sort(key=lambda x: x[1], reverse=True)
 	rankingfilename = '%s.rankings.json' % sentfilename
 	with open(rankingfilename, 'w') as rankingfile:
@@ -155,8 +163,13 @@ def initapp():
 	if app.config['ACCOUNTS'] is None:
 		raise ValueError('ACCOUNTS not configured')
 	# read sentences to annotate
-	with open(sentfilename) as sentfile:
-		SENTENCES = sentfile.read().splitlines()
+	sentences = []
+	with open(sentfilename, mode='r') as csv_file:
+		csv_reader = csv.DictReader(csv_file, delimiter='\t', quoting=csv.QUOTE_NONE)
+		for row in csv_reader:
+			if any(field.strip() for field in row.values()):
+				sentences.append(row['sentence'])
+	SENTENCES = sentences
 	rankingfilename = '%s.rankings.json' % sentfilename
 	if (os.path.exists(rankingfilename) and
 			os.stat(rankingfilename).st_mtime
@@ -209,13 +222,13 @@ def firstunannotated(username):
 	according to the prioritized order."""
 	db = getdb()
 	cur = db.execute(
-			'select sentno from entries where username = ? '
+			'select id from entries where username = ? '
 			'order by sentno asc',
 			(username, ))
 	entries = {a[0] for a in cur}
 	# sentno=prioritized index, lineno=original index
-	for sentno, (lineno, _, _) in enumerate(QUEUE, 1):
-		if lineno not in entries:
+	for sentno, (_, _, _, id) in enumerate(QUEUE, 1):
+		if id not in entries:
 			return sentno
 	return 1
 
@@ -229,14 +242,14 @@ def numannotated(username):
 	return result[0]
 
 
-def getannotation(username, lineno):
+def getannotation(username, id):
 	"""Fetch annotation of a single sentence from database."""
 	db = getdb()
 	cur = db.execute(
 			'select tree, nbest '
 			'from entries '
-			'where username = ? and sentno = ? ',
-			(username, lineno))
+			'where username = ? and id = ? ',
+			(username, id))
 	entry = cur.fetchone()
 	return (None, 0) if entry is None else (entry[0], entry[1])
 
@@ -257,13 +270,13 @@ def readannotations(username=None):
 	return OrderedDict(entries)
 
 
-def addentry(sentno, tree, actions):
+def addentry(id, sentno, tree, actions):
 	"""Add an annotation to the database."""
 	db = getdb()
 	db.execute(
 			'insert or replace into entries '
-			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			(sentno, session['username'], tree, *actions,
+			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			(id, sentno, session['username'], tree, *actions,
 			datetime.now().strftime('%F %H:%M:%S')))
 	db.commit()
 
@@ -418,9 +431,10 @@ def annotate(sentno):
 		redirect(url_for('annotate', sentno=sentno))
 	session['actions'] = [0, 0, 0, 0, 0, 0, 0, time()]
 	lineno = QUEUE[sentno - 1][0]
+	id = QUEUE[sentno - 1][3]
 	sent = SENTENCES[lineno]
 	senttok, _ = worker.postokenize(sent)
-	annotation, n = getannotation(username, lineno)
+	annotation, n = getannotation(username, id)
 	if annotation is not None:
 		item = exporttree(annotation.splitlines(), functions='add')
 		canonicalize(item.tree)
@@ -912,6 +926,7 @@ def accept():
 	# or tree in discbracket format if tree was manually edited.
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	lineno = QUEUE[sentno - 1][0]
+	id = QUEUE[sentno - 1][3]
 	sent = SENTENCES[lineno]
 	username = session['username']
 	actions = session['actions']
@@ -946,7 +961,7 @@ def accept():
 	block = writetree(tree, senttok, str(lineno + 1), 'export',
 			comment='%s %r' % (username, actions))
 	app.logger.info(block)
-	addentry(lineno, block, actions)	# save annotation in the database
+	addentry(id, lineno, block, actions)	# save annotation in the database
 	WORKERS[username].submit(worker.augment, [tree], [senttok])	# update the parser's grammar
 	
 	# validate and stay on this sentence if there are issues
