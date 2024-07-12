@@ -632,7 +632,8 @@ def edit():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
-	else: 
+	else:
+		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)
 		treestr = next(load_as_cgel(block))
@@ -742,6 +743,7 @@ def newlabel():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 	else:
+		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
@@ -837,6 +839,7 @@ def reattach():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 	else:
+		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
@@ -1157,6 +1160,7 @@ def validate(treestr, senttok):
 			# message not exception because exception blocks display of the tree
 
 	# construct an export representation of this tree for validation purposes only
+	# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 	block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 	block = io.StringIO(block)	# make it a file-like object
 
