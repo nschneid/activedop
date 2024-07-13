@@ -324,18 +324,38 @@ function replacetree() {
 var nodeid = '';
 
 function pickphrasal(ev) {
-	return showpicker(ev, 'phrasalpicker');
+	var modifier = ev.ctrlKey || ev.metaKey
+	if (modifier) {
+		return newproj(ev);
+	} else {
+		return showpicker(ev, 'phrasalpicker');
+	}
 }
 function pickpos(ev) {
-	return showpicker(ev, 'pospicker');
+	var modifier = ev.ctrlKey || ev.metaKey
+	if (modifier) {
+		return newproj(ev);
+	} else {
+		return showpicker(ev, 'pospicker');
+	}
 }
 function pickfunction(ev) {
 	ev.stopPropagation();  // block pickphrasal() from triggering
-	return showpicker(ev, 'functionpicker');
+	var modifier = ev.ctrlKey || ev.metaKey
+	if (modifier) {
+		return newproj(ev);
+	} else {
+		return showpicker(ev, 'functionpicker');
+	}
 }
 function pickmorph(ev) {
 	ev.stopPropagation();  // block pickphrasal() from triggering
-	return showpicker(ev, 'morphpicker');
+	var modifier = ev.ctrlKey || ev.metaKey
+	if (modifier) {
+		return newproj(ev);
+	} else {
+		return showpicker(ev, 'morphpicker');
+	}
 }
 function showpicker(ev, picker) {
 	// show pop-up menu to select a different label for given node
@@ -498,6 +518,43 @@ function drop(ev) {
 			+ '&senttok=' + encodeURIComponent(document.queryform.senttok.value)
 			+ '&nodeid=' + encodeURIComponent(childid)
 			+ '&newparent=' + encodeURIComponent(newparentid)
+			+ '&tree=' + encodeURIComponent(editor.getValue());
+			// + '&tree=' + encodeURIComponent(document.queryform.tree.value);
+	xmlhttp.open("GET", url, true);
+	xmlhttp.send(null);
+}
+
+function newproj(ev) {
+	/* request tree where dragged "childid" is re-attached under "newparentid". */
+    ev.preventDefault();
+    // var childid = ev.dataTransfer.getData("text");
+	var targetid = ev.target.dataset.id;
+	var xmlhttp;
+	if(window.XMLHttpRequest) {
+		// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	} else if(window.ActiveXObject) {
+		// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	} else {
+		alert("Your browser does not support XMLHTTP!");
+	}
+	var el = document.getElementById('tree');
+	xmlhttp.onreadystatechange=function() {
+		if(xmlhttp.readyState==4) { // && xmlhttp.status==200) {
+			var res = xmlhttp.responseText.split('\t', 2);
+			el.innerHTML = res[0];
+			if(res[1]) {
+				editor.setValue(res[1]);
+				oldtree = editor.getValue();
+			}
+			registerdraggable(el);
+		}
+	};
+	url = '/annotate/reattach?sentno=' + document.queryform.sentno.value
+			+ '&senttok=' + encodeURIComponent(document.queryform.senttok.value)
+			+ '&nodeid=newproj'
+			+ '&newparent=' + encodeURIComponent(targetid)
 			+ '&tree=' + encodeURIComponent(editor.getValue());
 			// + '&tree=' + encodeURIComponent(document.queryform.tree.value);
 	xmlhttp.open("GET", url, true);
