@@ -46,7 +46,7 @@ from collections import OrderedDict, defaultdict
 from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures.process import BrokenProcessPool
 from urllib.parse import urlparse, urlencode, urljoin
-from flask import (Flask, Markup, Response, request, session, g, flash, abort,
+from flask import (Flask, Markup, Response, jsonify, request, session, g, flash, abort,
 		redirect, url_for, render_template, send_from_directory,
 		stream_with_context)
 import numpy as np
@@ -454,6 +454,13 @@ def annotate(sentno):
 			annotationhelp=ANNOTATIONHELP,
 			sent=' '.join(senttok))	# includes any gaps
 
+@app.route('/retokenize', methods=['POST'])
+def retokenize():
+	sentno = int(request.json.get('sentno', 0))
+	newtext = request.json.get('newtext', 0)
+	lineno = QUEUE[sentno - 1][0]
+	SENTENCES[lineno] = newtext
+	return jsonify({"success": True})
 
 @app.route('/annotate/parse')
 @loginrequired
