@@ -1,10 +1,10 @@
-id,sentence
-id1,The boy saw the girl under the tree with the telescope in the forest
-id2,The girl ate the pizza with a fork
-id3,The girl ate the pizza with the tomatoes
-id4,The girl ate pizza with tomatoes
-id5,The cat saw the pizza
-id6,The mouse stole the pizza
-id7,The cat ate the mouse
-id8,The mouse saw the little cat
-id9,The cat ate the dog
+id	sentence
+id1	The boy saw the girl under the tree with the telescope in the forest
+id2	The girl ate the pizza with a fork
+id3	The girl ate the pizza with the tomatoes
+id4	The girl ate pizza with tomatoes
+id5	The cat saw the pizza
+id6	The mouse stole the pizza
+id7	The cat ate the mouse
+id8	The mouse saw the little cat
+id9	The cat ate the dog
