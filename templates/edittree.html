@@ -30,6 +30,30 @@
 </div>
 {{ msg }}
 
+<script>
+	function undoAccept() {
+		var sentid = document.getElementById('sentid').value;
+		var sentno = document.getElementById('sentno').value;
+		fetch('/undoaccept', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({sentid: sentid}),
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log('Success:', data);
+			window.location.href = '/annotate/annotate/' + sentno;
+		}
+		)
+		.then(redirect('/annotate/annotate/1'))
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+	}
+</script>
+
 <div id=help style="display: none;">
 	<ul>
 	<li>To change a label, click on a node to select a different label from a list.
