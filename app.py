@@ -485,7 +485,6 @@ def undoaccept():
 	db.commit()
 	return jsonify({"success": True})
 
-
 @app.route('/retokenize', methods=['POST'])
 def retokenize():
 	sentno = int(request.json.get('sentno', 0))
@@ -655,6 +654,7 @@ def edit():
 				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
 		tree, senttok = discbrackettree(request.args.get('tree'))
 	elif 'n' in request.args:
+		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
 		session['actions'][NBEST] = n
 		require = request.args.get('require', '')
@@ -666,6 +666,7 @@ def edit():
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
 	elif 'tree' in request.args:
+		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		tree, senttok = discbrackettree(request.args.get('tree'))
 	else:
 		return 'ERROR: pass n or tree argument.'
