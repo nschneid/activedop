@@ -51,7 +51,7 @@ from flask import (Flask, Markup, Response, jsonify, request, session, g, flash,
 		stream_with_context)
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-from discodop.tree import (Tree, DrawTree, DrawDependencies,
+from discodop.tree import (Tree, ParentedTree, DrawTree, DrawDependencies,
 		writediscbrackettree, discbrackettree)
 from discodop.treebank import writetree, writedependencies, exporttree
 from discodop.treetransforms import canonicalize
@@ -122,7 +122,7 @@ def initpriorities():
 		raise ValueError('SENTENCES not configured')
 	sentences = []
 	with open(sentfilename, mode='r') as csv_file:
-		csv_reader = csv.DictReader(csv_file)
+		csv_reader = csv.DictReader(csv_file, delimiter='\t', quoting=csv.QUOTE_NONE)
 		for row in csv_reader:
 			if any(field.strip() for field in row.values()):
 				sentences.append(row)
@@ -167,7 +167,7 @@ def initapp():
 	# read sentences to annotate
 	sentences = []
 	with open(sentfilename, mode='r') as csv_file:
-		csv_reader = csv.DictReader(csv_file)
+		csv_reader = csv.DictReader(csv_file, delimiter='\t', quoting=csv.QUOTE_NONE)
 		for row in csv_reader:
 			if any(field.strip() for field in row.values()):
 				sentences.append(row['sentence'])
@@ -464,7 +464,6 @@ def undoaccept():
     (username, sentid))
 	db.commit()
 	return jsonify({"success": True})
-
 @app.route('/retokenize', methods=['POST'])
 def retokenize():
 	sentno = int(request.json.get('sentno', 0))
@@ -650,7 +649,8 @@ def edit():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
-	else: 
+	else:
+		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)
 		treestr = next(load_as_cgel(block))
@@ -760,6 +760,7 @@ def newlabel():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 	else:
+		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
@@ -855,6 +856,7 @@ def reattach():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 	else:
+		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
@@ -1175,6 +1177,7 @@ def validate(treestr, senttok):
 			# message not exception because exception blocks display of the tree
 
 	# construct an export representation of this tree for validation purposes only
+	# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 	block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 	block = io.StringIO(block)	# make it a file-like object
 
