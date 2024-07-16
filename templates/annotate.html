@@ -11,7 +11,9 @@
 		| <a href="{{ nextlink }}">next</a>
 		| {{ (100 * numannotated  / totalsents)|round(1) }} % done <progress value="{{ numannotated }}" max="{{ totalsents }}"></progress>
 		| <a href="/annotate/context/{{ lineno }}#{{ lineno }}">context</a>
-		| <a href="/annotate/export">export all</a>
+		<!-- | <a href="/annotate/export">export all as negra</a> -->
+		<!-- | <a href="/annotate/exportallcgeltrees" title="all saved annotations as cgel">export all as cgel</a> -->
+		| <a href="#" onclick="document.location='/annotate/get_data_psv'" title="download as psv">export all data as psv</a>
 		| <a href="javascript: toggle('help');">help</a>
 		| {% if not session.username -%}
 		<a href="{{ url_for('login') }}">log in</a>

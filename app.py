@@ -219,6 +219,25 @@ def closedb(error):
 	if hasattr(g, 'sqlitedb'):
 		g.sqlitedb.close()
 
+@app.route('/annotate/get_data_psv')
+def get_data_psv():
+	username = session['username']
+	db = getdb()
+	cur = db.execute(
+		'SELECT * FROM entries WHERE username = ? ORDER BY sentno ASC',
+		(username, )
+	)
+	rows = cur.fetchall()
+	
+	csv_file_path = 'output.csv'
+	with open(csv_file_path, 'w', newline='') as out_file:
+		csv_writer = csv.writer(out_file, delimiter='|')
+		column_headers = [description[0] for description in cur.description]
+		csv_writer.writerow(column_headers)
+		for row in rows:
+			csv_writer.writerow(row)
+	
+	return send_file(csv_file_path, as_attachment=True, attachment_filename='data.csv')
 
 def firstunannotated(username):
 	"""Return index of first unannotated sentence,
@@ -273,13 +292,13 @@ def readannotations(username=None):
 	return OrderedDict(entries)
 
 
-def addentry(id, sentno, tree, actions):
+def addentry(id, sentno, tree, cgel_tree, actions):
 	"""Add an annotation to the database."""
 	db = getdb()
 	db.execute(
 			'insert or replace into entries '
-			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			(id, sentno, session['username'], tree, *actions,
+			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			(id, sentno, session['username'], tree, cgel_tree, *actions,
 			datetime.now().strftime('%F %H:%M:%S')))
 	db.commit()
 
@@ -1027,7 +1046,12 @@ def accept():
 	block = writetree(tree, senttok, str(lineno + 1), 'export',
 		comment='%s %r' % (username, actions))
 	app.logger.info(block)
-	addentry(id, lineno, block, actions)	# save annotation in the database
+	treeout = block
+	cgel_tree = "none"
+	if app.config['CGELVALIDATE'] is not None:
+		block = io.StringIO(block)	# make it a file-like object
+		cgel_tree = str(next(load_as_cgel(block)))
+	addentry(id, lineno, treeout, cgel_tree, actions)	# save annotation in the database
 	WORKERS[username].submit(worker.augment, [tree], [senttok])	# update the parser's grammar
 	
 	# validate and stay on this sentence if there are issues
@@ -1056,6 +1080,20 @@ def export():
 	return Response(
 			''.join(readannotations(session['username']).values()),
 			mimetype='text/plain')
+
+@app.route('/annotate/exportallcgeltrees')
+def exportallcgeltrees():
+	"""Export all annotations by current user in .cgel format."""
+	assert load_as_cgel
+	username = session['username']
+	db = getdb()
+	cur = db.execute(
+			'select cgel_tree from entries where username = ? '
+			'order by sentno asc',
+			(username, ))
+	entries = [a[0] for a in cur]
+	cgeltrees = '\n'.join(entries)
+	return Response(cgeltrees, mimetype='text/plain')
 
 @app.route('/annotate/download_pdf')
 def download_pdf():
