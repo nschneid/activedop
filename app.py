@@ -630,7 +630,7 @@ def edit():
 	msg = ''
 	if request.args.get('annotated', False):
 		msg = Markup('<font color=red>You have already annotated '
-				'this sentence.</font><button id="undo" onclick="undoAccept()">Reset</button>')
+				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
 		tree, senttok = discbrackettree(request.args.get('tree'))
 	elif 'n' in request.args:
 		n = int(request.args.get('n', 1))
