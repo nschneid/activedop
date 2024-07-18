@@ -1,4 +1,3 @@
-# TEST COMMENT
 """Web interface for treebank annotation.
 
 TODO (nschneid):
