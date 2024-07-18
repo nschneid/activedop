@@ -789,7 +789,7 @@ def newlabel():
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
-		treestr.update_terminals(cgel_tree_terminals, gaps=True)
+		treestr.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	session['actions'][RELABEL] += 1
@@ -887,7 +887,7 @@ def reattach():
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
-		treestr.update_terminals(cgel_tree_terminals, gaps=True)
+		treestr.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	if error == '':
