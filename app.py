@@ -673,6 +673,7 @@ def edit():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
+	else:
 		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)
@@ -742,8 +743,10 @@ def newlabel():
 	orig_senttok, _ = worker.postokenize(sent)
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
-	else: 
-		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+	else:
+		cgel_tree = cgel.parse(request.args.get('tree'))[0]
+		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
+		treestr = "(ROOT " + cgel_tree.ptb() + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -783,10 +786,10 @@ def newlabel():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 	else:
-		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
+		treestr.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	session['actions'][RELABEL] += 1
@@ -808,8 +811,10 @@ def reattach():
 	orig_senttok, _ = worker.postokenize(sent)
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
-	else: 
-		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+	else:
+		cgel_tree = cgel.parse(request.args.get('tree'))[0]
+		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
+		treestr = "(ROOT " + cgel_tree.ptb() + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -879,10 +884,10 @@ def reattach():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 	else:
-		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
+		treestr.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	if error == '':
