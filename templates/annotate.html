@@ -35,9 +35,9 @@
 		<input type=hidden id=sentno value="{{ sentno }}" />
 		<input type=submit value="Re-parse" /> <br>
 		<span id="editableSent" onclick="makeEditable()">{{ sent }}</span>
-		<input type="text" id="editInput" size=30 value="{{sent}}" style="display:none">
+		<input type="text" id="editInput" size=120 value="{{sent}}" style="display:none">
 		<button id="cancelButton" onclick="cancelEdit()" style="display:none">Cancel</button>
-		<button id= "reTokenizeButton" onclick="reTokenize()" style="display:none">Re-tokenize</button>
+		<button id= "reTokenizeButton" onclick="reTokenize()" style="display:none">Re-tokenize (warning: discards all work!)</button>
 	</div>
 </form>
 
