@@ -228,8 +228,12 @@ def get_data_psv():
 		(username, )
 	)
 	rows = cur.fetchall()
-	
-	csv_file_path = 'output.csv'
+	output_dir = "tmp"
+	if not os.path.exists(output_dir):
+		os.makedirs(output_dir)
+
+
+	csv_file_path = output_dir + '/output.csv'
 	with open(csv_file_path, 'w', newline='') as out_file:
 		csv_writer = csv.writer(out_file, delimiter='|')
 		column_headers = [description[0] for description in cur.description]
@@ -1160,7 +1164,9 @@ def download_pdf():
 	cgeltree = request.args.get('tree')
 	inner_tex = cgel.parse(cgeltree)[0].drawtex()
 	cgel_latex = HEADER + inner_tex + FOOTER
-	output_dir = "pdf_tmp"
+	output_dir = "tmp"
+	if not os.path.exists(output_dir):
+		os.makedirs(output_dir)
 
 	with open(os.path.join(output_dir, "file.tex"), 'w') as latex_file:
 		latex_file.write(cgel_latex)
