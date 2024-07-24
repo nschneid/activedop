@@ -39,6 +39,7 @@ import sqlite3
 import logging
 import traceback
 import subprocess
+import string
 from math import log
 from time import time
 from datetime import datetime
@@ -687,6 +688,8 @@ def edit():
 		block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)
 		treestr = next(load_as_cgel(block))
+		cgel_tree_terminals = handle_punctuation(treestr)
+		treestr.update_terminals(cgel_tree_terminals, gaps=True)
 		rows = max(5, treestr.depth)
 	return render_template('edittree.html',
 			prevlink=('/annotate/annotate/%d' % (sentno - 1))
@@ -721,7 +724,7 @@ def redraw():
 			% urlencode(dict(sentno=sentno, tree=treestr)))
 	else: 
 		cgel_tree = request.args.get('tree')
-		treestr = "(ROOT " + cgel.parse(cgel_tree)[0].ptb() + ")"
+		treestr = "(ROOT " + cgel.parse(cgel_tree)[0].ptb(punct=False) + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=cgel_tree)))
@@ -755,7 +758,7 @@ def newlabel():
 	else:
 		cgel_tree = cgel.parse(request.args.get('tree'))[0]
 		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
-		treestr = "(ROOT " + cgel_tree.ptb() + ")"
+		treestr = "(ROOT " + cgel_tree.ptb(punct=False) + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -823,7 +826,7 @@ def reattach():
 	else:
 		cgel_tree = cgel.parse(request.args.get('tree'))[0]
 		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
-		treestr = "(ROOT " + cgel_tree.ptb() + ")"
+		treestr = "(ROOT " + cgel_tree.ptb(punct=False) + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -973,7 +976,7 @@ def replacesubtree():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
 	else: 
-		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=False) + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -1035,7 +1038,7 @@ def accept():
 			treestr = request.args.get('tree')
 		else:
 			orig_senttok, _ = worker.postokenize(sent)
-			treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+			treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=False) + ")"
 			treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 		tree, senttok = discbrackettree(treestr)
 		# the tokenization may have been updated with gaps, so store the new one
@@ -1461,6 +1464,36 @@ def decisiontree(parsetrees, sent, urlprm):
 				(x, thistree))
 	return nodes + ''.join(leaves), estimator.tree_.max_depth, path
 
+# handle_punctuation: takes as its input a cgel tree (w/ punctuation within terminal text attribute) and returns an array of terminals with appropriate prepunct, postpunct tags (and punctuation 'stripped' from the text attribute)
+def handle_punctuation(treestr):
+	output_terminals = []
+	trailing_punct_pattern = f"[{re.escape(string.punctuation)}]+$"
+	initial_punct_pattern = f"^[{re.escape(string.punctuation)}]+"
+	# Regular expression to match groups of periods or any other single punctuation character
+	grouping_pattern = r'(\.{2,})|([^\w\s])'
+	for count, token in enumerate(treestr.terminals(gaps=True)):
+		if ((not token.constituent.startswith("GAP"))) and token.text != "_." and (token.text is not None):
+			initial_punct_match = re.search(initial_punct_pattern, token.text)
+			trailing_punct_match = re.search(trailing_punct_pattern, token.text)
+		else:
+			initial_punct_match = None
+			trailing_punct_match = None
+		if initial_punct_match: 
+			initial_sequence = initial_punct_match.group()
+			initial_matches = re.findall(grouping_pattern, initial_sequence)
+			if token.text not in ["'s", "'re", "'ve", "'m", "'d", "'ll"]:
+				if ("(" in initial_sequence or "[" in initial_sequence) or count == 0:
+					token.prepunct = [m for match in initial_matches for m in match if m]
+				else: 
+					token.postpunct = [m for match in initial_matches for m in match if m]
+				token.text = re.sub(initial_punct_pattern, '', token.text)
+		if trailing_punct_match:
+			trailing_sequence = trailing_punct_match.group()
+			trailing_matches = re.findall(grouping_pattern, trailing_sequence)
+			token.postpunct = [m for match in trailing_matches for m in match if m]
+			token.text = re.sub(trailing_punct_pattern, '', token.text)
+		output_terminals.append(token)
+	return output_terminals
 
 if __name__ == '__main__':
 	pass
