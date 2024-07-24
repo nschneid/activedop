@@ -678,6 +678,11 @@ def edit():
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
 	else:
+		# if initial parse labels non-gaps as GAP, change to N-Head by default
+		for subt in tree.subtrees(lambda t: t.height() == 2):
+			i = subt[0]
+			if subt.label.startswith('GAP') and senttok[i] != '_.':
+				subt.label = 'N-Head'
 		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
 		block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)
