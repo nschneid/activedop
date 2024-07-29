@@ -7,10 +7,28 @@ Paper: http://www.aclweb.org/anthology/C18-2009
 .. image:: screenshot.png
    :alt: screenshot of annotation tool
 
-Installation instructions
--------------------------
-- install discodop (latest git master): http://github.com/andreasvc/disco-dop
-- install other requirements: pip3 install -r requirements.txt
+Installation instructions (MacOS and Linux)
+-------------------------------------------
+
+0. (Recommended): Create and activate a venv virtual Python environment 
+	`python3 -m venv .venv`
+	`. .venv/bin/activate` 
+
+1. Install submodule requirements
+	`pip install setuptools`
+	`pip install cython`
+
+2. Install submodules 
+	`git submodule update --init --recursive`
+	`cd roaringbitmap`
+	`python setup.py install`
+	`cd ..`
+	`cd disco-dop`
+	`pip3 install -r requirements.txt`
+	`cd ..`
+
+3. Install activedop
+	`pip3 install -r requirements.txt` 
 
 Running the demo on a toy treebank and annotation task:
 
