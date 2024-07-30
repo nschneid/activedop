@@ -12,21 +12,21 @@ Installation instructions (MacOS and Linux)
 
 0. (Recommended): Create and activate a venv virtual Python environment:
 
-.. code-block::
+.. code-block:: bash
 
 python3 -m venv .venv
 . .venv/bin/activate
 
 1. Install submodule requirements:
 
-.. code-block::
+.. code-block:: bash
 
 pip install setuptools
 pip install cython
 
 2. Install submodules:
 
-.. code-block::
+.. code-block:: bash
 
 git submodule update --init --recursive
 cd roaringbitmap
@@ -39,7 +39,7 @@ cd ..
 
 3. Install activedop:
 
-.. code-block::
+.. code-block:: bash
 
 pip3 install -r requirements.txt
 
