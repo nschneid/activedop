@@ -10,25 +10,89 @@ Paper: http://www.aclweb.org/anthology/C18-2009
 Installation instructions (MacOS and Linux)
 -------------------------------------------
 
-0. (Recommended): Create and activate a venv virtual Python environment 
-	`python3 -m venv .venv`
-	`. .venv/bin/activate` 
+0. (Recommended): Create and activate a venv virtual Python environment
+
+```
+python3 -m venv .venv
+. .venv/bin/activate
+``` 
 
 1. Install submodule requirements
-	`pip install setuptools`
-	`pip install cython`
+
+```
+pip install setuptools
+pip install cython
+```
 
 2. Install submodules 
-	`git submodule update --init --recursive`
-	`cd roaringbitmap`
-	`python setup.py install`
-	`cd ..`
-	`cd disco-dop`
-	`pip3 install -r requirements.txt`
-	`cd ..`
+
+```
+git submodule update --init --recursive
+cd roaringbitmap
+python setup.py install
+cd ..
+cd disco-dop
+pip3 install -r requirements.txt
+env CC=gcc sudo python setup.py install
+cd ..
+```
 
 3. Install activedop
-	`pip3 install -r requirements.txt` 
+
+```
+pip3 install -r requirements.txt
+```
+
+Installation instructions (Windows PowerShell)
+----------------------------------------------
+
+NOTE: Requires a C++ compiler, e.g., from Visual Studio Build Tools. 
+Make sure to also install a Windows 10/11 SDK.
+You will also need a standard GCC distribution to compile discodop. These instructions assume you've installed GCC from https://www.msys2.org/.
+
+0. (Recommended): Create and activate a venv virtual Python environment
+
+```
+python3 -m venv .venv
+.\.venv\Scripts\activate
+```
+
+1. Install submodule requirements
+
+```
+pip install setuptools
+pip install cython
+```
+
+2. Apply patches to dependencies 
+
+Installing discodop on Windows requires a few patches. 
+
+First, in `disco-dop/setup.py`, add `'-DMS_WIN64'` to the array of `extra_compile_args` at line 111.
+Then, in the same file, redefine `extra_link_args` at line 128 such that the line reads:
+```
+extra_link_args = ['-DNDEBUG', '-static-libgcc', '-static-libstdc++', '-Wl,-Bstatic,--whole-archive', '-lwinpthread', '-Wl,--no-whole-archive']
+```
+
+3. Install submodules 
+
+```
+git submodule update --init --recursive
+cd .\roaringbitmap\
+python setup.py install
+cd ..
+cd .\disco-dop\
+pip3 install -r requirements.txt
+python setup.py build --compiler=mingw32
+python setup.py install
+cd ..
+```
+
+4. Install activedop
+
+```
+pip3 install -r requirements.txt
+```
 
 Running the demo on a toy treebank and annotation task:
 
