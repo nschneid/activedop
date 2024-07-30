@@ -7,12 +7,98 @@ Paper: http://www.aclweb.org/anthology/C18-2009
 .. image:: screenshot.png
    :alt: screenshot of annotation tool
 
-Installation instructions
--------------------------
-- install discodop (latest git master): http://github.com/andreasvc/disco-dop
-- install other requirements: pip3 install -r requirements.txt
+Installation instructions (MacOS and Linux)
+-------------------------------------------
+
+0. (Recommended): Create and activate a venv virtual Python environment:
+
+.. code-block:: bash
+
+   python3 -m venv .venv
+   . .venv/bin/activate
+
+1. Install submodule requirements:
+
+.. code-block:: bash
+
+   pip install setuptools
+   pip install cython
+
+2. Install submodules:
+
+.. code-block:: bash
+
+   git submodule update --init --recursive
+   cd roaringbitmap
+   python setup.py install
+   cd ..
+   cd disco-dop
+   pip3 install -r requirements.txt
+   env CC=gcc sudo python setup.py install
+   cd ..
+
+3. Install activedop:
+
+.. code-block:: bash
+
+   pip3 install -r requirements.txt
+
+Installation instructions (Windows PowerShell)
+----------------------------------------------
+
+NOTE: Requires a C++ compiler, e.g., from Visual Studio Build Tools. 
+
+Make sure to also install a Windows 10/11 SDK.
+
+You will also need a standard GCC distribution to compile discodop. These instructions assume you've installed GCC from https://www.msys2.org/.
+
+0. (Recommended): Create and activate a venv virtual Python environment:
+
+.. code-block:: powershell
+
+   python3 -m venv .venv
+   .\.venv\Scripts\activate
+
+1. Install submodule requirements:
+
+.. code-block:: powershell
+
+   pip install setuptools
+   pip install cython
+
+2. Apply patches to dependencies 
+
+Installing discodop on Windows requires a few patches. 
+
+First, in :code:`disco-dop/setup.py`, add :code:`'-DMS_WIN64'` to the array of :code:`extra_compile_args` at line 111.
+Then, in the same file, redefine :code:`extra_link_args` at line 128 such that the line reads:
+
+.. code-block:: python
+
+   extra_link_args = ['-DNDEBUG', '-static-libgcc', '-static-libstdc++', '-Wl,-Bstatic,--whole-archive', '-lwinpthread', '-Wl,--no-whole-archive']
+
+3. Install submodules:
+
+.. code-block:: powershell
+
+   git submodule update --init --recursive
+   cd .\roaringbitmap\
+   python setup.py install
+   cd ..
+   cd .\disco-dop\
+   pip3 install -r requirements.txt
+   python setup.py build --compiler=mingw32
+   python setup.py install
+   cd ..
+
+4. Install activedop:
+
+.. code-block:: powershell
+
+   pip3 install -r requirements.txt
 
 Running the demo on a toy treebank and annotation task:
+-------------------------------------------------------
 
 - extract the example grammar: "discodop runexp example.prm"
   The grammar will be extracted from "treebankExample.mrg",
