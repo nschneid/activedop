@@ -10,21 +10,24 @@ Paper: http://www.aclweb.org/anthology/C18-2009
 Installation instructions (MacOS and Linux)
 -------------------------------------------
 
-0. (Recommended): Create and activate a venv virtual Python environment::
+0. (Recommended): Create and activate a venv virtual Python environment:
 
 .. code-block::
+
 python3 -m venv .venv
 . .venv/bin/activate
 
-1. Install submodule requirements::
+1. Install submodule requirements:
 
 .. code-block::
+
 pip install setuptools
 pip install cython
 
-2. Install submodules::
+2. Install submodules:
 
 .. code-block::
+
 git submodule update --init --recursive
 cd roaringbitmap
 python setup.py install
@@ -34,9 +37,10 @@ pip3 install -r requirements.txt
 env CC=gcc sudo python setup.py install
 cd ..
 
-3. Install activedop::
+3. Install activedop:
 
 .. code-block::
+
 pip3 install -r requirements.txt
 
 Installation instructions (Windows PowerShell)
@@ -48,16 +52,18 @@ Make sure to also install a Windows 10/11 SDK.
 
 You will also need a standard GCC distribution to compile discodop. These instructions assume you've installed GCC from https://www.msys2.org/.
 
-0. (Recommended): Create and activate a venv virtual Python environment::
+0. (Recommended): Create and activate a venv virtual Python environment:
 
 .. code-block::
+
 python3 -m venv .venv
 .\.venv\Scripts\activate
 
 
-1. Install submodule requirements::
+1. Install submodule requirements:
 
 .. code-block::
+
 pip install setuptools
 pip install cython
 
@@ -66,14 +72,16 @@ pip install cython
 Installing discodop on Windows requires a few patches. 
 
 First, in :code:`disco-dop/setup.py`, add :code:`'-DMS_WIN64'` to the array of :code:`extra_compile_args` at line 111.
-Then, in the same file, redefine :code:`extra_link_args` at line 128 such that the line reads::
+Then, in the same file, redefine :code:`extra_link_args` at line 128 such that the line reads:
 
 .. code-block::
+
 extra_link_args = ['-DNDEBUG', '-static-libgcc', '-static-libstdc++', '-Wl,-Bstatic,--whole-archive', '-lwinpthread', '-Wl,--no-whole-archive']
 
-3. Install submodules::
+3. Install submodules:
 
 .. code-block::
+
 git submodule update --init --recursive
 cd .\roaringbitmap\
 python setup.py install
@@ -84,9 +92,10 @@ python setup.py build --compiler=mingw32
 python setup.py install
 cd ..
 
-4. Install activedop::
+4. Install activedop:
 
 .. code-block::
+
 pip3 install -r requirements.txt
 
 Running the demo on a toy treebank and annotation task:
