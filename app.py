@@ -774,6 +774,7 @@ def redraw():
 			tree_for_validation = writediscbrackettree(DrawTree(tree_for_validation).nodes[0],orig_senttok)
 			_, _, cgel_msg = validate(tree_for_validation, orig_senttok, cgel_validate=True)
 			msg += cgel_msg
+			treestr = str(treestr)
 	except ValueError as err:
 		return str(err)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
