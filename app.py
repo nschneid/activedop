@@ -700,9 +700,9 @@ def edit():
 		rows = max(5, treestr.count('\n') + 1)
 	else:
 		tree_process(tree, senttok_distinct_punct)
-		# writetree requires a string to be passed as its third argument; '1' is a dummy value
 		tree_to_cgel = tree.copy(deep=True)
 		applypunct('remove',tree_to_cgel,orig_senttok_distinct_punct)
+    # writetree requires a string to be passed as its third argument; '1' is a dummy value
 		block = writetree(tree_to_cgel, orig_senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)
 		treestr = next(load_as_cgel(block))
