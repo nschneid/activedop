@@ -62,7 +62,6 @@ from discodop.parser import probstr
 from discodop.disambiguation import testconstraints
 from discodop.heads import applyheadrules
 from discodop.eval import editdistance
-from discodop.punctuation import applypunct
 import worker
 from pylatexenc.latexencode import unicode_to_latex
 sys.path.append('./cgel')
@@ -505,9 +504,6 @@ def parse():
 	"""Display parse. To be invoked by an AJAX call."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	tokens = sent.split(" ")
-	tokens_distinct_punct = distinct_punct_tokenize(tokens)
-	sent = " ".join(tokens_distinct_punct)
 	username = session['username']
 	require = request.args.get('require', '')
 	block = request.args.get('block', '')
@@ -526,7 +522,7 @@ def parse():
 		resp = WORKERS[username].submit(
 				worker.getparses,
 				sent, require, block).result()
-	senttok_distinct_punct, parsetrees, messages, elapsed = resp
+	senttok, parsetrees, messages, elapsed = resp
 	maxdepth = ''
 	if not parsetrees:
 		result = ('no parse! reload page to clear constraints, '
@@ -535,17 +531,19 @@ def parse():
 	else:
 		dep = depsvg = ''
 		if workerattr('headrules'):
-			dep = writedependencies(parsetrees[0][1], senttok_distinct_punct, 'conll')
+			dep = writedependencies(parsetrees[0][1], senttok, 'conll')
 			depsvg = Markup(DrawDependencies.fromconll(dep).svg())
 		result = ''
-		senttok = [t for t in senttok_distinct_punct]
+		senttok = [t for t in senttok]
 		dectree, maxdepth, _ = decisiontree(parsetrees, senttok, urlprm)
 		prob, tree, _treestr, _fragments = parsetrees[0]
+		senttok = ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok]
 		tree_process(tree, senttok)
 		# ensure that punctuation is handled correctly, i.e., as sister nodes to other terminals
 		tree_to_cgel = tree.copy(deep=True)
-		applypunct('remove',tree_to_cgel,[t for t in senttok_distinct_punct])
-		block = writetree(tree_to_cgel, tokens, '1', 'export', comment='')
+		tree_to_cgel = remove_punctuation_nodes(tree_to_cgel) 
+		senttok_merged_punct = merge_punctuation(senttok)
+		block = writetree(tree_to_cgel, senttok_merged_punct, '1', 'export', comment='')
 		block = io.StringIO(block)
 		treestr = next(load_as_cgel(block))
 		cgel_tree_terminals = handle_punctuation(treestr)
@@ -665,9 +663,7 @@ def edit():
 	lineno = QUEUE[sentno - 1][0]
 	id = QUEUE[sentno - 1][3]
 	sent = SENTENCES[lineno]
-	orig_senttok = sent.split(" ")
-	orig_senttok_distinct_punct = distinct_punct_tokenize(orig_senttok)
-	sent_distinct_punct = " ".join(orig_senttok_distinct_punct)
+	senttok, _ = worker.postokenize(sent)
 	username = session['username']
 	if 'dec' in request.args:
 		session['actions'][DECTREE] += int(request.args.get('dec', 0))
@@ -676,7 +672,7 @@ def edit():
 	if request.args.get('annotated', False):
 		msg = Markup('<font color=red>You have already annotated '
 				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
-		tree, senttok_distinct_punct = discbrackettree(request.args.get('tree'))
+		tree, senttok = discbrackettree(request.args.get('tree'))
 	elif 'n' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
@@ -686,24 +682,24 @@ def edit():
 		require, block = parseconstraints(require, block)
 		resp = WORKERS[username].submit(
 				worker.getparses,
-				sent_distinct_punct, require, block).result()
+				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
-		senttok_distinct_punct = orig_senttok_distinct_punct
+		tree_process(tree, ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok])
 	elif 'tree' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
-		tree, senttok_distinct_punct = discbrackettree(request.args.get('tree'))
+		tree, senttok = discbrackettree(request.args.get('tree'))
 	else:
 		return 'ERROR: pass n or tree argument.'
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
 	else:
-		tree_process(tree, senttok_distinct_punct)
 		tree_to_cgel = tree.copy(deep=True)
-		applypunct('remove',tree_to_cgel,orig_senttok_distinct_punct)
-    # writetree requires a string to be passed as its third argument; '1' is a dummy value
-		block = writetree(tree_to_cgel, orig_senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
+		tree_to_cgel = remove_punctuation_nodes(tree_to_cgel)
+		senttok_merged_punct = merge_punctuation(senttok)
+		# writetree requires a string to be passed as its third argument; '1' is a dummy value
+		block = writetree(tree_to_cgel, senttok_merged_punct, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)
 		treestr = next(load_as_cgel(block))
 		cgel_tree_terminals = handle_punctuation(treestr)
@@ -728,6 +724,78 @@ def edit():
 			rows=rows, cols=100,
 			msg=msg)
 
+def prune_empty_non_terminals(tree: ParentedTree) -> ParentedTree:
+    # Recursively prune children first
+    for i in reversed(range(len(tree))):
+        child = tree[i]
+        if isinstance(child, ParentedTree):
+            pruned_child = prune_empty_non_terminals(child)
+            if len(pruned_child) == 0:
+                del tree[i]
+                
+    return tree
+
+def number_terminals(tree):
+	"""
+	Number the terminal nodes in a ParentedTree sequentially starting from 0.
+
+	Args:
+	tree (ParentedTree): The ParentedTree to renumber terminal nodes.
+
+	Returns:
+	ParentedTree: The updated ParentedTree with numbered terminal nodes.
+	"""
+	terminal_count = 0  # Initialize the terminal counter
+
+	def _number_terminals(node):
+		nonlocal terminal_count
+		if isinstance(node, ParentedTree):
+			for i, child in enumerate(node):
+				if isinstance(child, ParentedTree):
+					_number_terminals(child)
+				else:
+					# Assign a new terminal number
+					node[i] = terminal_count
+					terminal_count += 1
+
+	# Create a copy of the tree to avoid modifying the original
+	tree_copy = tree.copy(deep=True)
+	_number_terminals(tree_copy)
+	return tree_copy
+
+def remove_punctuation_nodes(tree):
+	"""
+	Recursively remove punctuation nodes from an NLTK ParentedTree.
+
+	Args:
+	tree (ParentedTree): The tree from which to remove punctuation nodes.
+
+	Returns:
+	ParentedTree: The tree with punctuation nodes removed.
+	"""
+	# Define a set of punctuation tags
+	punctuation_tags = {'.', ',', ':', '...', ';', '!', '?', '-', '--', '"', '``', "''", '(', ')', '[', ']', '{', '}', '-LRB-', '-RRB-', '-LSB-', '-RSB-', '-LCB-', '-RCB-'}
+
+	# Traverse the tree and remove punctuation nodes
+	def _remove_punct(tree):
+		if isinstance(tree, ParentedTree):
+			children_to_remove = []
+			for i, child in enumerate(tree):
+				if isinstance(child, ParentedTree):
+					if child.label in punctuation_tags:
+						children_to_remove.append(i)
+					else:
+						_remove_punct(child)
+
+			# Remove children from the tree after collecting indices
+			for i in reversed(children_to_remove):
+				del tree[i]
+
+	# Create a copy of the tree to avoid modifying the original
+	tree_copy = tree.copy(deep=True)
+	_remove_punct(tree_copy)
+	return number_terminals(prune_empty_non_terminals(tree_copy))
+
 def tree_process(tree, senttok):
 	# if initial parse labels non-gaps as GAP, change to N-Head by default
 	# if initial parse labels punctuation as something other than punctuation, change to proper punctuation category
@@ -739,7 +807,12 @@ def tree_process(tree, senttok):
 		for punct in string.punctuation:
 			if senttok[i] == punct:
 				subt.label = punct
-		if (senttok[i] not in string.punctuation) and subt.label in string.punctuation:
+		if senttok[i] == "-LRB-":
+			subt.label = "-LRB-"
+		elif senttok[i] == "-RRB-":
+			subt.label = "-RRB-"
+		if (senttok[i] not in string.punctuation + "-LRB-" + "-RRB-") and subt.label in string.punctuation + "-LRB-" + "-RRB-":
+			print("match")
 			subt.label = 'N-Head'
 
 @app.route('/annotate/redraw')
@@ -747,32 +820,29 @@ def tree_process(tree, senttok):
 def redraw():
 	"""Validate and re-draw tree."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
-	# sent: sentence string with tokenization as it appears to the user (permits punctuation merged with other tokens)
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	# orig_senttok: original tokenization of sent, prior to validation
 	orig_senttok, _ = worker.postokenize(sent)
-	# orig_senttok_distinct_punct: original tokenization of sent, prior to validation (but with punctuation treated as distinct tokens)
-	orig_senttok_distinct_punct = distinct_punct_tokenize(orig_senttok)
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
 	else: 
 		treestr = request.args.get('tree')
 		cgel_tree_terminals = cgel.parse(treestr)[0].terminals(gaps=True)
 		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True) + ")"
-		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok_distinct_punct)
+		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
-		tree, senttok_distinct_punct, msg = validate(treestr, orig_senttok_distinct_punct, cgel_validate=False)
+		tree, senttok, msg = validate(treestr, orig_senttok, cgel_validate=False)
 		if app.config['CGELVALIDATE'] is not None:
-			tree_to_cgel = tree.copy(deep=True)
-			applypunct('remove',tree_to_cgel,orig_senttok_distinct_punct)
-			block = writetree(ParentedTree.convert(tree_to_cgel), orig_senttok, '1', 'export', comment='')
+			tree_to_cgel = ParentedTree.convert(tree.copy(deep=True))
+			tree_to_cgel = remove_punctuation_nodes(tree_to_cgel)
+			senttok_merged_punct = merge_punctuation(senttok)
+			block = writetree(tree_to_cgel, senttok_merged_punct, '1', 'export', comment='')
 			block = io.StringIO(block)	# make it a file-like object
 			treestr = next(load_as_cgel(block))
 			treestr.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 			# validate after operation
 			tree_for_validation = "(ROOT " + treestr.ptb(punct=False) + ")"
-			tree_for_validation = writediscbrackettree(DrawTree(tree_for_validation).nodes[0],orig_senttok)
-			_, _, cgel_msg = validate(tree_for_validation, orig_senttok, cgel_validate=True)
+			tree_for_validation = writediscbrackettree(DrawTree(tree_for_validation).nodes[0],senttok_merged_punct)
+			_, _, cgel_msg = validate(tree_for_validation, senttok_merged_punct, cgel_validate=True)
 			msg += cgel_msg
 			treestr = str(treestr)
 	except ValueError as err:
@@ -787,19 +857,15 @@ def redraw():
 			msg,
 			link,
 			# DrawTree(tree, senttok).svg(funcsep='-', hscale=45)
-			DrawTree(tree, senttok_distinct_punct).text(
+			DrawTree(tree, senttok).text(
 				unicodelines=True, html=True, funcsep='-', morphsep='/',
 				nodeprops='t0', maxwidth=30)
 			))
 
 def graphical_operation_preamble():
 	sentno = int(request.args.get('sentno'))  # 1-indexed
-	# sent: sentence string with tokenization as it appears to the user (permits punctuation merged with other tokens)
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	# orig_senttok: original tokenization of sent, prior to validation
 	orig_senttok, _ = worker.postokenize(sent)
-	# orig_senttok_distinct_punct: original tokenization of sent, prior to validation (but with punctuation treated as distinct tokens)
-	orig_senttok_distinct_punct = distinct_punct_tokenize(orig_senttok)
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
 		cgel_tree_terminals = None
@@ -807,32 +873,32 @@ def graphical_operation_preamble():
 		cgel_tree = cgel.parse(request.args.get('tree'))[0]
 		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
 		treestr = "(ROOT " + cgel_tree.ptb(punct=True) + ")"
-		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok_distinct_punct)
+		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
-		# senttok_distinct_punct: tokenization of sentence post-validation (with punctuation treated as distinct tokens)
-		tree, senttok_distinct_punct, msg = validate(treestr, orig_senttok_distinct_punct, cgel_validate=False)
+		tree, senttok, msg = validate(treestr, orig_senttok, cgel_validate=False)
 	except ValueError as err:
 		return str(err)
-	return tree, senttok_distinct_punct, msg, treestr, orig_senttok, orig_senttok_distinct_punct, cgel_tree_terminals, sentno
+	return tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno
 
-def graphical_operation_postamble(dt, senttok_distinct_punct, cgel_tree_terminals, orig_senttok, orig_senttok_distinct_punct, sentno):
+def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno):
 	tree = dt.nodes[0]
-	dt = DrawTree(tree, senttok_distinct_punct)  # kludge..
+	dt = DrawTree(tree, senttok)  # kludge..
 	if app.config['CGELVALIDATE'] is None:
-		treestr = writediscbrackettree(tree, senttok_distinct_punct, pretty=True).rstrip()
+		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		# validate after operation
-		_, _, msg = validate(treestr, senttok_distinct_punct, cgel_validate=False)
+		_, _, msg = validate(treestr, senttok, cgel_validate=False)
 	else:
-		tree_to_cgel = tree.copy(deep=True)
-		applypunct('remove',tree_to_cgel,orig_senttok_distinct_punct)
-		block = writetree(ParentedTree.convert(tree_to_cgel), orig_senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
+		tree_to_cgel = ParentedTree.convert(tree.copy(deep=True))
+		tree_to_cgel = remove_punctuation_nodes(tree_to_cgel)
+		senttok_merged_punct = merge_punctuation(senttok)
+		block = writetree(tree_to_cgel, senttok_merged_punct, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		treestr = next(load_as_cgel(block))
 		treestr.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 		# validate after operation
 		tree_for_validation = "(ROOT " + treestr.ptb(punct=False) + ")"
 		tree_for_validation = writediscbrackettree(DrawTree(tree_for_validation).nodes[0],orig_senttok)
-		_, _, msg = validate(tree_for_validation, orig_senttok, cgel_validate=True)
+		_, _, msg = validate(tree_for_validation, senttok_merged_punct, cgel_validate=True)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=sentno, tree=treestr)))
 	return treestr, dt, link, msg
@@ -841,12 +907,12 @@ def graphical_operation_postamble(dt, senttok_distinct_punct, cgel_tree_terminal
 @loginrequired
 def newlabel():
 	"""Re-draw tree with newly picked label."""
-	tree, senttok_distinct_punct, msg, treestr, orig_senttok, orig_senttok_distinct_punct, cgel_tree_terminals, sentno = graphical_operation_preamble()
+	tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno = graphical_operation_preamble()
 	# FIXME: re-factor; check label AFTER replacing it
 	# now actually replace label at nodeid
 	_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
 	nodeid = int(nodeid)
-	dt = DrawTree(tree, senttok_distinct_punct)
+	dt = DrawTree(tree, senttok)
 	m = LABELRE.match(dt.nodes[nodeid].label)
 	if 'label' in request.args:
 		label = request.args.get('label', '')
@@ -871,7 +937,7 @@ def newlabel():
 					m.group(1), m.group(2) or '', label)
 	else:
 		raise ValueError('expected label or function argument')
-	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok_distinct_punct, cgel_tree_terminals, orig_senttok, orig_senttok_distinct_punct, sentno)
+	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno)
 	session['actions'][RELABEL] += 1
 	session.modified = True
 	return Markup('%s\n\n%s\n\n%s\t%s' % (
@@ -886,8 +952,8 @@ def newlabel():
 @loginrequired
 def reattach():
 	"""Re-draw tree after re-attaching node under new parent."""
-	tree, senttok_distinct_punct, msg, treestr, orig_senttok, orig_senttok_distinct_punct, cgel_tree_terminals, sentno = graphical_operation_preamble()
-	dt = DrawTree(tree, senttok_distinct_punct)
+	tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno = graphical_operation_preamble()
+	dt = DrawTree(tree, senttok)
 	error = ''
 	if request.args.get('newparent') == 'deletenode':
 		# remove nodeid by replacing it with its children
@@ -904,7 +970,7 @@ def reattach():
 					i = y.index(x)
 					y[i:i + 1] = children
 					tree = canonicalize(dt.nodes[0])
-					dt = DrawTree(tree, senttok_distinct_punct)  # kludge..
+					dt = DrawTree(tree, senttok)  # kludge..
 					break
 	elif request.args.get('nodeid', '').startswith('newlabel_'):
 		# splice in a new node under parentid
@@ -920,7 +986,7 @@ def reattach():
 			y[:] = []
 			y[:] = [Tree(label, children)]
 			tree = canonicalize(dt.nodes[0])
-			dt = DrawTree(tree, senttok_distinct_punct)  # kludge..
+			dt = DrawTree(tree, senttok)  # kludge..
 	else:  # re-attach existing node at existing new parent
 		_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
 		nodeid = int(nodeid)
@@ -943,12 +1009,12 @@ def reattach():
 						node.remove(x)
 						dt.nodes[newparent].append(x)
 						tree = canonicalize(dt.nodes[0])
-						dt = DrawTree(tree, senttok_distinct_punct)  # kludge..
+						dt = DrawTree(tree, senttok)  # kludge..
 					else:
 						error = ('ERROR: re-attaching only child creates'
 								' empty node %s; remove manually\n' % node)
 					break
-	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok_distinct_punct, cgel_tree_terminals, orig_senttok, orig_senttok_distinct_punct, sentno)
+	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno)
 	if error == '':
 		session['actions'][REATTACH] += 1
 		session.modified = True
@@ -1085,9 +1151,8 @@ def accept():
 			treestr = request.args.get('tree')
 		else:
 			orig_senttok, _ = worker.postokenize(sent)
-			orig_senttok_distinct_punct = distinct_punct_tokenize([t for t in orig_senttok])
 			treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=True) + ")"
-			treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok_distinct_punct)
+			treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 		tree, senttok = discbrackettree(treestr)
 		# the tokenization may have been updated with gaps, so store the new one
 		# SENTENCES[lineno] = ' '.join(senttok)
@@ -1115,20 +1180,21 @@ def accept():
 	treeout = block
 	cgel_tree = "none"
 	if app.config['CGELVALIDATE'] is not None:
-		applypunct('remove',tree,senttok)
-		block = writetree(tree, senttok, str(lineno + 1), 'export',
+		tree_to_cgel = ParentedTree.convert(tree.copy(deep=True))
+		tree_to_cgel = remove_punctuation_nodes(tree_to_cgel)
+		senttok_merged_punct = merge_punctuation(senttok)
+		block = writetree(tree_to_cgel, senttok_merged_punct, str(lineno + 1), 'export',
 			comment='%s %r' % (username, actions))
 		block = io.StringIO(block)	# make it a file-like object
 		cgel_tree = str(next(load_as_cgel(block)))
 	addentry(id, lineno, treeout, cgel_tree, actions)	# save annotation in the database
-	orig_senttok_distinct_punct = distinct_punct_tokenize(orig_senttok)
 	treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=True) + ")"
-	treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok_distinct_punct)
-	tree_for_train, senttok_distinct_punct = discbrackettree(treestr)
-	WORKERS[username].submit(worker.augment, [tree_for_train], [senttok_distinct_punct])	# update the parser's grammar
+	treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
+	tree_for_train, senttok = discbrackettree(treestr)
+	WORKERS[username].submit(worker.augment, [tree_for_train], [senttok])	# update the parser's grammar
 	# validate and stay on this sentence if there are issues
 	if treestr:
-		_tree, _senttok, msg = validate(treestr, senttok_distinct_punct, cgel_validate=False)
+		_tree, _senttok, msg = validate(treestr, senttok, cgel_validate=False)
 		if 'ERROR' in msg or 'WARNING' in msg:
 			flash('Your annotation for sentence %d was stored %r but may contain errors. Please click Validate to check.' % (sentno, actions))
 			return redirect(url_for('annotate', sentno=sentno))
@@ -1371,6 +1437,8 @@ def validate(treestr, senttok, cgel_validate=True):
 		sys.stderr = errS
 		try:
 			cgeltree = next(load_as_cgel(block))
+			cgeltree_terminals = handle_punctuation(cgeltree)
+			cgeltree.update_terminals(cgeltree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 			nWarn = cgeltree.validate(require_verb_xpos=False, require_num_xpos=False) if app.config['CGELVALIDATE'] else None
 		except AssertionError:
 			print(traceback.format_exc(), file=errS)
@@ -1517,32 +1585,37 @@ def decisiontree(parsetrees, sent, urlprm):
 				(x, thistree))
 	return nodes + ''.join(leaves), estimator.tree_.max_depth, path
 
-def distinct_punct_tokenize(senttok):
-	"""Tokenize text, separating out punctuation as distinct tokens for dopparser training/visualization."""
-	trailing_punct_pattern = f"[{re.escape(string.punctuation)}]+$"
-	initial_punct_pattern = f"^[{re.escape(string.punctuation)}]+"
-	# Regular expression to match groups of periods or any other single punctuation character
-	grouping_pattern = r'(\.{2,})|([^\w\s])'
-	output_tokens = []
-	for token in senttok: 
-		if token != "_.":
-			initial_punct_match = re.search(initial_punct_pattern, token)
-			trailing_punct_match = re.search(trailing_punct_pattern, token)
-			initial_matches = []
-			trailing_matches = []
-			if initial_punct_match: 
-				initial_sequence = initial_punct_match.group()
-				initial_matches = re.findall(grouping_pattern, initial_sequence)
-				if token not in ["'s", "'re", "'ve", "'m", "'d", "'ll"]:
-					token = re.sub(initial_punct_pattern, '', token)				
-			if trailing_punct_match:
-				trailing_sequence = trailing_punct_match.group()
-				trailing_matches = re.findall(grouping_pattern, trailing_sequence)
-				token = re.sub(trailing_punct_pattern, '', token)
-			result = [m for match in initial_matches for m in match if m] + [token] + [m for match in trailing_matches for m in match if m]
-			result = ["-LRB-" if x == "(" else "-RRB-" if x == ")" else x for x in result]
-			output_tokens.extend(result)
-	return output_tokens
+def merge_punctuation(tokens):
+	# Merge punctuation to non-punctuation tokens following CGELBank conventions.
+	tokens = ["(" if x == "-LRB-" else ")" if x == "-RRB-" else x for x in tokens]
+	merged_tokens = []
+	i = 0
+
+	initial_punct = {'(', '[', '{'}
+	trailing_punct = {'.', '...', ',', ';', '!', '?', ')', ']', '}', "'", '"', ':', '-'}
+
+	while i < len(tokens):
+		if tokens[i] in initial_punct and i + 1 < len(tokens) and tokens[i + 1].isalnum():
+			# Merge ( with the next word if it's an alphanumeric token
+			merged_tokens.append(tokens[i] + tokens[i + 1])
+			i += 1  # Skip the next token
+		elif tokens[i] in trailing_punct and merged_tokens:
+			# Merge punctuation with the last token
+			merged_tokens[-1] += tokens[i]
+		else:
+			merged_tokens.append(tokens[i])
+		i += 1
+
+	# if any merged_token is a sequence of punctuation, merge it to the previous token
+	for i in range(len(merged_tokens)):
+		if i > 0 and all([x in initial_punct.union(trailing_punct) for x in merged_tokens[i]]):
+			merged_tokens[i - 1] = merged_tokens[i - 1] + merged_tokens[i]
+			merged_tokens[i] = ""
+		elif i == 0 and all([x in initial_punct.union(trailing_punct) for x in merged_tokens[i]]):
+			merged_tokens[i + 1] = merged_tokens[i] + merged_tokens[i + 1]
+			merged_tokens[i] = ""
+
+	return [t for t in merged_tokens if t != ""]
 
 def handle_punctuation(treestr):
 	"""takes as its input a cgel tree (w/ punctuation within terminal text attribute) and returns an array of terminals with appropriate prepunct, postpunct tags (and punctuation 'stripped' from the text attribute)."""
