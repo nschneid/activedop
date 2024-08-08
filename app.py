@@ -54,7 +54,7 @@ from flask import (Flask, Markup, Response, jsonify, request, session, g, flash,
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from discodop.tree import (Tree, ParentedTree, DrawTree, DrawDependencies,
-		writediscbrackettree, discbrackettree)
+		writediscbrackettree, discbrackettree, brackettree)
 from discodop.treebank import writetree, writedependencies, exporttree
 from discodop.treetransforms import canonicalize
 from discodop.treebanktransforms import reversetransform
@@ -64,6 +64,7 @@ from discodop.heads import applyheadrules
 from discodop.eval import editdistance
 import worker
 from pylatexenc.latexencode import unicode_to_latex
+from typing import List
 sys.path.append('./cgel')
 try:
 	import cgel
@@ -534,22 +535,11 @@ def parse():
 			dep = writedependencies(parsetrees[0][1], senttok, 'conll')
 			depsvg = Markup(DrawDependencies.fromconll(dep).svg())
 		result = ''
-		senttok = [t for t in senttok]
 		dectree, maxdepth, _ = decisiontree(parsetrees, senttok, urlprm)
 		prob, tree, _treestr, _fragments = parsetrees[0]
 		senttok = ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok]
-		tree_process(tree, senttok)
-		# ensure that punctuation is handled correctly, i.e., as sister nodes to other terminals
-		tree_to_cgel = tree.copy(deep=True)
-		tree_to_cgel = remove_punctuation_nodes(tree_to_cgel) 
-		senttok_merged_punct = merge_punctuation(senttok)
-		block = writetree(tree_to_cgel, senttok_merged_punct, '1', 'export', comment='')
-		block = io.StringIO(block)
-		treestr = next(load_as_cgel(block))
-		cgel_tree_terminals = handle_punctuation(treestr)
-		treestr.update_terminals(cgel_tree_terminals, gaps=True)
-		treestr = "(ROOT " + treestr.ptb(punct=True) + ")"
-		tree = DrawTree(treestr).nodes[0]
+		tree_to_viz = tree_process(tree, senttok)
+		tree_to_viz = DrawTree(tree_to_viz).nodes[0]
 		nbest = Markup('%s\nbest tree: %s' % (
 				dectree,
 				('%(n)d. [%(prob)s] '
@@ -561,7 +551,7 @@ def parse():
 					n=1,
 					prob=probstr(prob),
 					urlprm=urlencode(dict(urlprm, n=1)),
-					tree=DrawTree(tree, senttok).text(
+					tree=DrawTree(tree_to_viz, senttok).text(
 						unicodelines=True, html=True, funcsep='-',
 						morphsep='/', nodeprops='t1', maxwidth=30)))))
 	msg = '\n'.join(messages)
@@ -685,7 +675,8 @@ def edit():
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
-		tree_process(tree, ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok])
+		senttok = ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok]
+		tree = tree_process(tree, senttok)
 	elif 'tree' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		tree, senttok = discbrackettree(request.args.get('tree'))
@@ -796,11 +787,13 @@ def remove_punctuation_nodes(tree):
 	_remove_punct(tree_copy)
 	return number_terminals(prune_empty_non_terminals(tree_copy))
 
-def tree_process(tree, senttok):
+def tree_process(tree : ParentedTree, senttok: List[str]) -> ParentedTree:
+	# guardrails against producing illict tree structures
+	tree_copy = tree.copy(deep=True)
 	# if initial parse labels non-gaps as GAP, change to N-Head by default
 	# if initial parse labels punctuation as something other than punctuation, change to proper punctuation category
 	# if initial parse labels non-punctuation as punctuation, change to N-Head
-	for subt in tree.subtrees(lambda t: t.height() == 2):
+	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
 		i = subt[0]
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
@@ -814,6 +807,16 @@ def tree_process(tree, senttok):
 		if (senttok[i] not in string.punctuation + "-LRB-" + "-RRB-") and subt.label in string.punctuation + "-LRB-" + "-RRB-":
 			print("match")
 			subt.label = 'N-Head'
+	tree_to_cgel = remove_punctuation_nodes(tree_copy) 
+	senttok_merged_punct = merge_punctuation(senttok)
+	block = writetree(tree_to_cgel, senttok_merged_punct, '1', 'export', comment='')
+	block = io.StringIO(block)
+	treestr = next(load_as_cgel(block))
+	cgel_tree_terminals = handle_punctuation(treestr)
+	treestr.update_terminals(cgel_tree_terminals, gaps=True)
+	treestr = "(ROOT " + treestr.ptb(punct=True) + ")"
+	tree_copy = brackettree(treestr)[0]
+	return tree_copy
 
 @app.route('/annotate/redraw')
 @loginrequired
@@ -828,7 +831,10 @@ def redraw():
 		treestr = request.args.get('tree')
 		cgel_tree_terminals = cgel.parse(treestr)[0].terminals(gaps=True)
 		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True) + ")"
-		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
+		orig_senttok = ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in orig_senttok]
+		tree_to_viz = brackettree(treestr)[0]
+		tree_to_viz = tree_process(tree_to_viz, orig_senttok)
+		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok, cgel_validate=False)
 		if app.config['CGELVALIDATE'] is not None:
@@ -873,7 +879,8 @@ def graphical_operation_preamble():
 		cgel_tree = cgel.parse(request.args.get('tree'))[0]
 		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
 		treestr = "(ROOT " + cgel_tree.ptb(punct=True) + ")"
-		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
+		tree_to_viz = brackettree(treestr)[0]
+		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok, cgel_validate=False)
 	except ValueError as err:
@@ -882,6 +889,8 @@ def graphical_operation_preamble():
 
 def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno):
 	tree = dt.nodes[0]
+	tree = brackettree(writediscbrackettree(tree, senttok))[0]
+	tree = tree_process(tree, senttok)
 	dt = DrawTree(tree, senttok)  # kludge..
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
