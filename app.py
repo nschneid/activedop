@@ -274,11 +274,18 @@ def numannotated(username):
 def getannotation(username, id):
 	"""Fetch annotation of a single sentence from database."""
 	db = getdb()
-	cur = db.execute(
-			'select tree, nbest '
-			'from entries '
-			'where username = ? and id = ? ',
-			(username, id))
+	if app.config['CGELVALIDATE'] is None:
+		cur = db.execute(
+				'select tree, nbest '
+				'from entries '
+				'where username = ? and id = ? ',
+				(username, id))
+	else:
+		cur = db.execute(
+				'select cgel_tree, nbest '
+				'from entries '
+				'where username = ? and id = ? ',
+				(username, id))
 	entry = cur.fetchone()
 	return (None, 0) if entry is None else (entry[0], entry[1])
 
@@ -465,10 +472,16 @@ def annotate(sentno):
 	senttok, _ = worker.postokenize(sent)
 	annotation, n = getannotation(username, id)
 	if annotation is not None:
-		item = exporttree(annotation.splitlines(), functions='add')
-		canonicalize(item.tree)
-		worker.domorph(item.tree)
-		tree = writediscbrackettree(item.tree, item.sent)
+		if app.config['CGELVALIDATE'] is None:
+			item = exporttree(annotation.splitlines(), functions='add')
+			canonicalize(item.tree)
+			worker.domorph(item.tree)
+			tree = writediscbrackettree(item.tree, item.sent)
+		else: 
+			tree = "(ROOT" + cgel.parse(annotation)[0].ptb(punct = True) + ")"
+			tree = brackettree(tree)[0]
+			senttok, _ = worker.postokenize(sent)
+			tree = writediscbrackettree(tree,senttok)
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
 	return render_template(
@@ -1158,11 +1171,11 @@ def accept():
 		n = 0
 		if app.config['CGELVALIDATE'] is None:
 			treestr = request.args.get('tree')
+			tree_to_train, senttok = discbrackettree(treestr)
+			cgel_tree = "none"
 		else:
-			orig_senttok, _ = worker.postokenize(sent)
-			treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=True) + ")"
-			treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
-		tree, senttok = discbrackettree(treestr)
+			cgel_tree = cgel.parse(request.args.get('tree'))[0]
+			tree_to_train, senttok = brackettree(cgel_tree.ptb(punct=True))
 		# the tokenization may have been updated with gaps, so store the new one
 		# SENTENCES[lineno] = ' '.join(senttok)
 		if False:
@@ -1183,27 +1196,15 @@ def accept():
 				node.label = LABELRE.match(node.label).group(1)
 	actions[NBEST] = n
 	session.modified = True
-	block = writetree(tree, senttok, str(lineno + 1), 'export',
+	block = writetree(tree_to_train, senttok, str(lineno + 1), 'export',
 		comment='%s %r' % (username, actions))
 	app.logger.info(block)
 	treeout = block
-	cgel_tree = "none"
-	if app.config['CGELVALIDATE'] is not None:
-		tree_to_cgel = ParentedTree.convert(tree.copy(deep=True))
-		tree_to_cgel = remove_punctuation_nodes(tree_to_cgel)
-		senttok_merged_punct = merge_punctuation(senttok)
-		block = writetree(tree_to_cgel, senttok_merged_punct, str(lineno + 1), 'export',
-			comment='%s %r' % (username, actions))
-		block = io.StringIO(block)	# make it a file-like object
-		cgel_tree = str(next(load_as_cgel(block)))
-	addentry(id, lineno, treeout, cgel_tree, actions)	# save annotation in the database
-	treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=True) + ")"
-	treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
-	tree_for_train, senttok = discbrackettree(treestr)
-	WORKERS[username].submit(worker.augment, [tree_for_train], [senttok])	# update the parser's grammar
+	addentry(id, lineno, treeout, str(cgel_tree), actions)	# save annotation in the database
+	WORKERS[username].submit(worker.augment, [tree_to_train], [senttok])	# update the parser's grammar
 	# validate and stay on this sentence if there are issues
 	if treestr:
-		_tree, _senttok, msg = validate(treestr, senttok, cgel_validate=False)
+		_tree, _senttok, msg = validate(treestr, senttok)
 		if 'ERROR' in msg or 'WARNING' in msg:
 			flash('Your annotation for sentence %d was stored %r but may contain errors. Please click Validate to check.' % (sentno, actions))
 			return redirect(url_for('annotate', sentno=sentno))
