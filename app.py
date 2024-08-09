@@ -40,6 +40,7 @@ import logging
 import traceback
 import subprocess
 import string
+import copy
 from math import log
 from time import time
 from datetime import datetime
@@ -87,6 +88,10 @@ ANNOTATIONHELP = """
 		) = range(8)
 # e.g., "NN-SB/Nom" => ('NN', '-SB', '/Nom')
 LABELRE = re.compile(r'^((?:-LRB-)|(?:-RRB-)|[^-/\s]+)(-[^/\s]+)?(/\S+)?$')
+PUNCTRE = re.compile(r'^(\W+|-LRB-|-RRB-)$')
+AMBIG_SYM = {'$', '#', '@', '&'}
+def is_possible_punct(token):
+	return re.match(PUNCTRE, token)
 # Load default config and override config from an environment variable
 app.config.update(
 		DATABASE=os.path.join(app.root_path, 'annotate.db'),
@@ -551,7 +556,7 @@ def parse():
 		result = ''
 		dectree, maxdepth, _ = decisiontree(parsetrees, senttok, urlprm)
 		prob, tree, _treestr, _fragments = parsetrees[0]
-		senttok = ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok]
+		senttok = escape_token_for_parser(senttok)
 		tree_to_viz, _ = tree_process(tree, senttok)
 		tree_to_viz = DrawTree(tree_to_viz).nodes[0]
 		nbest = Markup('%s\nbest tree: %s' % (
@@ -584,6 +589,8 @@ def parse():
 			nbest=nbest, info=info, dep=dep, depsvg=depsvg, maxdepth=maxdepth,
 			msg='%d parse trees' % len(parsetrees))
 
+def escape_token_for_parser(senttok):
+	return ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok]
 
 @app.route('/annotate/filter')
 @loginrequired
@@ -698,7 +705,7 @@ def edit():
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
 	else:
-		senttok = ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok]
+		senttok = escape_token_for_parser(senttok)
 		_, cgel_tree = tree_process(tree, senttok)
 		treestr = cgel_tree
 		rows = max(5, treestr.depth)
@@ -770,8 +777,6 @@ def remove_punctuation_nodes(tree):
 	Returns:
 	ParentedTree: The tree with punctuation nodes removed.
 	"""
-	# Define a set of punctuation tags
-	punctuation_tags = {'.', ',', ':', '...', ';', '!', '?', '-', '--', '"', '``', "''", '(', ')', '[', ']', '{', '}', '-LRB-', '-RRB-', '-LSB-', '-RSB-', '-LCB-', '-RCB-'}
 
 	# Traverse the tree and remove punctuation nodes
 	def _remove_punct(tree):
@@ -779,7 +784,7 @@ def remove_punctuation_nodes(tree):
 			children_to_remove = []
 			for i, child in enumerate(tree):
 				if isinstance(child, ParentedTree):
-					if child.label in punctuation_tags:
+					if is_possible_punct(child.label):
 						children_to_remove.append(i)
 					else:
 						_remove_punct(child)
@@ -811,33 +816,31 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		i = subt[0]
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
-		for punct in string.punctuation:
-			if senttok[i] == punct:
-				subt.label = punct
-		if senttok[i] == "-LRB-":
-			subt.label = "-LRB-"
-		elif senttok[i] == "-RRB-":
-			subt.label = "-RRB-"
-		if (senttok[i] not in string.punctuation + "-LRB-" + "-RRB-" + "...") and subt.label in string.punctuation + "-LRB-" + "-RRB-" + "...":
-			print("match")
+		# ensure that label is a punctuation label for punctuation nodes. exception: symbols that might not be punctuation.
+		if is_possible_punct(senttok[i]) and senttok[i] not in AMBIG_SYM:
+			subt.label = senttok[i]
+		if (not is_possible_punct(senttok[i])) and is_possible_punct(subt.label):
 			subt.label = 'N-Head'
-	# create three lists of equal lengths: one list non-punctuation token strings, one list of tuples prepending punctuation, and one list of tuples for appending punctuation
-	# iterate through the tree to create the three lists simultaneously
+
+	# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
 	non_punct_tokens = []
-	prepunct_tokens = [[] for t in senttok if t not in string.punctuation + "-LRB-" + "-RRB-" + "..."]
-	postpunct_tokens = [[] for t in senttok if t not in string.punctuation + "-LRB-" + "-RRB-" + "..."]
+	prepunct_tokens = [[] for subt in tree_copy.subtrees(lambda t: t.height() == 2) if (not is_possible_punct(subt.label))]
+	postpunct_tokens = copy.deepcopy(prepunct_tokens)
+
 	token_counter = 0
 	initial_punct = {'-LRB-', '[', '{'}
-	trailing_punct = {'.', '...', ',', ';', '!', '?', '-RRB-', ']', '}', "'", '"', ':', '-'}
-	token_counter = 0
-	for token in senttok:
-		if token in initial_punct or (token in trailing_punct and token_counter == 0):
-			prepunct_tokens[token_counter].append(token)
-		elif token not in initial_punct and token not in trailing_punct:
-			non_punct_tokens.append(token)
+
+	# iterate through the tree to update the three lists simultaneously
+	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
+		i = subt[0]
+		if subt.label in initial_punct or (is_possible_punct(subt.label) and token_counter == 0):
+			prepunct_tokens[token_counter].append(senttok[i])
+		elif not is_possible_punct(subt.label):
+			non_punct_tokens.append(senttok[i])
 			token_counter += 1
-		elif token in trailing_punct or token_counter == len(senttok) - 1:
-			postpunct_tokens[token_counter - 1].append(token)
+		elif is_possible_punct(subt.label) or token_counter == len(senttok) - 1:
+			postpunct_tokens[token_counter - 1].append(senttok[i])
+
 	tree_to_cgel = remove_punctuation_nodes(tree_copy) 
 	block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
 	block = io.StringIO(block)
@@ -864,7 +867,7 @@ def redraw():
 		treestr = request.args.get('tree')
 		cgel_tree_terminals = cgel.parse(treestr)[0].terminals(gaps=True)
 		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True) + ")"
-		orig_senttok = ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in orig_senttok]
+		orig_senttok = escape_token_for_parser(orig_senttok)
 		tree_to_viz = brackettree(treestr)[0]
 		tree_to_viz, cgel_tree = tree_process(tree_to_viz, orig_senttok)
 		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],orig_senttok)
@@ -910,7 +913,7 @@ def graphical_operation_preamble():
 def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno):
 	tree = dt.nodes[0]
 	tree = brackettree(writediscbrackettree(tree, senttok))[0]
-	senttok = ["-LRB-" if t == "(" else "-RRB-" if t == ")" else t for t in senttok]
+	senttok = escape_token_for_parser(senttok)
 	tree_to_viz, cgel_tree = tree_process(tree, senttok)
 	dt = DrawTree(tree_to_viz, senttok)  # kludge..
 	if app.config['CGELVALIDATE'] is None:
@@ -1589,69 +1592,6 @@ def decisiontree(parsetrees, sent, urlprm):
 		leaves.append('<span id="dd%d" style="display: none; ">%s</span>' %
 				(x, thistree))
 	return nodes + ''.join(leaves), estimator.tree_.max_depth, path
-
-def merge_punctuation(tokens):
-	# Merge punctuation to non-punctuation tokens following CGELBank conventions.
-	tokens = ["(" if x == "-LRB-" else ")" if x == "-RRB-" else x for x in tokens]
-	merged_tokens = []
-	i = 0
-
-	initial_punct = {'(', '[', '{'}
-	trailing_punct = {'.', '...', ',', ';', '!', '?', ')', ']', '}', "'", '"', ':', '-'}
-
-	while i < len(tokens):
-		if tokens[i] in initial_punct and i + 1 < len(tokens) and tokens[i + 1].isalnum():
-			# Merge ( with the next word if it's an alphanumeric token
-			merged_tokens.append(tokens[i] + tokens[i + 1])
-			i += 1  # Skip the next token
-		elif tokens[i] in trailing_punct and merged_tokens:
-			# Merge punctuation with the last token
-			merged_tokens[-1] += tokens[i]
-		else:
-			merged_tokens.append(tokens[i])
-		i += 1
-
-	# if any merged_token is a sequence of punctuation, merge it to the previous token
-	for i in range(len(merged_tokens)):
-		if i > 0 and all([x in initial_punct.union(trailing_punct) for x in merged_tokens[i]]):
-			merged_tokens[i - 1] = merged_tokens[i - 1] + merged_tokens[i]
-			merged_tokens[i] = ""
-		elif i == 0 and all([x in initial_punct.union(trailing_punct) for x in merged_tokens[i]]):
-			merged_tokens[i + 1] = merged_tokens[i] + merged_tokens[i + 1]
-			merged_tokens[i] = ""
-
-	return [t for t in merged_tokens if t != ""]
-
-def handle_punctuation(treestr):
-	"""takes as its input a cgel tree (w/ punctuation within terminal text attribute) and returns an array of terminals with appropriate prepunct, postpunct tags (and punctuation 'stripped' from the text attribute)."""
-	output_terminals = []
-	trailing_punct_pattern = f"[{re.escape(string.punctuation)}]+$"
-	initial_punct_pattern = f"^[{re.escape(string.punctuation)}]+"
-	# Regular expression to match groups of periods or any other single punctuation character
-	grouping_pattern = r'(\.{2,})|([^\w\s])'
-	for count, token in enumerate(treestr.terminals(gaps=True)):
-		if ((not token.constituent.startswith("GAP"))) and token.text != "_." and (token.text is not None):
-			initial_punct_match = re.search(initial_punct_pattern, token.text)
-			trailing_punct_match = re.search(trailing_punct_pattern, token.text)
-		else:
-			initial_punct_match = None
-			trailing_punct_match = None
-		if initial_punct_match: 
-			initial_sequence = initial_punct_match.group()
-			initial_matches = re.findall(grouping_pattern, initial_sequence)
-			if token.text not in ["'s", "'re", "'ve", "'m", "'d", "'ll"]:
-				if ("(" in initial_sequence or "[" in initial_sequence or '"' in initial_sequence) or count == 0:
-					token.prepunct = [m for match in initial_matches for m in match if m]
-				else: 
-					token.postpunct = [m for match in initial_matches for m in match if m]
-				token.text = re.sub(initial_punct_pattern, '', token.text)
-		if trailing_punct_match:
-			trailing_sequence = trailing_punct_match.group()
-			trailing_matches = re.findall(grouping_pattern, trailing_sequence)
-			token.postpunct = [m for match in trailing_matches for m in match if m]
-			token.text = re.sub(trailing_punct_pattern, '', token.text)
-		output_terminals.append(token)
-	return output_terminals
 
 if __name__ == '__main__':
 	pass
