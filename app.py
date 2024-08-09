@@ -87,11 +87,16 @@ ANNOTATIONHELP = """
 (NBEST, CONSTRAINTS, DECTREE, REATTACH, RELABEL, REPARSE, EDITDIST, TIME
 		) = range(8)
 # e.g., "NN-SB/Nom" => ('NN', '-SB', '/Nom')
-LABELRE = re.compile(r'^((?:-LRB-)|(?:-RRB-)|(?:-)|[^-/\s]+)(-[^/\s]+)?(/\S+)?$')
-PUNCTRE = re.compile(r'^(\W+|-LRB-|-RRB-)$')
+LABELRE = re.compile(r'^((?:-LRB-)|(?:-RRB-)|(?:HYPH)|[^-/\s]+)(-[^/\s]+)?(/\S+)?$')
+PUNCTRE_TOKEN = re.compile(r'^(\W+|-LRB-|-RRB-)$')
+PUNCTRE_LABEL = re.compile(r'^(\W+|-LRB-|-RRB-|HYPH)$')
+INITIAL_PUNCT = {'-LRB-', '[', '{'}
 AMBIG_SYM = {'$', '#', '@', '&', '-'}
-def is_possible_punct(token):
-	return re.match(PUNCTRE, token)
+def is_possible_punct_token(token):
+	return re.match(PUNCTRE_TOKEN, token)
+def is_punct_label(label):
+	return re.match(PUNCTRE_LABEL, label)
+
 # Load default config and override config from an environment variable
 app.config.update(
 		DATABASE=os.path.join(app.root_path, 'annotate.db'),
@@ -784,7 +789,7 @@ def remove_punctuation_nodes(tree):
 			children_to_remove = []
 			for i, child in enumerate(tree):
 				if isinstance(child, ParentedTree):
-					if is_possible_punct(child.label):
+					if is_punct_label(child.label):
 						children_to_remove.append(i)
 					else:
 						_remove_punct(child)
@@ -817,28 +822,27 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
 		# ensure that label is a punctuation label for punctuation nodes. exception: symbols that might not be punctuation.
-		if is_possible_punct(senttok[i]) and senttok[i] not in AMBIG_SYM:
+		if is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM:
 			subt.label = senttok[i]
-		if (not is_possible_punct(senttok[i])) and is_possible_punct(subt.label):
+		if (not is_possible_punct_token(senttok[i])) and is_punct_label(subt.label):
 			subt.label = 'N-Head'
 
 	# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
 	non_punct_tokens = []
-	prepunct_tokens = [[] for subt in tree_copy.subtrees(lambda t: t.height() == 2) if (not is_possible_punct(subt.label))]
+	prepunct_tokens = [[] for subt in tree_copy.subtrees(lambda t: t.height() == 2) if (not is_punct_label(subt.label))]
 	postpunct_tokens = copy.deepcopy(prepunct_tokens)
 
 	token_counter = 0
-	initial_punct = {'-LRB-', '[', '{'}
 
 	# iterate through the tree to update the three lists simultaneously
 	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
 		i = subt[0]
-		if subt.label in initial_punct or (is_possible_punct(subt.label) and token_counter == 0):
+		if subt.label in INITIAL_PUNCT or (is_punct_label(subt.label) and token_counter == 0):
 			prepunct_tokens[token_counter].append(senttok[i])
-		elif not is_possible_punct(subt.label):
+		elif not is_punct_label(subt.label):
 			non_punct_tokens.append(senttok[i])
 			token_counter += 1
-		elif is_possible_punct(subt.label) or token_counter == len(senttok) - 1:
+		elif is_punct_label(subt.label) or token_counter == len(senttok) - 1:
 			postpunct_tokens[token_counter - 1].append(senttok[i])
 
 	tree_to_cgel = remove_punctuation_nodes(tree_copy) 
