@@ -87,9 +87,9 @@ ANNOTATIONHELP = """
 (NBEST, CONSTRAINTS, DECTREE, REATTACH, RELABEL, REPARSE, EDITDIST, TIME
 		) = range(8)
 # e.g., "NN-SB/Nom" => ('NN', '-SB', '/Nom')
-LABELRE = re.compile(r'^((?:-LRB-)|(?:-RRB-)|[^-/\s]+)(-[^/\s]+)?(/\S+)?$')
+LABELRE = re.compile(r'^((?:-LRB-)|(?:-RRB-)|(?:-)|[^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+|-LRB-|-RRB-)$')
-AMBIG_SYM = {'$', '#', '@', '&'}
+AMBIG_SYM = {'$', '#', '@', '&', '-'}
 def is_possible_punct(token):
 	return re.match(PUNCTRE, token)
 # Load default config and override config from an environment variable
