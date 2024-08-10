@@ -755,15 +755,15 @@ def edit():
 			msg=msg)
 
 def prune_empty_non_terminals(tree: ParentedTree) -> ParentedTree:
-    # Recursively prune children first
-    for i in reversed(range(len(tree))):
-        child = tree[i]
-        if isinstance(child, ParentedTree):
-            pruned_child = prune_empty_non_terminals(child)
-            if len(pruned_child) == 0:
-                del tree[i]
-                
-    return tree
+	# Recursively prune children first
+	for i in reversed(range(len(tree))):
+		child = tree[i]
+		if isinstance(child, ParentedTree):
+			pruned_child = prune_empty_non_terminals(child)
+			if len(pruned_child) == 0:
+				del tree[i]
+				
+	return tree
 
 def number_terminals(tree):
 	"""
@@ -1108,6 +1108,30 @@ def reattach():
 
 			return sisters
 		
+		def extract_adjacent_punctuation(arr, target):
+			# Find the index of the target character
+			try:
+				target_index = arr.index(target)
+			except ValueError:
+				return []  # If target is not in the list, return an empty list
+	
+			# Initialize the result list with the target character
+			result = [target]
+
+			# Collect punctuation characters to the left of the target
+			left_index = target_index - 1
+			while left_index >= 0 and is_punct_label(arr[left_index].label):
+				result.insert(0, arr[left_index])
+				left_index -= 1
+			
+			# Collect punctuation characters to the right of the target
+			right_index = target_index + 1
+			while right_index < len(arr) and is_punct_label(arr[right_index].label):
+				result.append(arr[right_index])
+				right_index += 1
+	
+			return result
+		
 		for node in x.subtrees():
 			if node is y:
 				error = ('ERROR: cannot re-attach subtree'
@@ -1117,13 +1141,14 @@ def reattach():
 			for node in dt.nodes[0].subtrees():
 				if any(child is x for child in node):
 					if len(node) > 1:
-						for s in find_self_and_sisters(dt.nodes[0], x):
+						self_and_sisters = find_self_and_sisters(dt.nodes[0], x)
+						self_and_nearbypunct = extract_adjacent_punctuation(self_and_sisters, x)
+						for s in self_and_nearbypunct:
 							# iteratively move all sister punctuation to the target. 
 							# (prevents problematic crossover movement of non-punctuation nodes over punctuation nodes)
 							# punctuation positions are subsequently re-canonicalized with a call to tree_process()
-							if is_punct_label(s.label) or s == x:
-								node.remove(s)
-								dt.nodes[newparent].append(s)
+							node.remove(s)
+							dt.nodes[newparent].append(s)
 						tree = canonicalize(dt.nodes[0])
 						dt = DrawTree(tree, senttok)  # kludge..
 					else:
