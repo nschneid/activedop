@@ -1086,6 +1086,33 @@ def reattach():
 		# dt.nodes[nodeid].parent.pop(dt.nodes[nodeid].parent_index)
 		x = dt.nodes[nodeid]
 		y = dt.nodes[newparent]
+
+		def find_self_and_sisters(tree, subtree):
+			parent = None
+			sisters = []
+
+			# Helper function to find the parent of the subtree
+			def find_parent(node, target):
+				nonlocal parent
+				if target in node.children:
+					parent = node
+					return True
+				for child in node.children:
+					if isinstance(child, int):
+						return False
+					elif find_parent(child, target):
+						return True
+				return False
+
+			# Find the parent of the subtree
+			find_parent(tree, subtree)
+
+			if parent:
+				# Collect all children of the parent node
+				sisters = [child for child in parent.children]
+
+			return sisters
+		
 		for node in x.subtrees():
 			if node is y:
 				error = ('ERROR: cannot re-attach subtree'
@@ -1095,8 +1122,13 @@ def reattach():
 			for node in dt.nodes[0].subtrees():
 				if any(child is x for child in node):
 					if len(node) > 1:
-						node.remove(x)
-						dt.nodes[newparent].append(x)
+						for s in find_self_and_sisters(dt.nodes[0], x):
+							# iteratively move all sister punctuation to the target. 
+							# (prevents problematic crossover movement of non-punctuation nodes over punctuation nodes)
+							# punctuation positions are subsequently re-canonicalized with a call to tree_process()
+							if is_punct_label(s.label) or s == x:
+								node.remove(s)
+								dt.nodes[newparent].append(s)
 						tree = canonicalize(dt.nodes[0])
 						dt = DrawTree(tree, senttok)  # kludge..
 					else:
