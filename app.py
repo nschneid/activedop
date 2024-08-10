@@ -104,17 +104,6 @@ def is_possible_punct_token(token):
 def is_punct_label(label):
 	return re.match(PUNCTRE_LABEL, label) or label in [e['ptree_label'] for e in PUNCT_ESCAPING]
 
-def sent_escape(sent):
-	"""Replace special characters in a sentence. (First splits the sentence into tokens.)
-	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
-	senttok = sent.split()
-	for i, token in enumerate(senttok):
-		for e in PUNCT_ESCAPING:
-			if token == e['istring']:
-				senttok[i] = e['ptree_token']
-				break
-	return " ".join(senttok)
-
 def senttok_escape(senttok):
 	"""Replace special characters in a tokenized sentence.
 	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
@@ -125,6 +114,12 @@ def senttok_escape(senttok):
 				senttok[i] = e['ptree_token']
 				break
 	return senttok
+
+def sent_escape(sent):
+	"""Replace special characters in a sentence. (First splits the sentence into tokens.)
+	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
+	senttok = sent.split()
+	return " ".join(senttok_escape(senttok))
 
 # Load default config and override config from an environment variable
 app.config.update(
