@@ -842,6 +842,11 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		i = subt[0]
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
+		# -LRB- and -RRB- are options for the grammar, so we need to escape them in case parser uses them to label terminals
+		elif subt.label == '-LRB-':
+			subt.label = 'LRB-p'
+		elif subt.label == '-RRB-':
+			subt.label = 'RRB-p'
 		# ensure that label is a punctuation label for punctuation nodes. exception: symbols that might not be punctuation.
 		if is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM:
 			for e in PUNCT_ESCAPING:
@@ -885,6 +890,10 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		# fallback strategy: place contents of ROOT node under a new node labeled 'Clause'
 		if tb_info[1].line == 'assert root is None':
 			tree_to_cgel.label = 'Clause'
+			# if some subtree is called ROOT, change to Clause-Head by default
+			for subt in tree_to_cgel.subtrees():
+				if subt.label == 'ROOT':
+					subt.label = 'Clause-Head'
 			tree_to_cgel = ParentedTree('ROOT', [tree_to_cgel])
 			block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
 			block = io.StringIO(block)
