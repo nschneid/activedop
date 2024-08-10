@@ -981,12 +981,10 @@ def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok
 		# validate after operation
 		_, _, msg = validate(treestr, senttok, cgel_validate=False)
 	else:
-		_, cgel_tree = tree_process(tree, senttok)
+		tree_to_viz, cgel_tree = tree_process(tree, senttok)
 		cgel_tree.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
-		msg = validate_cgel(cgel_tree)
 		treestr = cgel_tree
-		tree_to_viz = "(ROOT " + cgel_tree.ptb(punct=True) + ")"
-		tree_to_viz = brackettree(tree_to_viz)[0]
+		msg = validate_cgel(cgel_tree)
 		dt = DrawTree(tree_to_viz, senttok)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=sentno, tree=treestr)))
