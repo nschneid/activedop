@@ -896,19 +896,22 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 			cgel_tree = next(load_as_cgel(block))
 
 	cgel_tree_terminals = cgel_tree.terminals(gaps=True)
+
+	def unescape_ptree_tok(punct_token_list):
+		for i, p in enumerate(punct_token_list):
+			for e in PUNCT_ESCAPING:
+				if p == e['ptree_token']:
+					punct_token_list[i] = e['ctree_punct']
+					break
+		return punct_token_list
+
 	for i, terminal in enumerate(cgel_tree_terminals):
-		for j, p in enumerate(prepunct_tokens[i]):
-			for e in PUNCT_ESCAPING:
-				if p == e['ptree_token']:
-					prepunct_tokens[i][j] = e['ctree_punct']
-					break
-		for j, p in enumerate(postpunct_tokens[i]):
-			for e in PUNCT_ESCAPING:
-				if p == e['ptree_token']:
-					postpunct_tokens[i][j] = e['ctree_punct']
-					break
-		terminal.prepunct = prepunct_tokens[i]
-		terminal.postpunct = postpunct_tokens[i]
+		prepunct_token_list = prepunct_tokens[i]
+		prepunct_token_list = unescape_ptree_tok(prepunct_token_list)
+		postpunct_token_list = postpunct_tokens[i]
+		postpunct_token_list = unescape_ptree_tok(postpunct_token_list)
+		terminal.prepunct = prepunct_token_list
+		terminal.postpunct = postpunct_token_list
 	cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
 	treestr = "(ROOT " + cgel_tree.ptb(punct=True) + ")"
 	parented_tree = brackettree(treestr)[0]
