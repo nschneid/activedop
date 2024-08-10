@@ -909,14 +909,27 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 					break
 
 	for i, terminal in enumerate(cgel_tree_terminals):
+
 		prepunct_token_list = prepunct_tokens[i]
 		unescape_ptree_tok(prepunct_token_list)
 		postpunct_token_list = postpunct_tokens[i]
 		unescape_ptree_tok(postpunct_token_list)
 		terminal.prepunct = prepunct_token_list
 		terminal.postpunct = postpunct_token_list
+
+		terminal.text = terminal.text.replace("_", " ")
+
 	cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
-	treestr = "(ROOT " + cgel_tree.ptb(punct=True) + ")"
+
+	cgel_tree_to_parentedtree = copy.deepcopy(cgel_tree)
+	cgel_tree_terminals_to_parentedtree = copy.deepcopy(cgel_tree_terminals)
+
+	for terminal in cgel_tree_terminals_to_parentedtree:
+		terminal.text = terminal.text.replace(" ", "_")
+
+	cgel_tree_to_parentedtree.update_terminals(cgel_tree_terminals_to_parentedtree, gaps = True)
+
+	treestr = "(ROOT " + cgel_tree_to_parentedtree.ptb(punct=True) + ")"
 	parented_tree = brackettree(treestr)[0]
 	return (parented_tree, cgel_tree)
 
