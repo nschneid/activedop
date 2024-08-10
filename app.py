@@ -118,7 +118,7 @@ def sent_escape(sent):
 def senttok_escape(senttok):
 	"""Replace special characters in a tokenized sentence.
 	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
-	senttok = [t for t in senttok]
+	senttok = list(senttok)
 	for i, token in enumerate(senttok):
 		for e in PUNCT_ESCAPING:
 			if token == e['istring']:
