@@ -824,7 +824,11 @@ def remove_punctuation_nodes(tree):
 	_remove_punct(tree_copy)
 	return number_terminals(prune_empty_non_terminals(tree_copy))
 
-def ptb_to_ptree(ptb_tree: str):
+def ptb_to_ptree(ptb_tree: str) -> tuple[ParentedTree, list]:
+	"""
+	Converts ptb-format trees (string objects, the result of calling the Tree.ptb() method in cgel) to 
+	trees with proper ptree labels for punctuation (along with sentence tokens). 
+	"""
 	ptree, senttok = brackettree(ptb_tree)
 	for subt in ptree.subtrees():
 		for e in PUNCT_ESCAPING:
