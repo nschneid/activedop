@@ -826,15 +826,17 @@ def remove_punctuation_nodes(tree):
 
 def ptb_to_ptree(ptb_tree: str) -> tuple[ParentedTree, list]:
 	"""
-	Converts ptb-format trees (string objects, the result of calling the Tree.ptb() method in cgel) to 
-	trees with proper ptree labels for punctuation (along with sentence tokens). 
+	Converts ptb-format trees (string objects, the result of calling the Tree.ptb() method in cgel) to
+	trees with proper ptree labels for punctuation (along with sentence tokens).
 	"""
 	ptree, senttok = brackettree(ptb_tree)
 	for subt in ptree.subtrees():
 		for e in PUNCT_ESCAPING:
+			# we implement special escaping of punctuation tags `LRB`, `RRB`, and `HYPH` for the parser
 			if subt.label == e['ptree_token']:
 				subt.label = e['ptree_label']
 		if is_possible_punct_token(subt.label):
+			# attach the `p` function to punctuation preterminal
 			subt.label = subt.label + "-p"
 	return ptree, senttok
 
