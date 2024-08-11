@@ -824,6 +824,16 @@ def remove_punctuation_nodes(tree):
 	_remove_punct(tree_copy)
 	return number_terminals(prune_empty_non_terminals(tree_copy))
 
+def ptb_to_ptree(ptb_tree: str):
+	ptree, senttok = brackettree(ptb_tree)
+	for subt in ptree.subtrees():
+		for e in PUNCT_ESCAPING:
+			if subt.label == e['ptree_token']:
+				subt.label = e['ptree_label']
+		if is_possible_punct_token(subt.label):
+			subt.label = subt.label + "-p"
+	return ptree, senttok
+
 def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree, CGELTree]:
 	"""
 	Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
@@ -916,21 +926,15 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		unescape_ptree_tok(postpunct_token_list)
 		terminal.prepunct = prepunct_token_list
 		terminal.postpunct = postpunct_token_list
-
-		terminal.text = terminal.text.replace("_", " ")
+		if terminal.text:
+			terminal.text = terminal.text.replace("_", " ")
 
 	cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
 
-	cgel_tree_to_parentedtree = copy.deepcopy(cgel_tree)
-	cgel_tree_terminals_to_parentedtree = copy.deepcopy(cgel_tree_terminals)
-
-	for terminal in cgel_tree_terminals_to_parentedtree:
-		terminal.text = terminal.text.replace(" ", "_")
-
-	cgel_tree_to_parentedtree.update_terminals(cgel_tree_terminals_to_parentedtree, gaps = True)
-
-	treestr = "(ROOT " + cgel_tree_to_parentedtree.ptb(punct=True) + ")"
-	parented_tree = brackettree(treestr)[0]
+	treestr = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
+	
+	parented_tree, _ = ptb_to_ptree(treestr)
+	
 	return (parented_tree, cgel_tree)
 
 @app.route('/annotate/redraw')
@@ -942,15 +946,15 @@ def redraw():
 	orig_senttok, _ = worker.postokenize(sent)
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
+		senttok = orig_senttok
 	else: 
 		treestr = request.args.get('tree')
-		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True) + ")"
-		orig_senttok = senttok_escape(orig_senttok)
-		tree_to_viz = brackettree(treestr)[0]
-		tree_to_viz, cgel_tree = tree_process(tree_to_viz, orig_senttok)
-		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],orig_senttok)
+		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True, complex_lexeme_separator='_') + ")"
+		tree_to_viz, senttok = ptb_to_ptree(treestr)
+		tree_to_viz, cgel_tree = tree_process(tree_to_viz, senttok)
+		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
 	try:
-		tree_to_viz, senttok, msg = validate(treestr, orig_senttok)
+		tree_to_viz, senttok, msg = validate(treestr, senttok)
 		if app.config['CGELVALIDATE'] is not None:
 			msg += validate_cgel(cgel_tree)
 	except ValueError as err:
@@ -977,14 +981,15 @@ def graphical_operation_preamble():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
 		cgel_tree_terminals = None
+		senttok = orig_senttok
 	else:
 		cgel_tree = cgel.parse(request.args.get('tree'))[0]
 		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
-		treestr = "(ROOT " + cgel_tree.ptb(punct=True) + ")"
-		tree_to_viz = brackettree(treestr)[0]
-		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],orig_senttok)
+		ptb_tree = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
+		tree_to_viz, senttok = ptb_to_ptree(ptb_tree)
+		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
 	try:
-		tree, senttok, msg = validate(treestr, orig_senttok)
+		tree, senttok, msg = validate(treestr, senttok)
 	except ValueError as err:
 		return str(err)
 	return tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno
@@ -1252,7 +1257,7 @@ def replacesubtree():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
 	else: 
-		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=False) + ")"
+		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=False, complex_lexeme_separator='_') + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -1316,9 +1321,9 @@ def accept():
 			cgel_tree = "none"
 		else:
 			cgel_tree = cgel.parse(request.args.get('tree'))[0]
-			tree_to_train, senttok = brackettree(cgel_tree.ptb(punct=True))
+			tree_to_train, senttok = ptb_to_ptree(cgel_tree.ptb(punct=True, complex_lexeme_separator='_'))
 		# the tokenization may have been updated with gaps, so store the new one
-		# SENTENCES[lineno] = ' '.join(senttok)
+		SENTENCES[lineno] = ' '.join(senttok)
 		if False:
 			reversetransform(tree, senttok, ('APPEND-FUNC', 'addCase'))
 	else:
