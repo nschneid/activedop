@@ -41,6 +41,7 @@ import traceback
 import subprocess
 import traceback
 import copy
+import click
 from math import log
 from time import time
 from datetime import datetime
@@ -55,7 +56,7 @@ from flask import (Flask, Markup, Response, jsonify, request, session, g, flash,
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from discodop.tree import (Tree, ParentedTree, DrawTree, DrawDependencies,
-		writediscbrackettree, discbrackettree, brackettree)
+		writediscbrackettree, discbrackettree, brackettree, writebrackettree)
 from discodop.treebank import writetree, writedependencies, exporttree
 from discodop.treetransforms import canonicalize
 from discodop.treebanktransforms import reversetransform
@@ -1745,3 +1746,18 @@ def decisiontree(parsetrees, sent, urlprm):
 
 if __name__ == '__main__':
 	pass
+
+@app.cli.command('ptb2ptree')
+@click.option('--inputfile')
+@click.option('--outputfile')
+def ptb2ptree(inputfile, outputfile):
+	"""Convert a list of ptb-labelled bracketed trees from inputfile to ptree-labelled bracketed trees; write to outputfile
+	Produces a list of trees that can be used to train the parser."""
+	result = []
+	with open (inputfile, 'r') as f:
+		for line in f:
+			ptree, senttok = ptb_to_ptree(line.strip())
+			ptree = writebrackettree(ptree, senttok).rstrip()
+			result.append(ptree)
+	with open(outputfile, 'w') as f:
+		f.write('\n'.join(result))
