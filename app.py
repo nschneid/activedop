@@ -90,7 +90,8 @@ ANNOTATIONHELP = """
 
 PUNCT_ESCAPING = [{"istring" : "(", "ptree_label": "LRB-p", "ptree_token": "-LRB-", "ctree_punct": "("},
 				  {"istring" : ")", "ptree_label": "RRB-p", "ptree_token": "-RRB-", "ctree_punct": ")"},
-				  {"istring" : "-", "ptree_label": "HYPH-p", "ptree_token": "-", "ctree_punct": "-"}]
+				  {"istring" : "-", "ptree_label": "HYPH-p", "ptree_token": "-", "ctree_punct": "-"},
+				  {"istring" : ":", "ptree_label": "COL-p", "ptree_token": ":", "ctree_punct": ":"}]
 
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+)$')
@@ -832,7 +833,7 @@ def ptb_to_ptree(ptb_tree: str) -> tuple[ParentedTree, list]:
 	ptree, senttok = brackettree(ptb_tree)
 	for subt in ptree.subtrees():
 		for e in PUNCT_ESCAPING:
-			# we implement special escaping of punctuation tags `LRB`, `RRB`, and `HYPH` for the parser
+			# we implement special escaping of punctuation tags `LRB`, `RRB`, `HYPH`, and `COL` for the parser
 			if subt.label == e['ptree_token']:
 				subt.label = e['ptree_label']
 		if is_possible_punct_token(subt.label):
