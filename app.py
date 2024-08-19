@@ -1508,7 +1508,7 @@ ALLOW_UNSEEN_VAR_CAT = True
 COIDXRE = re.compile(r'\.(\w+)')	# coindexation variable in constituent label
 
 def isValidPOS(x):
-	return x in workerattr('poslabels') or x in app.config['POSWHITELIST']
+	return x in workerattr('poslabels')
 
 def isValidPhraseCat(x):
 	return x in workerattr('phrasallabels') or (ALLOW_MULTIWORD_POS and isValidPOS(x))
