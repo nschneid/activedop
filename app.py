@@ -98,7 +98,7 @@ LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+)$')
 PUNCTRE_LABEL = re.compile(r'^(\W+)-p$')
 INITIAL_PUNCT_LABEL = {'LRB-p', '[-p', '{-p'}
-AMBIG_SYM = {'$', '#', '@', '&', '-'}
+AMBIG_SYM = {'$', '#', '@', '&', '-', '/'}
 
 def is_possible_punct_token(token):
 	return re.match(PUNCTRE, token) or token in [e['ptree_token'] for e in PUNCT_ESCAPING]
