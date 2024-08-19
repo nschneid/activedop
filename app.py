@@ -92,7 +92,10 @@ ANNOTATIONHELP = """
 PUNCT_ESCAPING = [{"istring" : "(", "ptree_label": "LRB-p", "ptree_token": "-LRB-", "ctree_punct": "("},
 				  {"istring" : ")", "ptree_label": "RRB-p", "ptree_token": "-RRB-", "ctree_punct": ")"},
 				  {"istring" : "-", "ptree_label": "HYPH-p", "ptree_token": "-", "ctree_punct": "-"},
-				  {"istring" : ":", "ptree_label": "COL-p", "ptree_token": ":", "ctree_punct": ":"}]
+				  {"istring" : ":", "ptree_label": "COL-p", "ptree_token": ":", "ctree_punct": ":"},
+				  {"istring" : "/", "ptree_label": "FSLASH-p", "ptree_token": "/", "ctree_punct": "/"},
+				  {"istring" : "^", "ptree_label": "CARET-p", "ptree_token": "^", "ctree_punct": "^"},
+				  {"istring" : "|", "ptree_label": "PIPE-p", "ptree_token": "|", "ctree_punct": "|"}]
 
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+)$')
