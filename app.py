@@ -91,17 +91,51 @@ ANNOTATIONHELP = """
 
 PUNCT_ESCAPING = [{"istring" : "(", "ptree_label": "LRB-p", "ptree_token": "-LRB-", "ctree_punct": "("},
 				  {"istring" : ")", "ptree_label": "RRB-p", "ptree_token": "-RRB-", "ctree_punct": ")"},
-				  {"istring" : "-", "ptree_label": "HYPH-p", "ptree_token": "-", "ctree_punct": "-"},
-				  {"istring" : ":", "ptree_label": "COL-p", "ptree_token": ":", "ctree_punct": ":"},
-				  {"istring" : "/", "ptree_label": "FSLASH-p", "ptree_token": "/", "ctree_punct": "/"},
-				  {"istring" : "^", "ptree_label": "CARET-p", "ptree_token": "^", "ctree_punct": "^"},
-				  {"istring" : "|", "ptree_label": "PIPE-p", "ptree_token": "|", "ctree_punct": "|"}]
+				  {"istring" : "-", "ptree_label": "HYPH-p", "ptree_token": "-", "ctree_punct": "-"}]
+
+# punctuation labels based on the Penn Treebank tagset
+# [from nltk.help.upenn_tagset()]
+PUNCT_LABELS = {# opening parenthesis
+				"LRB-p": ["-LRB-", "[", "{"],
+				# closing parenthesis
+				"RRB-p": ["-RRB-", "]", "}"],
+				# sentence terminator
+				".-p": [".", "!", "?"],
+				# colon or ellipsis
+				":-p": [":", ";", "..."],
+				# comma
+				",-p": [","],
+				# dash
+				"HYPH-p": ["-", "--"],
+				# opening quotation mark
+				"``-p": ["``", "`"],
+				# closing quotation mark
+				"''-p": ["''", "'"],
+				# dollar sign
+				"$-p": ["$"] 
+}
+
+# pos tag for symbols (and symbol sequences) that don't have an idiosyncratic PTB tag (in PUNCT_LABELS)
+SYMBOL_LABEL = "*"
+
+# default labels for 'ambiguous' symbols that can be punctuation or something else depending on context
+
+SYMBOL_DEFAULTS = {
+	"$": "N-Head",
+	"#": "N-Head",
+	"@": "P-Head",
+	"%": "N-Head",
+	"&": "Coordinator-Marker",
+	"-": "Coordinator-Marker",
+	"/": "Coordinator-Marker"
+}
+
+AMBIG_SYM = set(SYMBOL_DEFAULTS.keys())
 
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+)$')
-PUNCTRE_LABEL = re.compile(r'^(\W+)-p$')
-INITIAL_PUNCT_LABEL = {'LRB-p', '[-p', '{-p'}
-AMBIG_SYM = {'$', '#', '@', '&', '-', '/'}
+PUNCTRE_LABEL = re.compile(r'.*-p$')
+INITIAL_PUNCT_LABELS = {'LRB-p', '[-p', '{-p'}
 
 def is_possible_punct_token(token):
 	return re.match(PUNCTRE, token) or token in [e['ptree_token'] for e in PUNCT_ESCAPING]
@@ -829,22 +863,6 @@ def remove_punctuation_nodes(tree):
 	_remove_punct(tree_copy)
 	return number_terminals(prune_empty_non_terminals(tree_copy))
 
-def ptb_to_ptree(ptb_tree: str) -> tuple[ParentedTree, list]:
-	"""
-	Converts ptb-format trees (string objects, the result of calling the Tree.ptb() method in cgel) to
-	trees with proper ptree labels for punctuation (along with sentence tokens).
-	"""
-	ptree, senttok = brackettree(ptb_tree)
-	for subt in ptree.subtrees():
-		for e in PUNCT_ESCAPING:
-			# we implement special escaping of punctuation tags `LRB`, `RRB`, `HYPH`, and `COL` for the parser
-			if subt.label == e['ptree_token']:
-				subt.label = e['ptree_label']
-		if is_possible_punct_token(subt.label):
-			# attach the `p` function to punctuation preterminal
-			subt.label = subt.label + "-p"
-	return ptree, senttok
-
 def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree, CGELTree]:
 	"""
 	Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
@@ -856,28 +874,32 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 	"""
 	# guardrails against producing illict tree structures
 	tree_copy = tree.copy(deep=True)
-	# if initial parse labels non-gaps as GAP, change to N-Head by default
-	# if initial parse labels punctuation as something other than punctuation, change to proper punctuation category
-	# if initial parse labels non-punctuation as punctuation, change to N-Head
+	ptree_terminals = []
 	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
 		i = subt[0]
+		# if initial parse labels non-gaps as GAP, change to N-Head by default
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
-		# -LRB- and -RRB- are options for the grammar, so we need to escape them in case parser uses them to label terminals
-		elif subt.label == '-LRB-':
-			subt.label = 'LRB-p'
-		elif subt.label == '-RRB-':
-			subt.label = 'RRB-p'
-		# ensure that label is a punctuation label for punctuation nodes. exception: symbols that might not be punctuation.
+		# if the label is a punctuation sequence, make sure it has a function ('p' by default)
+		# (handles cases where token is changed to punctuation in the text window)
+		if is_possible_punct_token(subt.label) and subt.label == '':
+			subt.label = SYMBOL_LABEL+"-p"
+		# if the token is unambiguously punctuation, make sure it has 'p' function
 		if is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM:
-			for e in PUNCT_ESCAPING:
-				if senttok[i] == e['ptree_token']:
-					subt.label = e['ptree_label']
+			subt.label = SYMBOL_LABEL+"-p"
+		# if the token has function 'p' and has an idiosyncratic POS tag, change to that POS tag
+		if senttok[i] in np.concatenate(list(PUNCT_LABELS.values())) and is_punct_label(subt.label):
+			for label, tokens in PUNCT_LABELS.items():
+				if senttok[i] in tokens:
+					subt.label = label
 					break
-			if senttok[i] not in [e['ptree_token'] for e in PUNCT_ESCAPING]:
-				subt.label = senttok[i]+"-p"
-		if (not is_possible_punct_token(senttok[i])) and (is_punct_label(subt.label) or is_punct_label(subt.label + "-p")):
+		for e in PUNCT_ESCAPING:
+			if subt.label == e['ptree_token']:
+				subt.label = e['ptree_label']
+			# if initial parse labels non-punctuation as punctuation, change to N-Head
+		if (not is_possible_punct_token(senttok[i])) and (is_punct_label(subt.label)):
 			subt.label = 'N-Head'
+		ptree_terminals.append(subt)
 
 	# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
 	non_punct_tokens = []
@@ -889,7 +911,7 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 	# iterate through the tree to update the three lists simultaneously
 	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
 		i = subt[0]
-		if subt.label in INITIAL_PUNCT_LABEL or (is_punct_label(subt.label) and token_counter == 0):
+		if subt.label in INITIAL_PUNCT_LABELS or (is_punct_label(subt.label) and token_counter == 0):
 			prepunct_tokens[token_counter].append(senttok[i])
 		elif not is_punct_label(subt.label):
 			non_punct_tokens.append(senttok[i])
@@ -910,11 +932,13 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		# if we get this error, it means that ROOT has multiple children, which is not allowed by the CGEL parser.
 		# fallback strategy: place contents of ROOT node under a new node labeled 'Clause'
 		if tb_info[1].line == 'assert root is None':
-			tree_to_cgel.label = 'Clause'
-			# if some subtree is called ROOT, change to Clause-Head by default
+			# if some subtree is called ROOT (or Clause w/o function), change to Clause-Head by default
 			for subt in tree_to_cgel.subtrees():
 				if subt.label == 'ROOT':
 					subt.label = 'Clause-Head'
+				elif "-" not in subt.label:
+					subt.label = subt.label + "-Head"
+			tree_to_cgel.label = 'Clause'
 			tree_to_cgel = ParentedTree('ROOT', [tree_to_cgel])
 			block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
 			block = io.StringIO(block)
@@ -944,8 +968,11 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 
 	treestr = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
 	
-	parented_tree, _ = ptb_to_ptree(treestr)
-	
+	parented_tree, _ = brackettree(treestr)
+
+	for i, subt in enumerate(parented_tree.subtrees(lambda t: t.height() == 2)):
+		subt.label = ptree_terminals[i].label
+
 	return (parented_tree, cgel_tree)
 
 @app.route('/annotate/redraw')
@@ -961,7 +988,7 @@ def redraw():
 	else: 
 		treestr = request.args.get('tree')
 		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True, complex_lexeme_separator='_') + ")"
-		tree_to_viz, senttok = ptb_to_ptree(treestr)
+		tree_to_viz, senttok = brackettree(treestr)
 		tree_to_viz, cgel_tree = tree_process(tree_to_viz, senttok)
 		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
 	try:
@@ -997,12 +1024,10 @@ def graphical_operation_preamble():
 		cgel_tree = cgel.parse(request.args.get('tree'))[0]
 		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
 		ptb_tree = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
-		tree_to_viz, senttok = ptb_to_ptree(ptb_tree)
-		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
-	try:
-		tree, senttok, msg = validate(treestr, senttok)
-	except ValueError as err:
-		return str(err)
+		tree, senttok = brackettree(ptb_tree)
+		tree, _ = tree_process(tree, senttok)
+		treestr = writediscbrackettree(DrawTree(tree).nodes[0],senttok)
+	msg = ""
 	return tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno
 
 def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno):
@@ -1036,35 +1061,40 @@ def newlabel():
 	nodeid = int(nodeid)
 	dt = DrawTree(tree, senttok)
 	m = LABELRE.match(dt.nodes[nodeid].label)
-	if 'label' in request.args:
-		label = request.args.get('label', '')
-		dt.nodes[nodeid].label = (label
-				+ (m.group(2) or '')
-				+ (m.group(3) or ''))
-	elif 'function' in request.args:
-		label = request.args.get('function', '')
-		if label == '':
-			dt.nodes[nodeid].label = '%s%s' % (
-					m.group(1), m.group(3) or '')
-		else:
-			dt.nodes[nodeid].label = '%s-%s%s' % (
-					m.group(1), label, m.group(3) or '')
-	elif 'morph' in request.args:
-		label = request.args.get('morph', '')
-		if label == '':
-			dt.nodes[nodeid].label = '%s%s' % (
-					m.group(1), m.group(2) or '')
-		else:
-			dt.nodes[nodeid].label = '%s%s/%s' % (
-					m.group(1), m.group(2) or '', label)
+	error = ""
+	if request.args.get('function', '') == "p" or m.group(2) == "-p" or is_possible_punct_token(m.group(1)) or is_possible_punct_token(request.args.get('label', '')):
+		error = 'error: punctuation POS/function tags can only be changed manually from the text window \n \n'
 	else:
-		raise ValueError('expected label or function argument')
+		if 'label' in request.args:
+			label = request.args.get('label', '')
+			dt.nodes[nodeid].label = (label
+					+ (m.group(2) or '')
+					+ (m.group(3) or ''))
+		elif 'function' in request.args:
+			label = request.args.get('function', '')
+			if label == '':
+				dt.nodes[nodeid].label = '%s%s' % (
+						m.group(1), m.group(3) or '')
+			else:
+				dt.nodes[nodeid].label = '%s-%s%s' % (
+						m.group(1), label, m.group(3) or '')
+		elif 'morph' in request.args:
+			label = request.args.get('morph', '')
+			if label == '':
+				dt.nodes[nodeid].label = '%s%s' % (
+						m.group(1), m.group(2) or '')
+			else:
+				dt.nodes[nodeid].label = '%s%s/%s' % (
+						m.group(1), m.group(2) or '', label)
+		else:
+			raise ValueError('expected label or function argument')
 	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno)
-	session['actions'][RELABEL] += 1
-	session.modified = True
-	return Markup('%s\n\n%s\n\n%s\t%s' % (
+	if error == '':
+		session['actions'][RELABEL] += 1
+		session.modified = True
+	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
 			msg,
-			link,
+			link, error,
 			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
 				nodeprops='t0', maxwidth=30),
 			treestr))
@@ -1332,7 +1362,8 @@ def accept():
 			cgel_tree = "none"
 		else:
 			cgel_tree = cgel.parse(request.args.get('tree'))[0]
-			tree_to_train, senttok = ptb_to_ptree(cgel_tree.ptb(punct=True, complex_lexeme_separator='_'))
+			tree_to_train, senttok = brackettree(cgel_tree.ptb(punct=True, complex_lexeme_separator='_'))
+			tree_to_train, _ = tree_process(tree_to_train, senttok)
 		# the tokenization may have been updated with gaps, so store the new one
 		SENTENCES[lineno] = ' '.join(senttok)
 		if False:
@@ -1578,12 +1609,16 @@ def validate(treestr, senttok):
 		if len(node) == 0:
 			raise ValueError(('ERROR: a constituent should have '
 					'one or more children:\n%s' % node))
+		# create copy of node to validate POS and function tags (stripping -p from label if present)
+		node_to_validate = copy.deepcopy(node)
+		if node_to_validate.label.endswith('-p'):
+			node_to_validate.label = node.label[:-2]
 		# a POS tag
-		elif isinstance(node[0], int):
+		elif isinstance(node_to_validate[0], int):
 			if not isValidPOS(m.group(1)):
 				raise ValueError(('ERROR: invalid POS tag: %s for %d=%s\n'
 						'valid POS tags: %s' % (
-						node.label, node[0], senttok[node[0]],
+						node_to_validate.label, node_to_validate[0], senttok[node_to_validate[0]],
 						', '.join(sorted(workerattr('poslabels'))))))
 			elif m.group(2) and not isValidFxn(m.group(2)[1:]):
 				raise ValueError(('ERROR: invalid function tag:\n%s\n'
@@ -1759,8 +1794,13 @@ def ptb2ptree(inputfile, outputfile):
 	result = []
 	with open (inputfile, 'r') as f:
 		for line in f:
-			ptree, senttok = ptb_to_ptree(line.strip())
-			ptree = writebrackettree(ptree, senttok).rstrip()
+			ptree, senttok = brackettree("(ROOT " + line.strip() + ")")
+			ptree, _ = tree_process(ptree, senttok)
+			# remove -p function label for training the parser
+			for subt in ptree.subtrees(lambda t: t.height() == 2):
+				if subt.label.endswith("-p"):
+					subt.label = subt.label[:-2]
+			ptree = writebrackettree(ptree[0], senttok).rstrip()
 			result.append(ptree)
 	with open(outputfile, 'w') as f:
 		f.write('\n'.join(result))
