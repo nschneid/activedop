@@ -116,7 +116,7 @@ PUNCT_LABELS = {# opening parenthesis
 }
 
 # pos tag for symbols (and symbol sequences) that don't have an idiosyncratic PTB tag (in PUNCT_LABELS)
-SYMBOL_LABEL = "*"
+SYMBOL_TAG = "*"
 
 # default labels for 'ambiguous' symbols that can be punctuation or something else depending on context
 
@@ -883,10 +883,10 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		# if the label is a punctuation sequence, make sure it has a function ('p' by default)
 		# (handles cases where token is changed to punctuation in the text window)
 		if is_possible_punct_token(subt.label) and subt.label == '':
-			subt.label = SYMBOL_LABEL+"-p"
+			subt.label = SYMBOL_TAG+"-p"
 		# if the token is unambiguously punctuation, make sure it has 'p' function
 		if is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM:
-			subt.label = SYMBOL_LABEL+"-p"
+			subt.label = SYMBOL_TAG+"-p"
 		# if the token has function 'p' and has an idiosyncratic POS tag, change to that POS tag
 		if senttok[i] in np.concatenate(list(PUNCT_LABELS.values())) and is_punct_label(subt.label):
 			for label, tokens in PUNCT_LABELS.items():
