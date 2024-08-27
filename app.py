@@ -95,27 +95,28 @@ PUNCT_ESCAPING = [{"istring" : "(", "ptree_label": "LRB-p", "ptree_token": "-LRB
 
 # punctuation labels based on the Penn Treebank tagset
 # [from nltk.help.upenn_tagset()]
-PUNCT_LABELS = {# opening parenthesis
-				"LRB-p": ["-LRB-", "[", "{"],
-				# closing parenthesis
-				"RRB-p": ["-RRB-", "]", "}"],
-				# sentence terminator
-				".-p": [".", "!", "?"],
-				# colon or ellipsis
-				":-p": [":", ";", "..."],
-				# comma
-				",-p": [","],
-				# dash
-				"HYPH-p": ["-", "--"],
-				# opening quotation mark
-				"``-p": ["``", "`"],
-				# closing quotation mark
-				"''-p": ["''", "'"],
-				# dollar sign
-				"$-p": ["$"] 
+PUNCT_TAGS = { 
+	# opening parenthesis
+	"-LRB-": "LRB", "[" : "LRB", "{": "LRB",
+	# closing parenthesis
+	"-RRB-": "RRB", "]": "RRB", "}": "RRB",
+	# sentence terminator
+	".": ".", "!": ".", "?": ".",
+	# colon or ellipsis
+	":": ":", ";": ":", "...": ":",
+	# comma
+	",": ",",
+	# dash
+	"-": "HYPH", "--": "HYPH",
+	# opening quotation mark
+	"``": "``", "`": "``",
+	# closing quotation mark
+	"''": "''", "'": "''",
+	# dollar sign
+	"$": "$"
 }
 
-# pos tag for symbols (and symbol sequences) that don't have an idiosyncratic PTB tag (in PUNCT_LABELS)
+# pos tag for symbols (and symbol sequences) that don't have an idiosyncratic PTB tag (in PUNCT_TAGS)
 SYMBOL_TAG = "*"
 
 # default labels for 'ambiguous' symbols that can be punctuation or something else depending on context
@@ -880,19 +881,9 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		# if initial parse labels non-gaps as GAP, change to N-Head by default
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
-		# if the label is a punctuation sequence, make sure it has a function ('p' by default)
-		# (handles cases where token is changed to punctuation in the text window)
-		if is_possible_punct_token(subt.label) and subt.label == '':
-			subt.label = SYMBOL_TAG+"-p"
-		# if the token is unambiguously punctuation, make sure it has 'p' function
-		if is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM:
-			subt.label = SYMBOL_TAG+"-p"
-		# if the token has function 'p' and has an idiosyncratic POS tag, change to that POS tag
-		if senttok[i] in np.concatenate(list(PUNCT_LABELS.values())) and is_punct_label(subt.label):
-			for label, tokens in PUNCT_LABELS.items():
-				if senttok[i] in tokens:
-					subt.label = label
-					break
+		# if label is a punctuation sequence or punctuation + "-p": assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
+		if (is_possible_punct_token(subt.label) or is_punct_label(subt.label)) or (is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM):
+			subt.label = PUNCT_TAGS.get(senttok[i], SYMBOL_TAG) + "-p"
 		for e in PUNCT_ESCAPING:
 			if subt.label == e['ptree_token']:
 				subt.label = e['ptree_label']
