@@ -881,8 +881,11 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		# if initial parse labels non-gaps as GAP, change to N-Head by default
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
-		# if label is a punctuation sequence or punctuation + "-p": assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
-		if (is_possible_punct_token(subt.label) or is_punct_label(subt.label)) or (is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM):
+		# condition 1: label is a punctuation sequence w/o -p. (occurs when a ctree terminal is re-analyzed as a :p tag of another terminal and ctree is re-converted to ptree)
+		# condition 2: label is punctuation sequence + "-p" 
+		# condition 3: token is unabiguously punctuation
+		# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
+		if is_possible_punct_token(subt.label) or is_punct_label(subt.label) or (is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM):
 			subt.label = PUNCT_TAGS.get(senttok[i], SYMBOL_TAG) + "-p"
 		for e in PUNCT_ESCAPING:
 			if subt.label == e['ptree_token']:
