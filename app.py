@@ -138,7 +138,7 @@ PUNCTRE = re.compile(r'^(\W+)$')
 PUNCTRE_LABEL = re.compile(r'.*-p$')
 INITIAL_PUNCT_LABELS = {'LRB-p', '[-p', '{-p'}
 
-def is_possible_punct_token(token):
+def is_possible_punct_sequence(token):
 	return re.match(PUNCTRE, token) or token in [e['ptree_token'] for e in PUNCT_ESCAPING]
 
 def is_punct_label(label):
@@ -885,10 +885,10 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		# condition 2: label is punctuation sequence + "-p"
 		# condition 3: token is unabiguously punctuation
 		# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
-		if is_possible_punct_token(subt.label) or is_punct_label(subt.label) or (is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM):
+		if is_possible_punct_sequence(subt.label) or is_punct_label(subt.label) or (is_possible_punct_sequence(senttok[i]) and senttok[i] not in AMBIG_SYM):
 			subt.label = PUNCT_TAGS.get(senttok[i], SYMBOL_TAG) + "-p"
 			# if initial parse labels non-punctuation as punctuation, change to N-Head
-		if (not is_possible_punct_token(senttok[i])) and (is_punct_label(subt.label)):
+		if (not is_possible_punct_sequence(senttok[i])) and (is_punct_label(subt.label)):
 			subt.label = 'N-Head'
 		ptree_terminals.append(subt)
 
@@ -1053,7 +1053,7 @@ def newlabel():
 	dt = DrawTree(tree, senttok)
 	m = LABELRE.match(dt.nodes[nodeid].label)
 	error = ""
-	if request.args.get('function', '') == "p" or m.group(2) == "-p" or is_possible_punct_token(m.group(1)) or is_possible_punct_token(request.args.get('label', '')):
+	if request.args.get('function', '') == "p" or m.group(2) == "-p" or is_possible_punct_sequence(m.group(1)) or is_possible_punct_sequence(request.args.get('label', '')):
 		error = 'error: punctuation POS/function tags can only be changed manually from the text window \n \n'
 	else:
 		if 'label' in request.args:
