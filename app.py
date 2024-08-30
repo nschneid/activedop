@@ -117,19 +117,12 @@ PUNCT_TAGS = {
 # pos tag for symbols (and symbol sequences) that don't have an idiosyncratic PTB tag (in PUNCT_TAGS)
 SYMBOL_TAG = "*"
 
-# default labels for 'ambiguous' symbols that can be punctuation or something else depending on context
-
-SYMBOL_DEFAULTS = {
-	"$": "N-Head",
-	"#": "N-Head",
-	"@": "P-Head",
-	"%": "N-Head",
-	"&": "Coordinator-Marker",
-	"-": "Coordinator-Marker",
-	"/": "Coordinator-Marker"
+# 'ambiguous' symbols that can be punctuation or something else depending on context
+AMBIG_SYM = {
+	"$", "#", "%",	# typically N-Head
+	"@",	# typically P-Head
+	"&", "-", "/"	# typically Coordinator-Marker
 }
-
-AMBIG_SYM = set(SYMBOL_DEFAULTS.keys())
 
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+)$')
