@@ -1,10 +1,8 @@
 """Web interface for treebank annotation.
 
 TODO (nschneid):
-- ensure functions are always present
 - validate on accept without entering edit mode
-- double-click sentence at top to make it editable? new sentence with direct entry at end of workset?
-- EVENTUALLY: fields for comments, original sentence with punctuation (in the meantime, use a spreadsheet)
+- EVENTUALLY: additional metadata fields e.g. comments, original untokenized sentence
 
 Design notes:
 
