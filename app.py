@@ -785,10 +785,10 @@ def edit():
 			treestr=treestr, senttok=sent, id=id,
 			sentno=sentno, lineno=lineno + 1, totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
-			poslabels=sorted(workerattr('poslabels')),
+			poslabels=sorted(t for t in workerattr('poslabels') if ('@' not in t) and (t not in PUNCT_TAGS.values()) and (t != SYMBOL_TAG)),
 			phrasallabels=sorted(t for t in workerattr('phrasallabels') if '}' not in t),
 			functiontags=sorted(t for t in (workerattr('functiontags')
-				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t),
+				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t and t != "p"),	
 			morphtags=sorted(workerattr('morphtags')),
 			annotationhelp=ANNOTATIONHELP,
 			rows=rows, cols=100,
@@ -966,6 +966,26 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 
 	return (parented_tree, cgel_tree)
 
+def add_editable_attribute(htmltree :str) -> str:
+	""" 
+	Given an html rendering of a tree [the output of DrawTree(... html=True ...) or DrawTree.text(... html=True ...)], output an html tree 
+	in which tree preterminals (span elements of class 'p') have a feature called 'editable'.
+	This feature determines whether the user is able to change function/category labels of preterminals on the graphical tree. 
+	Editability is turned off for preterminals that include punctuation function/pos tags. 
+	(Has to use regex because beautifulsoup wrecks the tree formatting.)
+	"""
+	# add editable attribute to non-punctuation preterminals
+	htmltree_preterminals = re.findall(r'<span\s+class=p[^>]*>', htmltree)
+	for preterminal in htmltree_preterminals:
+		# extract the preterminal's function and pos tag from the span's `data-s` attribute:
+		label = re.search(r'data-s="([^"]*)"', preterminal).group(1).split(' ')[0]
+		m = LABELRE.match(label)
+		if m.group(2) == "-p" or is_possible_punct_sequence(m.group(1)):
+			htmltree = htmltree.replace(preterminal, preterminal.replace('class=p', 'class=p editable="false"'))
+		else:
+			htmltree = htmltree.replace(preterminal, preterminal.replace('class=p', 'class=p editable="true"'))
+	return htmltree
+	
 @app.route('/annotate/redraw')
 @loginrequired
 def redraw():
@@ -997,9 +1017,9 @@ def redraw():
 	return Markup('%s\n\n%s\n\n%s' % (
 			msg,
 			link,
-			DrawTree(tree_to_viz, senttok).text(
+			add_editable_attribute(DrawTree(tree_to_viz, senttok).text(
 				unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30)
+				nodeprops='t0', maxwidth=30))
 			))
 
 def graphical_operation_preamble():
@@ -1053,32 +1073,29 @@ def newlabel():
 	dt = DrawTree(tree, senttok)
 	m = LABELRE.match(dt.nodes[nodeid].label)
 	error = ""
-	if request.args.get('function', '') == "p" or m.group(2) == "-p" or is_possible_punct_sequence(m.group(1)) or is_possible_punct_sequence(request.args.get('label', '')):
-		error = 'error: punctuation POS/function tags can only be changed manually from the text window \n \n'
-	else:
-		if 'label' in request.args:
-			label = request.args.get('label', '')
-			dt.nodes[nodeid].label = (label
-					+ (m.group(2) or '')
-					+ (m.group(3) or ''))
-		elif 'function' in request.args:
-			label = request.args.get('function', '')
-			if label == '':
-				dt.nodes[nodeid].label = '%s%s' % (
-						m.group(1), m.group(3) or '')
-			else:
-				dt.nodes[nodeid].label = '%s-%s%s' % (
-						m.group(1), label, m.group(3) or '')
-		elif 'morph' in request.args:
-			label = request.args.get('morph', '')
-			if label == '':
-				dt.nodes[nodeid].label = '%s%s' % (
-						m.group(1), m.group(2) or '')
-			else:
-				dt.nodes[nodeid].label = '%s%s/%s' % (
-						m.group(1), m.group(2) or '', label)
+	if 'label' in request.args:
+		label = request.args.get('label', '')
+		dt.nodes[nodeid].label = (label
+				+ (m.group(2) or '')
+				+ (m.group(3) or ''))
+	elif 'function' in request.args:
+		label = request.args.get('function', '')
+		if label == '':
+			dt.nodes[nodeid].label = '%s%s' % (
+					m.group(1), m.group(3) or '')
 		else:
-			raise ValueError('expected label or function argument')
+			dt.nodes[nodeid].label = '%s-%s%s' % (
+					m.group(1), label, m.group(3) or '')
+	elif 'morph' in request.args:
+		label = request.args.get('morph', '')
+		if label == '':
+			dt.nodes[nodeid].label = '%s%s' % (
+					m.group(1), m.group(2) or '')
+		else:
+			dt.nodes[nodeid].label = '%s%s/%s' % (
+					m.group(1), m.group(2) or '', label)
+	else:
+		raise ValueError('expected label or function argument')
 	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno)
 	if error == '':
 		session['actions'][RELABEL] += 1
@@ -1086,8 +1103,8 @@ def newlabel():
 	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
 			msg,
 			link, error,
-			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30),
+			add_editable_attribute(dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
+				nodeprops='t0', maxwidth=30)),
 			treestr))
 
 
@@ -1221,8 +1238,8 @@ def reattach():
 	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
 			msg,
 			link, error,
-			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30),
+			add_editable_attribute(dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
+				nodeprops='t0', maxwidth=30)),
 			treestr))
 
 
