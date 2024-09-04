@@ -1,10 +1,8 @@
 """Web interface for treebank annotation.
 
 TODO (nschneid):
-- ensure functions are always present
 - validate on accept without entering edit mode
-- double-click sentence at top to make it editable? new sentence with direct entry at end of workset?
-- EVENTUALLY: fields for comments, original sentence with punctuation (in the meantime, use a spreadsheet)
+- EVENTUALLY: additional metadata fields e.g. comments, original untokenized sentence
 
 Design notes:
 
@@ -119,19 +117,12 @@ PUNCT_TAGS = {
 # pos tag for symbols (and symbol sequences) that don't have an idiosyncratic PTB tag (in PUNCT_TAGS)
 SYMBOL_TAG = "*"
 
-# default labels for 'ambiguous' symbols that can be punctuation or something else depending on context
-
-SYMBOL_DEFAULTS = {
-	"$": "N-Head",
-	"#": "N-Head",
-	"@": "P-Head",
-	"%": "N-Head",
-	"&": "Coordinator-Marker",
-	"-": "Coordinator-Marker",
-	"/": "Coordinator-Marker"
+# 'ambiguous' symbols that can be punctuation or something else depending on context
+AMBIG_SYM = {
+	"$", "#", "%",	# typically N-Head
+	"@",	# typically P-Head
+	"&", "-", "/"	# typically Coordinator-Marker
 }
-
-AMBIG_SYM = set(SYMBOL_DEFAULTS.keys())
 
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+)$')
@@ -882,7 +873,7 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
 		# condition 1: label is a punctuation sequence w/o -p. [e.g, the label in node `(, ,)`]. Can occur in `annotate` when tree_process() receives an initial dopparsed tree, and in `edit` when tree_process() receives a ParentedTree-format PTB-converted ctree. 
-		# condition 2: label is punctuation sequence + "-p"
+		# condition 2: label is punctuation sequence (which may or may not be the correct one for the token) + "-p"
 		# condition 3: token is unabiguously punctuation
 		# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
 		if is_possible_punct_sequence(subt.label) or is_punct_label(subt.label) or (is_possible_punct_sequence(senttok[i]) and senttok[i] not in AMBIG_SYM):
