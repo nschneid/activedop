@@ -70,6 +70,7 @@ try:
 	import cgel
 	from scripts.activedopexport2cgel import load as load_as_cgel
 	from cgel import Tree as CGELTree
+	from tree2tex import trees2tex
 except ImportError:
 	cgel = None
 	load_as_cgel = None
@@ -1429,63 +1430,8 @@ def exportallcgeltrees():
 
 @app.route('/annotate/download_pdf')
 def download_pdf():
-	# file header -- forest package
-	HEADER = r"""
-	\documentclass[tikz,border=12pt]{standalone}
-	\usepackage[linguistics]{forest}
-	\usepackage{times}
-	\usepackage{textcomp}
-	\usepackage{xcolor}
-	\usepackage{soul}
-	\usepackage[T1]{fontenc}
-	\usepackage{marvosym}
-
-	\definecolor{orange}{HTML}{FFCCFF}
-	\definecolor{ltyellow}{HTML}{FFFFAA}
-	\definecolor{cgelblue}{HTML}{009EE0}
-
-	% text highlight color
-	% https://tex.stackexchange.com/a/352959
-	\newcommand{\hlc}[2][yellow]{{%
-		\colorlet{foo}{#1}%
-		\sethlcolor{foo}\hl{#2}}%
-	}
-	\newcommand{\hlgreen}[2][green]{{%
-		\colorlet{foo}{#1}%
-		\sethlcolor{foo}\hl{#2}}%
-	}
-
-	\pagestyle{empty}
-	%----------------------------------------------------------------------
-	% Node labels in CGEL trees are defined with \Node,
-	% which is defined so that \Node{Abcd}{Xyz} yields
-	% a label with the function Abcd on the top, in small
-	% sanserif font, followed by a colon, and the category
-	% Xyz on the bottom.
-	\newcommand{\Node}[2]{\small\textsf{#1:}\\{#2}}
-	% For commonly used functions this is defined with \(function)
-	\newcommand{\Head}[1]{\Node{Head}{#1}}
-	\newcommand{\Subj}[1]{\Node{Subj}{#1}}
-	\newcommand{\Comp}[1]{\Node{Comp}{#1}}
-	\newcommand{\Mod}[1]{\Node{Mod}{#1}}
-	\newcommand{\Det}[1]{\Node{Det}{#1}}
-	\newcommand{\PredComp}[1]{\Node{PredComp}{#1}}
-	\newcommand{\Crd}[1]{\Node{Coordinate}{#1}}
-	\newcommand{\Mk}[1]{\Node{Marker}{#1}}
-	\newcommand{\Obj}[1]{\Node{Obj}{#1}}
-	\newcommand{\Sup}[1]{\Node{Supplement}{#1}}
-	\newcommand{\idx}[1]{\textsubscript{\fcolorbox{red}{white}{\textcolor{red}{#1}}}}
-	%----------------------------------------------------------------------
-	\begin{document}
-	"""
-	
-	FOOTER = '''
-	\\end{document}
-	'''
-
-	cgeltree = request.args.get('tree')
-	inner_tex = cgel.parse(cgeltree)[0].drawtex()
-	cgel_latex = HEADER + inner_tex + FOOTER
+	cgeltree = cgel.parse(request.args.get('tree'))
+	cgel_latex = trees2tex(cgeltree)
 	output_dir = "tmp"
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
