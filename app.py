@@ -1122,6 +1122,21 @@ def reattach():
 					tree = canonicalize(dt.nodes[0])
 					dt = DrawTree(tree, senttok)  # kludge..
 					break
+	elif request.args.get('nodeid', '') == 'newproj':
+		# splice in a new node under parentid
+		_treeid, newparent = request.args.get('newparent', ''
+				).lstrip('t').split('_')
+		newparent = int(newparent)
+		y = dt.nodes[newparent]
+		label = y.label
+		if isinstance(y[0], int):
+			error = 'ERROR: cannot add node under POS tag'
+		else:
+			children = list(y)
+			y[:] = []
+			y[:] = [Tree(label, children)]
+			tree = canonicalize(dt.nodes[0])
+			dt = DrawTree(tree, senttok)  # kludge..
 	elif request.args.get('nodeid', '').startswith('newlabel_'):
 		# splice in a new node under parentid
 		_treeid, newparent = request.args.get('newparent', ''
