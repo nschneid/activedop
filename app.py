@@ -779,7 +779,7 @@ def edit():
 			poslabels=sorted(t for t in workerattr('poslabels') if ('@' not in t) and (t not in PUNCT_TAGS.values()) and (t != SYMBOL_TAG)),
 			phrasallabels=sorted(t for t in workerattr('phrasallabels') if '}' not in t),
 			functiontags=sorted(t for t in (workerattr('functiontags')
-				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t and t != "p"),	
+				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t and t != "p"),
 			morphtags=sorted(workerattr('morphtags')),
 			annotationhelp=ANNOTATIONHELP,
 			rows=rows, cols=100,
