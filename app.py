@@ -1,10 +1,8 @@
 """Web interface for treebank annotation.
 
 TODO (nschneid):
-- ensure functions are always present
 - validate on accept without entering edit mode
-- double-click sentence at top to make it editable? new sentence with direct entry at end of workset?
-- EVENTUALLY: fields for comments, original sentence with punctuation (in the meantime, use a spreadsheet)
+- EVENTUALLY: additional metadata fields e.g. comments, original untokenized sentence
 
 Design notes:
 
@@ -39,6 +37,9 @@ import sqlite3
 import logging
 import traceback
 import subprocess
+import traceback
+import copy
+import click
 from math import log
 from time import time
 from datetime import datetime
@@ -53,7 +54,7 @@ from flask import (Flask, Markup, Response, jsonify, request, session, g, flash,
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from discodop.tree import (Tree, ParentedTree, DrawTree, DrawDependencies,
-		writediscbrackettree, discbrackettree)
+		writediscbrackettree, discbrackettree, brackettree, writebrackettree)
 from discodop.treebank import writetree, writedependencies, exporttree
 from discodop.treetransforms import canonicalize
 from discodop.treebanktransforms import reversetransform
@@ -63,10 +64,12 @@ from discodop.heads import applyheadrules
 from discodop.eval import editdistance
 import worker
 from pylatexenc.latexencode import unicode_to_latex
+from typing import List
 sys.path.append('./cgel')
 try:
 	import cgel
 	from scripts.activedopexport2cgel import load as load_as_cgel
+	from cgel import Tree as CGELTree
 except ImportError:
 	cgel = None
 	load_as_cgel = None
@@ -83,7 +86,70 @@ ANNOTATIONHELP = """
 (NBEST, CONSTRAINTS, DECTREE, REATTACH, RELABEL, REPARSE, EDITDIST, TIME
 		) = range(8)
 # e.g., "NN-SB/Nom" => ('NN', '-SB', '/Nom')
+
+PUNCT_ESCAPING = [{"istring" : "(", "ptree_label": "LRB-p", "ptree_token": "-LRB-", "ctree_punct": "("},
+				  {"istring" : ")", "ptree_label": "RRB-p", "ptree_token": "-RRB-", "ctree_punct": ")"},
+				  {"istring" : "-", "ptree_label": "HYPH-p", "ptree_token": "-", "ctree_punct": "-"}]
+
+# punctuation labels based on the Penn Treebank tagset
+# [from nltk.help.upenn_tagset()]
+PUNCT_TAGS = { 
+	# opening parenthesis
+	"-LRB-": "LRB", "[" : "LRB", "{": "LRB",
+	# closing parenthesis
+	"-RRB-": "RRB", "]": "RRB", "}": "RRB",
+	# sentence terminator
+	".": ".", "!": ".", "?": ".",
+	# colon or ellipsis
+	":": ":", ";": ":", "...": ":",
+	# comma
+	",": ",",
+	# dash
+	"-": "HYPH", "--": "HYPH",
+	# opening quotation mark
+	"``": "``", "`": "``",
+	# closing quotation mark
+	"''": "''", "'": "''"
+}
+
+# pos tag for symbols (and symbol sequences) that don't have an idiosyncratic PTB tag (in PUNCT_TAGS)
+SYMBOL_TAG = "*"
+
+# 'ambiguous' symbols that can be punctuation or something else depending on context
+AMBIG_SYM = {
+	"$", "#", "%",	# typically N-Head
+	"@",	# typically P-Head
+	"&", "-", "/"	# typically Coordinator-Marker
+}
+
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
+PUNCTRE = re.compile(r'^(\W+)$')
+PUNCTRE_LABEL = re.compile(r'.*-p$')
+INITIAL_PUNCT_LABELS = {'LRB-p', '[-p', '{-p'}
+
+def is_possible_punct_sequence(token):
+	return re.match(PUNCTRE, token) or token in [e['ptree_token'] for e in PUNCT_ESCAPING]
+
+def is_punct_label(label):
+	return re.match(PUNCTRE_LABEL, label) or label in [e['ptree_label'] for e in PUNCT_ESCAPING]
+
+def senttok_escape(senttok):
+	"""Replace special characters in a tokenized sentence.
+	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
+	senttok = list(senttok)
+	for i, token in enumerate(senttok):
+		for e in PUNCT_ESCAPING:
+			if token == e['istring']:
+				senttok[i] = e['ptree_token']
+				break
+	return senttok
+
+def sent_escape(sent):
+	"""Replace special characters in a sentence. (First splits the sentence into tokens.)
+	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
+	senttok = sent.split()
+	return " ".join(senttok_escape(senttok))
+
 # Load default config and override config from an environment variable
 app.config.update(
 		DATABASE=os.path.join(app.root_path, 'annotate.db'),
@@ -271,11 +337,18 @@ def numannotated(username):
 def getannotation(username, id):
 	"""Fetch annotation of a single sentence from database."""
 	db = getdb()
-	cur = db.execute(
-			'select tree, nbest '
-			'from entries '
-			'where username = ? and id = ? ',
-			(username, id))
+	if app.config['CGELVALIDATE'] is None:
+		cur = db.execute(
+				'select tree, nbest '
+				'from entries '
+				'where username = ? and id = ? ',
+				(username, id))
+	else:
+		cur = db.execute(
+				'select cgel_tree, nbest '
+				'from entries '
+				'where username = ? and id = ? ',
+				(username, id))
 	entry = cur.fetchone()
 	return (None, 0) if entry is None else (entry[0], entry[1])
 
@@ -462,10 +535,16 @@ def annotate(sentno):
 	senttok, _ = worker.postokenize(sent)
 	annotation, n = getannotation(username, id)
 	if annotation is not None:
-		item = exporttree(annotation.splitlines(), functions='add')
-		canonicalize(item.tree)
-		worker.domorph(item.tree)
-		tree = writediscbrackettree(item.tree, item.sent)
+		if app.config['CGELVALIDATE'] is None:
+			item = exporttree(annotation.splitlines(), functions='add')
+			canonicalize(item.tree)
+			worker.domorph(item.tree)
+			tree = writediscbrackettree(item.tree, item.sent)
+		else: 
+			tree = "(ROOT" + cgel.parse(annotation)[0].ptb(punct = True) + ")"
+			tree = brackettree(tree)[0]
+			senttok, _ = worker.postokenize(sent)
+			tree = writediscbrackettree(tree,senttok)
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
 	return render_template(
@@ -484,8 +563,8 @@ def undoaccept():
 	username = session['username']
 	db = getdb()
 	db.execute(
-    'DELETE FROM entries WHERE username = ? AND id = ?',
-    (username, sentid))
+	'DELETE FROM entries WHERE username = ? AND id = ?',
+	(username, sentid))
 	db.commit()
 	return jsonify({"success": True})
 
@@ -503,6 +582,7 @@ def parse():
 	"""Display parse. To be invoked by an AJAX call."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
+	sent_esc = sent_escape(sent)
 	username = session['username']
 	require = request.args.get('require', '')
 	block = request.args.get('block', '')
@@ -520,7 +600,7 @@ def parse():
 	else:
 		resp = WORKERS[username].submit(
 				worker.getparses,
-				sent, require, block).result()
+				sent_esc, require, block).result()
 	senttok, parsetrees, messages, elapsed = resp
 	maxdepth = ''
 	if not parsetrees:
@@ -535,6 +615,8 @@ def parse():
 		result = ''
 		dectree, maxdepth, _ = decisiontree(parsetrees, senttok, urlprm)
 		prob, tree, _treestr, _fragments = parsetrees[0]
+		tree_to_viz, _ = tree_process(tree, senttok)
+		tree_to_viz = DrawTree(tree_to_viz).nodes[0]
 		nbest = Markup('%s\nbest tree: %s' % (
 				dectree,
 				('%(n)d. [%(prob)s] '
@@ -546,7 +628,7 @@ def parse():
 					n=1,
 					prob=probstr(prob),
 					urlprm=urlencode(dict(urlprm, n=1)),
-					tree=DrawTree(tree, senttok).text(
+					tree=DrawTree(tree_to_viz, senttok).text(
 						unicodelines=True, html=True, funcsep='-',
 						morphsep='/', nodeprops='t1', maxwidth=30)))))
 	msg = '\n'.join(messages)
@@ -564,7 +646,6 @@ def parse():
 	return render_template('annotatetree.html', sent=sent, result=result,
 			nbest=nbest, info=info, dep=dep, depsvg=depsvg, maxdepth=maxdepth,
 			msg='%d parse trees' % len(parsetrees))
-
 
 @app.route('/annotate/filter')
 @loginrequired
@@ -648,6 +729,8 @@ def edit():
 	lineno = QUEUE[sentno - 1][0]
 	id = QUEUE[sentno - 1][3]
 	sent = SENTENCES[lineno]
+	sent_esc = sent_escape(sent)
+	senttok, _ = worker.postokenize(sent)
 	username = session['username']
 	if 'dec' in request.args:
 		session['actions'][DECTREE] += int(request.args.get('dec', 0))
@@ -666,7 +749,7 @@ def edit():
 		require, block = parseconstraints(require, block)
 		resp = WORKERS[username].submit(
 				worker.getparses,
-				sent, require, block).result()
+				sent_esc, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
 	elif 'tree' in request.args:
@@ -678,15 +761,8 @@ def edit():
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
 	else:
-		# if initial parse labels non-gaps as GAP, change to N-Head by default
-		for subt in tree.subtrees(lambda t: t.height() == 2):
-			i = subt[0]
-			if subt.label.startswith('GAP') and senttok[i] != '_.':
-				subt.label = 'N-Head'
-		# writetree requires a string to be passed as its third argument; '1' is a dummy value 
-		block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
-		block = io.StringIO(block)
-		treestr = next(load_as_cgel(block))
+		_, cgel_tree = tree_process(tree, senttok)
+		treestr = cgel_tree
 		rows = max(5, treestr.depth)
 	return render_template('edittree.html',
 			prevlink=('/annotate/annotate/%d' % (sentno - 1))
@@ -695,19 +771,210 @@ def edit():
 				if sentno < len(SENTENCES) else '/annotate/annotate/1',
 			unextlink=('/annotate/annotate/%d' % firstunannotated(username))
 				if sentno < len(SENTENCES) else '#',
-			treestr=treestr, senttok=' '.join(senttok), id=id,
+			treestr=treestr, senttok=sent, id=id,
 			sentno=sentno, lineno=lineno + 1, totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
-			poslabels=sorted(workerattr('poslabels')),
+			poslabels=sorted(t for t in workerattr('poslabels') if ('@' not in t) and (t not in PUNCT_TAGS.values()) and (t != SYMBOL_TAG)),
 			phrasallabels=sorted(t for t in workerattr('phrasallabels') if '}' not in t),
 			functiontags=sorted(t for t in (workerattr('functiontags')
-				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t),
+				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t and t != "p"),
 			morphtags=sorted(workerattr('morphtags')),
 			annotationhelp=ANNOTATIONHELP,
 			rows=rows, cols=100,
 			msg=msg)
 
+def prune_empty_non_terminals(tree: ParentedTree) -> ParentedTree:
+	# Recursively prune children first
+	for i in reversed(range(len(tree))):
+		child = tree[i]
+		if isinstance(child, ParentedTree):
+			pruned_child = prune_empty_non_terminals(child)
+			if len(pruned_child) == 0:
+				del tree[i]
+				
+	return tree
 
+def number_terminals(tree):
+	"""
+	Number the terminal nodes in a ParentedTree sequentially starting from 0.
+
+	Args:
+	tree (ParentedTree): The ParentedTree to renumber terminal nodes.
+
+	Returns:
+	ParentedTree: The updated ParentedTree with numbered terminal nodes.
+	"""
+	terminal_count = 0  # Initialize the terminal counter
+
+	def _number_terminals(node):
+		nonlocal terminal_count
+		if isinstance(node, ParentedTree):
+			for i, child in enumerate(node):
+				if isinstance(child, ParentedTree):
+					_number_terminals(child)
+				else:
+					# Assign a new terminal number
+					node[i] = terminal_count
+					terminal_count += 1
+
+	# Create a copy of the tree to avoid modifying the original
+	tree_copy = tree.copy(deep=True)
+	_number_terminals(tree_copy)
+	return tree_copy
+
+def remove_punctuation_nodes(tree):
+	"""
+	Recursively remove punctuation nodes from an NLTK ParentedTree.
+
+	Args:
+	tree (ParentedTree): The tree from which to remove punctuation nodes.
+
+	Returns:
+	ParentedTree: The tree with punctuation nodes removed.
+	"""
+
+	# Traverse the tree and remove punctuation nodes
+	def _remove_punct(tree):
+		if isinstance(tree, ParentedTree):
+			children_to_remove = []
+			for i, child in enumerate(tree):
+				if isinstance(child, ParentedTree):
+					if is_punct_label(child.label):
+						children_to_remove.append(i)
+					else:
+						_remove_punct(child)
+
+			# Remove children from the tree after collecting indices
+			for i in reversed(children_to_remove):
+				del tree[i]
+
+	# Create a copy of the tree to avoid modifying the original
+	tree_copy = tree.copy(deep=True)
+	_remove_punct(tree_copy)
+	return number_terminals(prune_empty_non_terminals(tree_copy))
+
+def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree, CGELTree]:
+	"""
+	Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
+	1. Clean it up to canonicalize the position of punctuation, and to enforce consistency of 
+	preterminals and terminals. (If a punctuation or gap preterminal occurs on the wrong type 
+	of terminal, default to N.)
+	2. Create a CGELTree object from the cleaned tree, with prepunct and postpunct attributes 
+	assigned to the terminal nodes.
+	"""
+	# guardrails against producing illict tree structures
+	tree_copy = tree.copy(deep=True)
+	ptree_terminals = []
+	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
+		i = subt[0]
+		# if initial parse labels non-gaps as GAP, change to N-Head by default
+		if subt.label.startswith('GAP') and senttok[i] != '_.':
+			subt.label = 'N-Head'
+		# condition 1: label is a punctuation sequence w/o -p. [e.g, the label in node `(, ,)`]. Can occur in `annotate` when tree_process() receives an initial dopparsed tree, and in `edit` when tree_process() receives a ParentedTree-format PTB-converted ctree. 
+		# condition 2: label is punctuation sequence (which may or may not be the correct one for the token) + "-p"
+		# condition 3: token is unabiguously punctuation
+		# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
+		if is_possible_punct_sequence(subt.label) or is_punct_label(subt.label) or (is_possible_punct_sequence(senttok[i]) and senttok[i] not in AMBIG_SYM):
+			subt.label = PUNCT_TAGS.get(senttok[i], SYMBOL_TAG) + "-p"
+			# if initial parse labels non-punctuation as punctuation, change to N-Head
+		if (not is_possible_punct_sequence(senttok[i])) and (is_punct_label(subt.label)):
+			subt.label = 'N-Head'
+		ptree_terminals.append(subt)
+
+	# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
+	non_punct_tokens = []
+	prepunct_tokens = [[] for subt in tree_copy.subtrees(lambda t: t.height() == 2) if (not is_punct_label(subt.label))]
+	postpunct_tokens = copy.deepcopy(prepunct_tokens)
+
+	token_counter = 0
+
+	# iterate through the tree to update the three lists simultaneously
+	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
+		i = subt[0]
+		if subt.label in INITIAL_PUNCT_LABELS or (is_punct_label(subt.label) and token_counter == 0):
+			prepunct_tokens[token_counter].append(senttok[i])
+		elif not is_punct_label(subt.label):
+			non_punct_tokens.append(senttok[i])
+			token_counter += 1
+		elif is_punct_label(subt.label) or token_counter == len(senttok) - 1:
+			postpunct_tokens[token_counter - 1].append(senttok[i])
+
+	tree_to_cgel = remove_punctuation_nodes(tree_copy) 
+	
+	try:
+		block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
+		block = io.StringIO(block)
+		cgel_tree = next(load_as_cgel(block))
+	except AssertionError:
+		_, _, tb = sys.exc_info()
+		traceback.print_tb(tb)
+		tb_info = traceback.extract_tb(tb)
+		# if we get this error, it means that ROOT has multiple children, which is not allowed by the CGEL parser.
+		# fallback strategy: place contents of ROOT node under a new node labeled 'Clause'
+		if tb_info[1].line == 'assert root is None':
+			# if some subtree is called ROOT (or Clause w/o function), change to Clause-Head by default
+			for subt in tree_to_cgel.subtrees():
+				if subt.label == 'ROOT':
+					subt.label = 'Clause-Head'
+				elif "-" not in subt.label:
+					subt.label = subt.label + "-Head"
+			tree_to_cgel.label = 'Clause'
+			tree_to_cgel = ParentedTree('ROOT', [tree_to_cgel])
+			block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
+			block = io.StringIO(block)
+			cgel_tree = next(load_as_cgel(block))
+
+	cgel_tree_terminals = cgel_tree.terminals(gaps=True)
+
+	def unescape_ptree_tok(token_list):
+		for i, p in enumerate(token_list):
+			for e in PUNCT_ESCAPING:
+				if p == e['ptree_token']:
+					token_list[i] = e['ctree_punct']
+					break
+
+	for i, terminal in enumerate(cgel_tree_terminals):
+
+		prepunct_token_list = prepunct_tokens[i]
+		unescape_ptree_tok(prepunct_token_list)
+		postpunct_token_list = postpunct_tokens[i]
+		unescape_ptree_tok(postpunct_token_list)
+		terminal.prepunct = prepunct_token_list
+		terminal.postpunct = postpunct_token_list
+		if terminal.text:
+			terminal.text = terminal.text.replace("_", " ")
+
+	cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
+
+	treestr = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
+	
+	parented_tree, _ = brackettree(treestr)
+
+	for i, subt in enumerate(parented_tree.subtrees(lambda t: t.height() == 2)):
+		subt.label = ptree_terminals[i].label
+
+	return (parented_tree, cgel_tree)
+
+def add_editable_attribute(htmltree :str) -> str:
+	""" 
+	Given an html rendering of a tree [the output of DrawTree(... html=True ...) or DrawTree.text(... html=True ...)], output an html tree 
+	in which tree preterminals (span elements of class 'p') have a feature called 'editable'.
+	This feature determines whether the user is able to change function/category labels of preterminals on the graphical tree. 
+	Editability is turned off for preterminals that include punctuation function/pos tags. 
+	(Has to use regex because beautifulsoup wrecks the tree formatting.)
+	"""
+	# add editable attribute to non-punctuation preterminals
+	htmltree_preterminals = re.findall(r'<span\s+class=p[^>]*>', htmltree)
+	for preterminal in htmltree_preterminals:
+		# extract the preterminal's function and pos tag from the span's `data-s` attribute:
+		label = re.search(r'data-s="([^"]*)"', preterminal).group(1).split(' ')[0]
+		m = LABELRE.match(label)
+		if m.group(2) == "-p" or is_possible_punct_sequence(m.group(1)):
+			htmltree = htmltree.replace(preterminal, preterminal.replace('class=p', 'class=p editable="false"'))
+		else:
+			htmltree = htmltree.replace(preterminal, preterminal.replace('class=p', 'class=p editable="true"'))
+	return htmltree
+	
 @app.route('/annotate/redraw')
 @loginrequired
 def redraw():
@@ -717,18 +984,21 @@ def redraw():
 	orig_senttok, _ = worker.postokenize(sent)
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
-		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-			% urlencode(dict(sentno=sentno, tree=treestr)))
+		senttok = orig_senttok
 	else: 
-		cgel_tree = request.args.get('tree')
-		treestr = "(ROOT " + cgel.parse(cgel_tree)[0].ptb() + ")"
-		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
-		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-			% urlencode(dict(sentno=sentno, tree=cgel_tree)))
+		treestr = request.args.get('tree')
+		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True, complex_lexeme_separator='_') + ")"
+		tree_to_viz, senttok = brackettree(treestr)
+		tree_to_viz, cgel_tree = tree_process(tree_to_viz, senttok)
+		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
 	try:
-		tree, senttok, msg = validate(treestr, orig_senttok)
+		tree_to_viz, senttok, msg = validate(treestr, senttok)
+		if app.config['CGELVALIDATE'] is not None:
+			msg += validate_cgel(cgel_tree)
 	except ValueError as err:
 		return str(err)
+	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
+		% urlencode(dict(sentno=sentno, tree=treestr)))
 	oldtree = request.args.get('oldtree', '')
 	if oldtree and treestr != oldtree:
 		session['actions'][EDITDIST] += editdistance(treestr, oldtree)
@@ -736,37 +1006,62 @@ def redraw():
 	return Markup('%s\n\n%s\n\n%s' % (
 			msg,
 			link,
-			# DrawTree(tree, senttok).svg(funcsep='-', hscale=45)
-			DrawTree(tree, senttok).text(
+			add_editable_attribute(DrawTree(tree_to_viz, senttok).text(
 				unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30)
+				nodeprops='t0', maxwidth=30))
 			))
 
+def graphical_operation_preamble():
+	sentno = int(request.args.get('sentno'))  # 1-indexed
+	sent = SENTENCES[QUEUE[sentno - 1][0]]
+	sent_esc = sent_escape(sent)
+	orig_senttok, _ = worker.postokenize(sent_esc)
+	if app.config['CGELVALIDATE'] is None:
+		treestr = request.args.get('tree')
+		cgel_tree_terminals = None
+		senttok = orig_senttok
+	else:
+		cgel_tree = cgel.parse(request.args.get('tree'))[0]
+		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
+		ptb_tree = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
+		tree, senttok = brackettree(ptb_tree)
+		tree, _ = tree_process(tree, senttok)
+		treestr = writediscbrackettree(DrawTree(tree).nodes[0],senttok)
+	msg = ""
+	return tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno
+
+def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno):
+	tree = dt.nodes[0]
+	tree = brackettree(writediscbrackettree(tree, senttok))[0]
+	senttok = senttok_escape(senttok)
+	if app.config['CGELVALIDATE'] is None:
+		tree_to_viz, _ = tree_process(tree, senttok)
+		dt = DrawTree(tree_to_viz, senttok) # kludge..
+		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
+		# validate after operation
+		_, _, msg = validate(treestr, senttok, cgel_validate=False)
+	else:
+		tree_to_viz, cgel_tree = tree_process(tree, senttok)
+		cgel_tree.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
+		treestr = cgel_tree
+		msg = validate_cgel(cgel_tree)
+		dt = DrawTree(tree_to_viz, senttok)
+	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
+		% urlencode(dict(sentno=sentno, tree=treestr)))
+	return treestr, dt, link, msg
 
 @app.route('/annotate/newlabel')
 @loginrequired
 def newlabel():
 	"""Re-draw tree with newly picked label."""
-	sentno = int(request.args.get('sentno'))  # 1-indexed
-	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	orig_senttok, _ = worker.postokenize(sent)
-	if app.config['CGELVALIDATE'] is None:
-		treestr = request.args.get('tree')
-	else:
-		cgel_tree = cgel.parse(request.args.get('tree'))[0]
-		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
-		treestr = "(ROOT " + cgel_tree.ptb() + ")"
-		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
-	try:
-		tree, senttok, msg = validate(treestr, orig_senttok)
-	except ValueError as err:
-		return str(err)
+	tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno = graphical_operation_preamble()
 	# FIXME: re-factor; check label AFTER replacing it
 	# now actually replace label at nodeid
 	_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
 	nodeid = int(nodeid)
 	dt = DrawTree(tree, senttok)
 	m = LABELRE.match(dt.nodes[nodeid].label)
+	error = ""
 	if 'label' in request.args:
 		label = request.args.get('label', '')
 		dt.nodes[nodeid].label = (label
@@ -790,24 +1085,15 @@ def newlabel():
 					m.group(1), m.group(2) or '', label)
 	else:
 		raise ValueError('expected label or function argument')
-	tree = dt.nodes[0]
-	dt = DrawTree(tree, senttok)  # kludge..
-	if app.config['CGELVALIDATE'] is None:
-		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
-	else:
-		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
-		block = io.StringIO(block)	# make it a file-like object
-		treestr = next(load_as_cgel(block))
-		treestr.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
-	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-			% urlencode(dict(sentno=sentno, tree=treestr)))
-	session['actions'][RELABEL] += 1
-	session.modified = True
-	return Markup('%s\n\n%s\n\n%s\t%s' % (
+	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno)
+	if error == '':
+		session['actions'][RELABEL] += 1
+		session.modified = True
+	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
 			msg,
-			link,
-			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30),
+			link, error,
+			add_editable_attribute(dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
+				nodeprops='t0', maxwidth=30)),
 			treestr))
 
 
@@ -815,20 +1101,7 @@ def newlabel():
 @loginrequired
 def reattach():
 	"""Re-draw tree after re-attaching node under new parent."""
-	sentno = int(request.args.get('sentno'))  # 1-indexed
-	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	orig_senttok, _ = worker.postokenize(sent)
-	if app.config['CGELVALIDATE'] is None:
-		treestr = request.args.get('tree')
-	else:
-		cgel_tree = cgel.parse(request.args.get('tree'))[0]
-		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
-		treestr = "(ROOT " + cgel_tree.ptb() + ")"
-		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
-	try:
-		tree, senttok, msg = validate(treestr, orig_senttok)
-	except ValueError as err:
-		return str(err)
+	tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno = graphical_operation_preamble()
 	dt = DrawTree(tree, senttok)
 	error = ''
 	if request.args.get('newparent') == 'deletenode':
@@ -873,6 +1146,57 @@ def reattach():
 		# dt.nodes[nodeid].parent.pop(dt.nodes[nodeid].parent_index)
 		x = dt.nodes[nodeid]
 		y = dt.nodes[newparent]
+
+		def find_self_and_sisters(tree, subtree):
+			parent = None
+			sisters = []
+
+			# Helper function to find the parent of the subtree
+			def find_parent(node, target):
+				nonlocal parent
+				if target in node.children:
+					parent = node
+					return True
+				for child in node.children:
+					if isinstance(child, int):
+						return False
+					elif find_parent(child, target):
+						return True
+				return False
+
+			# Find the parent of the subtree
+			find_parent(tree, subtree)
+
+			if parent:
+				# Collect all children of the parent node
+				sisters = [child for child in parent.children]
+
+			return sisters
+		
+		def extract_adjacent_punctuation(arr, target):
+			# Find the index of the target character
+			try:
+				target_index = arr.index(target)
+			except ValueError:
+				return []  # If target is not in the list, return an empty list
+	
+			# Initialize the result list with the target character
+			result = [target]
+
+			# Collect punctuation characters to the left of the target
+			left_index = target_index - 1
+			while left_index >= 0 and is_punct_label(arr[left_index].label):
+				result.insert(0, arr[left_index])
+				left_index -= 1
+			
+			# Collect punctuation characters to the right of the target
+			right_index = target_index + 1
+			while right_index < len(arr) and is_punct_label(arr[right_index].label):
+				result.append(arr[right_index])
+				right_index += 1
+	
+			return result
+		
 		for node in x.subtrees():
 			if node is y:
 				error = ('ERROR: cannot re-attach subtree'
@@ -882,31 +1206,29 @@ def reattach():
 			for node in dt.nodes[0].subtrees():
 				if any(child is x for child in node):
 					if len(node) > 1:
-						node.remove(x)
-						dt.nodes[newparent].append(x)
+						self_and_sisters = find_self_and_sisters(dt.nodes[0], x)
+						self_and_nearbypunct = extract_adjacent_punctuation(self_and_sisters, x)
+						for s in self_and_nearbypunct:
+							# iteratively move all sister punctuation to the target. 
+							# (prevents problematic crossover movement of non-punctuation nodes over punctuation nodes)
+							# punctuation positions are subsequently re-canonicalized with a call to tree_process()
+							node.remove(s)
+							dt.nodes[newparent].append(s)
 						tree = canonicalize(dt.nodes[0])
 						dt = DrawTree(tree, senttok)  # kludge..
 					else:
 						error = ('ERROR: re-attaching only child creates'
 								' empty node %s; remove manually\n' % node)
 					break
-	if app.config['CGELVALIDATE'] is None:
-		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
-	else:
-		block = writetree(ParentedTree.convert(tree), senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
-		block = io.StringIO(block)	# make it a file-like object
-		treestr = next(load_as_cgel(block))
-		treestr.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
-	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-			% urlencode(dict(sentno=sentno, tree=treestr)))
+	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno)
 	if error == '':
 		session['actions'][REATTACH] += 1
 		session.modified = True
 	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
 			msg,
 			link, error,
-			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30),
+			add_editable_attribute(dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
+				nodeprops='t0', maxwidth=30)),
 			treestr))
 
 
@@ -973,7 +1295,7 @@ def replacesubtree():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
 	else: 
-		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
+		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=False, complex_lexeme_separator='_') + ")"
 		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
 		tree, senttok, msg = validate(treestr, orig_senttok)
@@ -1033,11 +1355,12 @@ def accept():
 		n = 0
 		if app.config['CGELVALIDATE'] is None:
 			treestr = request.args.get('tree')
+			tree_to_train, senttok = discbrackettree(treestr)
+			cgel_tree = "none"
 		else:
-			orig_senttok, _ = worker.postokenize(sent)
-			treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb() + ")"
-			treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
-		tree, senttok = discbrackettree(treestr)
+			cgel_tree = cgel.parse(request.args.get('tree'))[0]
+			tree_to_train, senttok = brackettree(cgel_tree.ptb(punct=True, complex_lexeme_separator='_'))
+			tree_to_train, _ = tree_process(tree_to_train, senttok)
 		# the tokenization may have been updated with gaps, so store the new one
 		SENTENCES[lineno] = ' '.join(senttok)
 		if False:
@@ -1058,21 +1381,15 @@ def accept():
 				node.label = LABELRE.match(node.label).group(1)
 	actions[NBEST] = n
 	session.modified = True
-	block = writetree(tree, senttok, str(lineno + 1), 'export',
+	block = writetree(tree_to_train, senttok, str(lineno + 1), 'export',
 		comment='%s %r' % (username, actions))
 	app.logger.info(block)
 	treeout = block
-	cgel_tree = "none"
-	if app.config['CGELVALIDATE'] is not None:
-		block = io.StringIO(block)	# make it a file-like object
-		cgel_tree = str(next(load_as_cgel(block)))
-	addentry(id, lineno, treeout, cgel_tree, actions)	# save annotation in the database
-	WORKERS[username].submit(worker.augment, [tree], [senttok])	# update the parser's grammar
-	
+	addentry(id, lineno, treeout, str(cgel_tree), actions)	# save annotation in the database
+	WORKERS[username].submit(worker.augment, [tree_to_train], [senttok])	# update the parser's grammar
 	# validate and stay on this sentence if there are issues
 	if treestr:
 		_tree, _senttok, msg = validate(treestr, senttok)
-
 		if 'ERROR' in msg or 'WARNING' in msg:
 			flash('Your annotation for sentence %d was stored %r but may contain errors. Please click Validate to check.' % (sentno, actions))
 			return redirect(url_for('annotate', sentno=sentno))
@@ -1222,13 +1539,34 @@ ALLOW_UNSEEN_VAR_CAT = True
 COIDXRE = re.compile(r'\.(\w+)')	# coindexation variable in constituent label
 
 def isValidPOS(x):
-    return x in workerattr('poslabels')
+	return x in workerattr('poslabels')
 
 def isValidPhraseCat(x):
-    return x in workerattr('phrasallabels') or (ALLOW_MULTIWORD_POS and isValidPOS(x))
+	return x in workerattr('phrasallabels') or (ALLOW_MULTIWORD_POS and isValidPOS(x))
 
 def isValidFxn(x):
-    return x in workerattr('functiontags') or x in app.config['FUNCTIONTAGWHITELIST'] or (ALLOW_UNSEEN_NONCE_FXN and '+' in x)
+	return x in workerattr('functiontags') or x in app.config['FUNCTIONTAGWHITELIST'] or (ALLOW_UNSEEN_NONCE_FXN and '+' in x)
+
+def validate_cgel(cgeltree):
+	STDERR = sys.stderr
+	errS = io.StringIO()
+	sys.stderr = errS
+	msg = ''
+	try:
+		nWarn = cgeltree.validate(require_verb_xpos=False, require_num_xpos=False)
+	except AssertionError:
+		print(traceback.format_exc(), file=errS)
+	sys.stderr = STDERR
+	if not app.config['CGELVALIDATE']:
+		msg += '\n(CGEL VALIDATOR IS OFF)\n'
+	else:
+		errS = errS.getvalue()
+		if errS:
+			msg += '\nCGEL VALIDATOR\n==============\n' + errS
+		else:
+			msg += '\nCGEL VALIDATOR: OK\n'
+	msg = f'<font color=red>{msg}</font>' if msg else ''
+	return msg
 
 def validate(treestr, senttok):
 	"""Verify whether a user-supplied tree is well-formed."""
@@ -1268,12 +1606,16 @@ def validate(treestr, senttok):
 		if len(node) == 0:
 			raise ValueError(('ERROR: a constituent should have '
 					'one or more children:\n%s' % node))
+		# create copy of node to validate POS and function tags (stripping -p from label if present)
+		node_to_validate = copy.deepcopy(node)
+		if node_to_validate.label.endswith('-p'):
+			node_to_validate.label = node.label[:-2]
 		# a POS tag
-		elif isinstance(node[0], int):
+		elif isinstance(node_to_validate[0], int):
 			if not isValidPOS(m.group(1)):
 				raise ValueError(('ERROR: invalid POS tag: %s for %d=%s\n'
 						'valid POS tags: %s' % (
-						node.label, node[0], senttok[node[0]],
+						node_to_validate.label, node_to_validate[0], senttok[node_to_validate[0]],
 						', '.join(sorted(workerattr('poslabels'))))))
 			elif m.group(2) and not isValidFxn(m.group(2)[1:]):
 				raise ValueError(('ERROR: invalid function tag:\n%s\n'
@@ -1303,30 +1645,6 @@ def validate(treestr, senttok):
 		if len(coindexedset)<2:
 			msg += f'ERROR: coindexation variable should have at least two (distinct) constituents: {coindexedset!r} '
 			# message not exception because exception blocks display of the tree
-
-	# construct an export representation of this tree for validation purposes only
-	# writetree requires a string to be passed as its third argument; '1' is a dummy value 
-	block = writetree(tree, senttok, '1', 'export', comment='')  #comment='%s %r' % (username, actions))
-	block = io.StringIO(block)	# make it a file-like object
-
-	if load_as_cgel:	# run the CGEL validator
-		STDERR = sys.stderr
-		errS = io.StringIO()
-		sys.stderr = errS
-		try:
-			cgeltree = next(load_as_cgel(block))
-			nWarn = cgeltree.validate(require_verb_xpos=False, require_num_xpos=False) if app.config['CGELVALIDATE'] else None
-		except AssertionError:
-			print(traceback.format_exc(), file=errS)
-		sys.stderr = STDERR
-		if not app.config['CGELVALIDATE']:
-			msg += '\n(CGEL VALIDATOR IS OFF)\n'
-		else:
-			errS = errS.getvalue()
-			if errS:
-				msg += '\nCGEL VALIDATOR\n==============\n' + errS
-			else:
-				msg += '\nCGEL VALIDATOR: OK\n'
 
 	msg = f'<font color=red>{msg}</font>' if msg else ''
 	return tree, sent1, msg
@@ -1461,6 +1779,25 @@ def decisiontree(parsetrees, sent, urlprm):
 				(x, thistree))
 	return nodes + ''.join(leaves), estimator.tree_.max_depth, path
 
-
 if __name__ == '__main__':
 	pass
+
+@app.cli.command('ptb2ptree')
+@click.option('--inputfile')
+@click.option('--outputfile')
+def ptb2ptree(inputfile, outputfile):
+	"""Convert a list of ptb-labelled bracketed trees from inputfile to ptree-labelled bracketed trees; write to outputfile
+	Produces a list of trees that can be used to train the parser."""
+	result = []
+	with open (inputfile, 'r') as f:
+		for line in f:
+			ptree, senttok = brackettree("(ROOT " + line.strip() + ")")
+			ptree, _ = tree_process(ptree, senttok)
+			# remove -p function label for training the parser
+			for subt in ptree.subtrees(lambda t: t.height() == 2):
+				if subt.label.endswith("-p"):
+					subt.label = subt.label[:-2]
+			ptree = writebrackettree(ptree[0], senttok).rstrip()
+			result.append(ptree)
+	with open(outputfile, 'w') as f:
+		f.write('\n'.join(result))

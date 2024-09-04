@@ -276,15 +276,20 @@ function registerdraggable(div) {
 		elems[n].ondragover = allowDrop;
 	}
 	var elems = div.getElementsByClassName('p');
+	console.log(elems)
 	for (var n = 0; n < elems.length; n++) {
-		elems[n].onclick = pickpos;
-		elems[n].draggable = true;
-		elems[n].ondragstart = drag;
-		elems[n].style = "cursor: move;"
+		if (elems[n].attributes.editable.value == 'true') {
+			elems[n].onclick = pickpos;
+			elems[n].draggable = true;
+			elems[n].ondragstart = drag;
+			elems[n].style = "cursor: move;"
+		}
 	}
 	var elems = div.getElementsByClassName('f');
 	for (var n = 0; n < elems.length; n++) {
-		elems[n].onclick = pickfunction;
+		if (elems[n].attributes.editable.value == 'true') {
+			elems[n].onclick = pickfunction;
+		}
 		// elems[n].draggable = true;
 		// elems[n].ondragstart = drag;
 		// elems[n].style = "cursor: move;"
