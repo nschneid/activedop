@@ -109,9 +109,7 @@ PUNCT_TAGS = {
 	# opening quotation mark
 	"``": "``", "`": "``",
 	# closing quotation mark
-	"''": "''", "'": "''",
-	# dollar sign
-	"$": "$"
+	"''": "''", "'": "''"
 }
 
 # pos tag for symbols (and symbol sequences) that don't have an idiosyncratic PTB tag (in PUNCT_TAGS)
