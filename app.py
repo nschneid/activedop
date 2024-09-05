@@ -873,8 +873,8 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		# if initial parse labels non-gaps as GAP, change to N-Head by default
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
-		# condition 1: label is a punctuation sequence w/o -p. [e.g, the label in node `(, ,)`]. Can occur in `annotate` when tree_process() receives an initial dopparsed tree, and in `edit` when tree_process() receives a ParentedTree-format PTB-converted ctree. 
-		# condition 2: label is punctuation sequence (which may or may not be the correct one for the token) + "-p"
+		# condition 1: label consists of a recognized punctuation pos tag, without a function tag [e.g, the label in node `(, ,)`]. Can occur in `annotate` when tree_process() receives an initial dopparsed tree, and in `edit` when tree_process() receives a ParentedTree-format PTB-converted ctree. 
+		# condition 2: label contains a "p" function tag
 		# condition 3: token is unabiguously punctuation
 		# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
 		if is_punct_postag(subt.label) or is_punct_label(subt.label) or (is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM):
