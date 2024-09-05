@@ -125,14 +125,13 @@ AMBIG_SYM = {
 
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+)$')
-PUNCTRE_LABEL = re.compile(r'.*-p$')
 INITIAL_PUNCT_LABELS = {'LRB-p', '[-p', '{-p'}
 
 def is_punct_postag(tag):
 	return tag in PUNCT_TAGS.values() or tag == SYMBOL_TAG
 
 def is_punct_label(label):
-	return re.match(PUNCTRE_LABEL, label) or label in [e['ptree_label'] for e in PUNCT_ESCAPING]
+	return label.endswith('-p')
 
 def is_possible_punct_token(token):
 	return re.match(PUNCTRE, token) or token in PUNCT_TAGS or token in [i['ptree_token'] for i in PUNCT_ESCAPING]
