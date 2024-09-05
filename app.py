@@ -135,7 +135,7 @@ def is_punct_label(label):
 	return re.match(PUNCTRE_LABEL, label) or label in [e['ptree_label'] for e in PUNCT_ESCAPING]
 
 def is_possible_punct_token(token):
-	return re.match(PUNCTRE, token) or token in PUNCT_TAGS.keys() or token in [i['ptree_token'] for i in PUNCT_ESCAPING]
+	return re.match(PUNCTRE, token) or token in PUNCT_TAGS or token in [i['ptree_token'] for i in PUNCT_ESCAPING]
 
 def senttok_escape(senttok):
 	"""Replace special characters in a tokenized sentence.
