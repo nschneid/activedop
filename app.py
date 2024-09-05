@@ -128,11 +128,14 @@ PUNCTRE = re.compile(r'^(\W+)$')
 PUNCTRE_LABEL = re.compile(r'.*-p$')
 INITIAL_PUNCT_LABELS = {'LRB-p', '[-p', '{-p'}
 
-def is_possible_punct_sequence(token):
-	return re.match(PUNCTRE, token) or token in [e['ptree_token'] for e in PUNCT_ESCAPING]
+def is_punct_postag(tag):
+	return tag in PUNCT_TAGS.values() or tag == SYMBOL_TAG
 
 def is_punct_label(label):
 	return re.match(PUNCTRE_LABEL, label) or label in [e['ptree_label'] for e in PUNCT_ESCAPING]
+
+def is_possible_punct_token(token):
+	return re.match(PUNCTRE, token) or token in PUNCT_TAGS.keys() or token in [i['ptree_token'] for i in PUNCT_ESCAPING]
 
 def senttok_escape(senttok):
 	"""Replace special characters in a tokenized sentence.
@@ -875,10 +878,10 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 		# condition 2: label is punctuation sequence (which may or may not be the correct one for the token) + "-p"
 		# condition 3: token is unabiguously punctuation
 		# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
-		if is_possible_punct_sequence(subt.label) or is_punct_label(subt.label) or (is_possible_punct_sequence(senttok[i]) and senttok[i] not in AMBIG_SYM):
+		if is_punct_postag(subt.label) or is_punct_label(subt.label) or (is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM):
 			subt.label = PUNCT_TAGS.get(senttok[i], SYMBOL_TAG) + "-p"
 			# if initial parse labels non-punctuation as punctuation, change to N-Head
-		if (not is_possible_punct_sequence(senttok[i])) and (is_punct_label(subt.label)):
+		if (not is_possible_punct_token(senttok[i])) and (is_punct_label(subt.label)):
 			subt.label = 'N-Head'
 		ptree_terminals.append(subt)
 
@@ -970,7 +973,7 @@ def add_editable_attribute(htmltree :str) -> str:
 		# extract the preterminal's function and pos tag from the span's `data-s` attribute:
 		label = re.search(r'data-s="([^"]*)"', preterminal).group(1).split(' ')[0]
 		m = LABELRE.match(label)
-		if m.group(2) == "-p" or is_possible_punct_sequence(m.group(1)):
+		if m.group(2) == "-p" or is_punct_postag(m.group(1)):
 			htmltree = htmltree.replace(preterminal, preterminal.replace('class=p', 'class=p editable="false"'))
 		else:
 			htmltree = htmltree.replace(preterminal, preterminal.replace('class=p', 'class=p editable="true"'))
