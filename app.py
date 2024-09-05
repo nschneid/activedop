@@ -1001,6 +1001,7 @@ def redraw():
 			msg += validate_cgel(cgel_tree)
 	except ValueError as err:
 		return str(err)
+	treestr = cgel_tree
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=sentno, tree=treestr)))
 	oldtree = request.args.get('oldtree', '')
