@@ -1394,6 +1394,7 @@ def accept():
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
+		tree_to_train, cgel_tree = tree_process(tree, senttok)
 		if False:
 			# strip function tags
 			for node in tree.subtrees():
