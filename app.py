@@ -1766,6 +1766,10 @@ def ptb2ptree(inputfile, outputfile):
 	with open (inputfile, 'r') as f:
 		for line in f:
 			ptree, senttok = brackettree("(ROOT " + line.strip() + ")")
+			# escape punctuation preterminals
+			for subt in ptree.subtrees(lambda t: t.height() == 2):
+				if subt.label in PUNCT_TAGS:
+					subt.label = PUNCT_TAGS[subt.label]
 			ptree, _ = tree_process(ptree, senttok)
 			# remove -p function label for training the parser
 			for subt in ptree.subtrees(lambda t: t.height() == 2):
