@@ -544,10 +544,8 @@ def annotate(sentno):
 			worker.domorph(item.tree)
 			tree = writediscbrackettree(item.tree, item.sent)
 		else: 
-			tree = "(ROOT" + cgel.parse(annotation)[0].ptb(punct = True) + ")"
-			tree = brackettree(tree)[0]
+			tree = annotation
 			senttok, _ = worker.postokenize(sent)
-			tree = writediscbrackettree(tree,senttok)
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
 	return render_template(
@@ -742,7 +740,14 @@ def edit():
 	if request.args.get('annotated', False):
 		msg = Markup('<font color=red>You have already annotated '
 				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
-		tree, senttok = discbrackettree(request.args.get('tree'))
+		if app.config['CGELVALIDATE'] is None:
+			tree, senttok = discbrackettree(request.args.get('tree'))
+		else:
+			cgel_tree = cgel.parse(request.args.get('tree'))[0]
+			tree = "(ROOT" + cgel_tree.ptb(punct = True) + ")"
+			tree, senttok = brackettree(tree)
+			tree = writediscbrackettree(tree,senttok)
+			treestr = cgel_tree
 	elif 'n' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
@@ -755,17 +760,27 @@ def edit():
 				sent_esc, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
+		if app.config['CGELVALIDATE'] is None:
+			pass
+		else:
+			_, cgel_tree = tree_process(tree, senttok)
+			treestr = cgel_tree
 	elif 'tree' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
-		tree, senttok = discbrackettree(request.args.get('tree'))
+		if app.config['CGELVALIDATE'] is None:
+			tree, senttok = discbrackettree(request.args.get('tree'))
+		else:
+			cgel_tree = cgel.parse(request.args.get('tree'))[0]
+			tree = "(ROOT" + cgel_tree.ptb(punct = True) + ")"
+			tree, senttok = brackettree(tree)
+			tree = writediscbrackettree(tree,senttok)
+			treestr = cgel_tree
 	else:
 		return 'ERROR: pass n or tree argument.'
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
 	else:
-		_, cgel_tree = tree_process(tree, senttok)
-		treestr = cgel_tree
 		rows = max(5, treestr.depth)
 	return render_template('edittree.html',
 			prevlink=('/annotate/annotate/%d' % (sentno - 1))
