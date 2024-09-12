@@ -997,25 +997,27 @@ def redraw():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
 		senttok = orig_senttok
+		tree_for_editdist = re.sub(r'\s+', ' ', treestr)
+		tree_to_validate = treestr
 	else: 
 		treestr = request.args.get('tree')
-		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True, complex_lexeme_separator='_') + ")"
-		tree_to_viz, senttok = brackettree(treestr)
-		tree_to_viz, cgel_tree = tree_process(tree_to_viz, senttok)
-		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
+		cgel_tree = cgel.parse(treestr)[0]
+		tree_to_viz, senttok = brackettree("(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")")
+		tree_to_viz, _ = tree_process(tree_to_viz, senttok)
+		tree_for_editdist = re.sub(r'\s+', ' ', str(cgel_tree))
+		tree_to_validate = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
 	try:
-		tree_to_viz, senttok, msg = validate(treestr, senttok)
+		tree_to_viz, senttok, msg = validate(tree_to_validate, senttok)
 		if app.config['CGELVALIDATE'] is not None:
 			msg += validate_cgel(cgel_tree)
 	except ValueError as err:
 		return str(err)
-	treestr = re.sub(r'\s+', ' ', str(cgel_tree))
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=sentno, tree=treestr)))
 	oldtree = request.args.get('oldtree', '')
 	oldtree = re.sub(r'\s+', ' ', oldtree)
-	if oldtree and treestr != oldtree:
-		session['actions'][EDITDIST] += editdistance(treestr, oldtree)
+	if oldtree and tree_for_editdist != oldtree:
+		session['actions'][EDITDIST] += editdistance(tree_for_editdist, oldtree)
 		session.modified = True
 	return Markup('%s\n\n%s\n\n%s' % (
 			msg,
