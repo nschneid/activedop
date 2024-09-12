@@ -545,8 +545,7 @@ def annotate(sentno):
 			tree = writediscbrackettree(item.tree, item.sent)
 		else: 
 			tree = "(ROOT" + cgel.parse(annotation)[0].ptb(punct = True) + ")"
-			tree = brackettree(tree)[0]
-			senttok, _ = worker.postokenize(sent)
+			tree, senttok = brackettree(tree)
 			tree = writediscbrackettree(tree,senttok)
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
