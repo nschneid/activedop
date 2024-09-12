@@ -60,6 +60,9 @@
 	
 	function reTokenize(sentno) {
 		var newtext = document.getElementById('editInput').value;
+		newtext = newtext.trim();
+		newtext = newtext.replace(/\s+/g, ' ');
+		document.getElementById('editInput').value = newtext;
 		var sentno = document.getElementById('sentno').value;
 		document.getElementById('editableSent').innerText = newtext;
 		document.getElementById('editableSent').style.display = "inline";
