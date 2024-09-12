@@ -1770,6 +1770,8 @@ def ptb2ptree(inputfile, outputfile):
 			for subt in ptree.subtrees(lambda t: t.height() == 2):
 				if subt.label in PUNCT_TAGS:
 					subt.label = PUNCT_TAGS[subt.label]
+				elif is_possible_punct_token(subt.label):
+					subt.label = SYMBOL_TAG
 			ptree, _ = tree_process(ptree, senttok)
 			# remove -p function label for training the parser
 			for subt in ptree.subtrees(lambda t: t.height() == 2):
