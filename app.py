@@ -961,7 +961,7 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 def add_editable_attribute(htmltree :str) -> str:
 	""" 
 	Given an html rendering of a tree [the output of DrawTree(... html=True ...) or DrawTree.text(... html=True ...)], output an html tree 
-	in which tree preterminals (span elements of class 'p') have a feature called 'editable'.
+	in which tree preterminals (span elements of class 'p') and function tags (span elements of class 'f') have a feature called 'editable'.
 	This feature determines whether the user is able to change function/category labels of preterminals on the graphical tree. 
 	Editability is turned off for preterminals that include punctuation function/pos tags. 
 	(Has to use regex because beautifulsoup wrecks the tree formatting.)
@@ -976,6 +976,15 @@ def add_editable_attribute(htmltree :str) -> str:
 			htmltree = htmltree.replace(preterminal, preterminal.replace('class=p', 'class=p editable="false"'))
 		else:
 			htmltree = htmltree.replace(preterminal, preterminal.replace('class=p', 'class=p editable="true"'))
+	# add editable attribute to non-punctuation function tags
+	htmltree_functiontags = re.findall(r'<span\s+class=f[^>]*>', htmltree)
+	for functiontag in htmltree_functiontags:
+		# extract the function tag from the span's `data-s` attribute:
+		label = re.search(r'data-s="([^"]*)"', functiontag).group(1)
+		if is_punct_label(label):
+			htmltree = htmltree.replace(functiontag, functiontag.replace('class=f', 'class=f editable="false"'))
+		else:
+			htmltree = htmltree.replace(functiontag, functiontag.replace('class=f', 'class=f editable="true"'))
 	return htmltree
 	
 @app.route('/annotate/redraw')
@@ -1394,6 +1403,7 @@ def accept():
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
+		tree_to_train, cgel_tree = tree_process(tree, senttok)
 		if False:
 			# strip function tags
 			for node in tree.subtrees():
@@ -1756,6 +1766,10 @@ def ptb2ptree(inputfile, outputfile):
 	with open (inputfile, 'r') as f:
 		for line in f:
 			ptree, senttok = brackettree("(ROOT " + line.strip() + ")")
+			# escape punctuation preterminals
+			for subt in ptree.subtrees(lambda t: t.height() == 2):
+				if subt.label in PUNCT_TAGS:
+					subt.label = PUNCT_TAGS[subt.label]
 			ptree, _ = tree_process(ptree, senttok)
 			# remove -p function label for training the parser
 			for subt in ptree.subtrees(lambda t: t.height() == 2):
