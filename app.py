@@ -1009,10 +1009,11 @@ def redraw():
 			msg += validate_cgel(cgel_tree)
 	except ValueError as err:
 		return str(err)
-	treestr = cgel_tree
+	treestr = re.sub(r'\s+', ' ', str(cgel_tree))
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=sentno, tree=treestr)))
 	oldtree = request.args.get('oldtree', '')
+	oldtree = re.sub(r'\s+', ' ', oldtree)
 	if oldtree and treestr != oldtree:
 		session['actions'][EDITDIST] += editdistance(treestr, oldtree)
 		session.modified = True
