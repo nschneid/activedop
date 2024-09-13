@@ -544,9 +544,8 @@ def annotate(sentno):
 			worker.domorph(item.tree)
 			tree = writediscbrackettree(item.tree, item.sent)
 		else: 
-			tree = "(ROOT" + cgel.parse(annotation)[0].ptb(punct = True) + ")"
-			tree, senttok = brackettree(tree)
-			tree = writediscbrackettree(tree,senttok)
+			tree = annotation
+      _, senttok = brackettree( "(ROOT" + cgel.parse(annotation)[0].ptb(punct = True) + ")" )
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
 	return render_template(
@@ -741,7 +740,14 @@ def edit():
 	if request.args.get('annotated', False):
 		msg = Markup('<font color=red>You have already annotated '
 				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
-		tree, senttok = discbrackettree(request.args.get('tree'))
+		if app.config['CGELVALIDATE'] is None:
+			tree, senttok = discbrackettree(request.args.get('tree'))
+		else:
+			cgel_tree = cgel.parse(request.args.get('tree'))[0]
+			tree = "(ROOT" + cgel_tree.ptb(punct = True) + ")"
+			tree, senttok = brackettree(tree)
+			tree = writediscbrackettree(tree,senttok)
+			treestr = cgel_tree
 	elif 'n' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
@@ -754,17 +760,27 @@ def edit():
 				sent_esc, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
+		if app.config['CGELVALIDATE'] is None:
+			pass
+		else:
+			_, cgel_tree = tree_process(tree, senttok)
+			treestr = cgel_tree
 	elif 'tree' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
-		tree, senttok = discbrackettree(request.args.get('tree'))
+		if app.config['CGELVALIDATE'] is None:
+			tree, senttok = discbrackettree(request.args.get('tree'))
+		else:
+			cgel_tree = cgel.parse(request.args.get('tree'))[0]
+			tree = "(ROOT" + cgel_tree.ptb(punct = True) + ")"
+			tree, senttok = brackettree(tree)
+			tree = writediscbrackettree(tree,senttok)
+			treestr = cgel_tree
 	else:
 		return 'ERROR: pass n or tree argument.'
 	if app.config['CGELVALIDATE'] is None:
 		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
 	else:
-		_, cgel_tree = tree_process(tree, senttok)
-		treestr = cgel_tree
 		rows = max(5, treestr.depth)
 	return render_template('edittree.html',
 			prevlink=('/annotate/annotate/%d' % (sentno - 1))
@@ -996,24 +1012,27 @@ def redraw():
 	if app.config['CGELVALIDATE'] is None:
 		treestr = request.args.get('tree')
 		senttok = orig_senttok
+		tree_for_editdist = re.sub(r'\s+', ' ', treestr)
+		tree_to_validate = treestr
 	else: 
 		treestr = request.args.get('tree')
-		treestr = "(ROOT " + cgel.parse(treestr)[0].ptb(punct=True, complex_lexeme_separator='_') + ")"
-		tree_to_viz, senttok = brackettree(treestr)
-		tree_to_viz, cgel_tree = tree_process(tree_to_viz, senttok)
-		treestr = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
+		cgel_tree = cgel.parse(treestr)[0]
+		tree_to_viz, senttok = brackettree("(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")")
+		tree_to_viz, _ = tree_process(tree_to_viz, senttok)
+		tree_for_editdist = re.sub(r'\s+', ' ', str(cgel_tree))
+		tree_to_validate = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
 	try:
-		tree_to_viz, senttok, msg = validate(treestr, senttok)
+		tree_to_viz, senttok, msg = validate(tree_to_validate, senttok)
 		if app.config['CGELVALIDATE'] is not None:
 			msg += validate_cgel(cgel_tree)
 	except ValueError as err:
 		return str(err)
-	treestr = cgel_tree
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=sentno, tree=treestr)))
 	oldtree = request.args.get('oldtree', '')
-	if oldtree and treestr != oldtree:
-		session['actions'][EDITDIST] += editdistance(treestr, oldtree)
+	oldtree = re.sub(r'\s+', ' ', oldtree)
+	if oldtree and tree_for_editdist != oldtree:
+		session['actions'][EDITDIST] += editdistance(tree_for_editdist, oldtree)
 		session.modified = True
 	return Markup('%s\n\n%s\n\n%s' % (
 			msg,
@@ -1769,6 +1788,8 @@ def ptb2ptree(inputfile, outputfile):
 			for subt in ptree.subtrees(lambda t: t.height() == 2):
 				if subt.label in PUNCT_TAGS:
 					subt.label = PUNCT_TAGS[subt.label]
+				elif is_possible_punct_token(subt.label):
+					subt.label = SYMBOL_TAG
 			ptree, _ = tree_process(ptree, senttok)
 			# remove -p function label for training the parser
 			for subt in ptree.subtrees(lambda t: t.height() == 2):
