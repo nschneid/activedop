@@ -812,7 +812,7 @@ def edit():
 	else:
 		return 'ERROR: pass n or tree argument.'
 	if app.config['CGELVALIDATE'] is None:
-		treestr = writediscbrackettree(treeobj.ptree, treeobj.senttok, pretty=True).rstrip()
+		treestr = treeobj.brackettreestr(pretty = True)
 		rows = max(5, treestr.count('\n') + 1)
 	else:
 		rows = max(5, treestr.depth)
