@@ -153,6 +153,46 @@ def sent_escape(sent):
 	senttok = sent.split()
 	return " ".join(senttok_escape(senttok))
 
+class ActivedopTree:
+	"""Wrapper for a ParentedTree object with additional methods for activedop.
+	ptree: ParentedTree object with terminals that are numeric indices.
+	senttok: list of tokens corresponding to the terminals of ptree.
+	cgel_tree: CGELTree object.
+	cgel_terminals: list of CGELTree terminals.
+	brackettreestr: string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen.
+	gtree: html representation of ptree.
+	"""
+
+	def __init__(self, ptree: ParentedTree, senttok: List[str], cgel_terminals = None):
+		self.ptree, self.cgel_tree = tree_process(ptree, senttok)
+		self.senttok = senttok
+		if cgel_terminals is not None:
+			self.cgel_tree.update_terminals(cgel_terminals, gaps=True)
+	
+	def brackettreestr(self, pretty = False):
+		return writediscbrackettree(self.ptree, self.senttok, pretty = pretty)
+	
+	def gtree(self, add_editable_attr = False):
+		out = DrawTree(DrawTree(self.ptree).nodes[0], self.senttok).text(
+				unicodelines=True, html=True, funcsep='-',
+				morphsep='/', nodeprops='t1', maxwidth=30)
+		if add_editable_attr:
+			return add_editable_attribute(out)
+		else:
+			return out
+	
+	@classmethod
+	def from_cgeltree(cls, cgel_tree: CGELTree):
+		cgel_terminals = cgel_tree.terminals(gaps=True)
+		tree = "(ROOT" + cgel_tree.ptb(punct=True) + ")"
+		tree, senttok = brackettree(tree)
+		return cls(tree, senttok, cgel_terminals)
+	
+	@classmethod
+	def from_brackettreestr(cls, bracket_tree: str):
+		tree, senttok = brackettree(bracket_tree)
+		return cls(tree, senttok)
+
 # Load default config and override config from an environment variable
 app.config.update(
 		DATABASE=os.path.join(app.root_path, 'annotate.db'),
@@ -615,9 +655,8 @@ def parse():
 			depsvg = Markup(DrawDependencies.fromconll(dep).svg())
 		result = ''
 		dectree, maxdepth, _ = decisiontree(parsetrees, senttok, urlprm)
-		prob, tree, _treestr, _fragments = parsetrees[0]
-		tree_to_viz, _ = tree_process(tree, senttok)
-		tree_to_viz = DrawTree(tree_to_viz).nodes[0]
+		prob, ptree, _treestr, _fragments = parsetrees[0]
+		treeobj = ActivedopTree(ptree, senttok)
 		nbest = Markup('%s\nbest tree: %s' % (
 				dectree,
 				('%(n)d. [%(prob)s] '
@@ -629,9 +668,7 @@ def parse():
 					n=1,
 					prob=probstr(prob),
 					urlprm=urlencode(dict(urlprm, n=1)),
-					tree=DrawTree(tree_to_viz, senttok).text(
-						unicodelines=True, html=True, funcsep='-',
-						morphsep='/', nodeprops='t1', maxwidth=30)))))
+					tree=treeobj.gtree()))))
 	msg = '\n'.join(messages)
 	elapsed = 'CPU time elapsed: %s => %gs' % (
 			' '.join('%gs' % a for a in elapsed), sum(elapsed))
@@ -741,13 +778,11 @@ def edit():
 		msg = Markup('<font color=red>You have already annotated '
 				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
 		if app.config['CGELVALIDATE'] is None:
-			tree, senttok = discbrackettree(request.args.get('tree'))
+			treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
+			treestr = treeobj.brackettreestr()
 		else:
-			cgel_tree = cgel.parse(request.args.get('tree'))[0]
-			tree = "(ROOT" + cgel_tree.ptb(punct = True) + ")"
-			tree, senttok = brackettree(tree)
-			tree = writediscbrackettree(tree,senttok)
-			treestr = cgel_tree
+			treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
+			treestr = str(treeobj.cgel_tree)
 	elif 'n' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
@@ -761,24 +796,23 @@ def edit():
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
 		if app.config['CGELVALIDATE'] is None:
-			pass
+			treeobj = ActivedopTree(tree, senttok)
+			treestr = treeobj.brackettreestr()
 		else:
-			_, cgel_tree = tree_process(tree, senttok)
-			treestr = cgel_tree
+			treeobj = ActivedopTree(tree, senttok)
+			treestr = treeobj.cgel_tree
 	elif 'tree' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		if app.config['CGELVALIDATE'] is None:
-			tree, senttok = discbrackettree(request.args.get('tree'))
+			treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
+			treestr = treeobj.brackettreestr()
 		else:
-			cgel_tree = cgel.parse(request.args.get('tree'))[0]
-			tree = "(ROOT" + cgel_tree.ptb(punct = True) + ")"
-			tree, senttok = brackettree(tree)
-			tree = writediscbrackettree(tree,senttok)
-			treestr = cgel_tree
+			treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
+			treestr = treeobj.cgel_tree
 	else:
 		return 'ERROR: pass n or tree argument.'
 	if app.config['CGELVALIDATE'] is None:
-		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
+		treestr = writediscbrackettree(treeobj.ptree, treeobj.senttok, pretty=True).rstrip()
 		rows = max(5, treestr.count('\n') + 1)
 	else:
 		rows = max(5, treestr.depth)
@@ -1010,25 +1044,22 @@ def redraw():
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
 	orig_senttok, _ = worker.postokenize(sent)
 	if app.config['CGELVALIDATE'] is None:
-		treestr = request.args.get('tree')
-		senttok = orig_senttok
-		tree_for_editdist = re.sub(r'\s+', ' ', treestr)
-		tree_to_validate = treestr
+		treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
+		tree_to_accept = treeobj.brackettreestr()
 	else: 
-		treestr = request.args.get('tree')
-		cgel_tree = cgel.parse(treestr)[0]
-		tree_to_viz, senttok = brackettree("(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")")
-		tree_to_viz, _ = tree_process(tree_to_viz, senttok)
-		tree_for_editdist = re.sub(r'\s+', ' ', str(cgel_tree))
-		tree_to_validate = writediscbrackettree(DrawTree(tree_to_viz).nodes[0],senttok)
+		treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
+		tree_to_accept = str(treeobj.cgel_tree)
+	tree_for_editdist = re.sub(r'\s+', ' ', str(tree_to_accept))
 	try:
-		tree_to_viz, senttok, msg = validate(tree_to_validate, senttok)
+		tree_to_validate = treeobj.brackettreestr()
+		senttok = treeobj.senttok
+		_, _, msg = validate(tree_to_validate, senttok)
 		if app.config['CGELVALIDATE'] is not None:
-			msg += validate_cgel(cgel_tree)
+			msg += validate_cgel(treeobj.cgel_tree)
 	except ValueError as err:
 		return str(err)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-		% urlencode(dict(sentno=sentno, tree=treestr)))
+		% urlencode(dict(sentno=sentno, tree=tree_to_accept)))
 	oldtree = request.args.get('oldtree', '')
 	oldtree = re.sub(r'\s+', ' ', oldtree)
 	if oldtree and tree_for_editdist != oldtree:
@@ -1037,60 +1068,45 @@ def redraw():
 	return Markup('%s\n\n%s\n\n%s' % (
 			msg,
 			link,
-			add_editable_attribute(DrawTree(tree_to_viz, senttok).text(
-				unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30))
+			treeobj.gtree(add_editable_attr=True)
 			))
 
 def graphical_operation_preamble():
-	sentno = int(request.args.get('sentno'))  # 1-indexed
-	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	sent_esc = sent_escape(sent)
-	orig_senttok, _ = worker.postokenize(sent_esc)
 	if app.config['CGELVALIDATE'] is None:
-		treestr = request.args.get('tree')
+		treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
 		cgel_tree_terminals = None
-		senttok = orig_senttok
 	else:
-		cgel_tree = cgel.parse(request.args.get('tree'))[0]
-		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
-		ptb_tree = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
-		tree, senttok = brackettree(ptb_tree)
-		tree, _ = tree_process(tree, senttok)
-		treestr = writediscbrackettree(DrawTree(tree).nodes[0],senttok)
-	msg = ""
-	return tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno
+		treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
+		cgel_tree_terminals = treeobj.cgel_tree.terminals(gaps=True)
+	return treeobj, cgel_tree_terminals
 
-def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno):
-	tree = dt.nodes[0]
-	tree = brackettree(writediscbrackettree(tree, senttok))[0]
-	senttok = senttok_escape(senttok)
+def graphical_operation_postamble(dt, senttok, cgel_tree_terminals):
+	tree = canonicalize(dt.nodes[0])
+	ptree, senttok = brackettree(writediscbrackettree(tree, senttok))
+	treeobj = ActivedopTree(ptree, senttok)
+	_, _, msg = validate(treeobj.brackettreestr(), senttok)
 	if app.config['CGELVALIDATE'] is None:
-		tree_to_viz, _ = tree_process(tree, senttok)
-		dt = DrawTree(tree_to_viz, senttok) # kludge..
-		treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
-		# validate after operation
-		_, _, msg = validate(treestr, senttok, cgel_validate=False)
-	else:
-		tree_to_viz, cgel_tree = tree_process(tree, senttok)
-		cgel_tree.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
-		treestr = cgel_tree
-		msg = validate_cgel(cgel_tree)
-		dt = DrawTree(tree_to_viz, senttok)
+		treestr = treeobj.brackettreestr(pretty=True).rstrip()
+	if app.config['CGELVALIDATE'] is not None:
+		treeobj.cgel_tree.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
+		treestr = str(treeobj.cgel_tree)
+		msg += validate_cgel(treeobj.cgel_tree)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-		% urlencode(dict(sentno=sentno, tree=treestr)))
-	return treestr, dt, link, msg
+		% urlencode(dict(sentno=int(request.args.get('sentno')), tree=treestr)))
+	
+	return treeobj, treestr, link, msg
 
 @app.route('/annotate/newlabel')
 @loginrequired
 def newlabel():
 	"""Re-draw tree with newly picked label."""
-	tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno = graphical_operation_preamble()
+	treeobj, cgel_tree_terminals = graphical_operation_preamble()
+	senttok = treeobj.senttok
 	# FIXME: re-factor; check label AFTER replacing it
 	# now actually replace label at nodeid
 	_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
 	nodeid = int(nodeid)
-	dt = DrawTree(tree, senttok)
+	dt = DrawTree(treeobj.ptree, treeobj.senttok)
 	m = LABELRE.match(dt.nodes[nodeid].label)
 	error = ""
 	if 'label' in request.args:
@@ -1116,15 +1132,14 @@ def newlabel():
 					m.group(1), m.group(2) or '', label)
 	else:
 		raise ValueError('expected label or function argument')
-	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno)
+	treeobj, treestr, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals) 
 	if error == '':
 		session['actions'][RELABEL] += 1
 		session.modified = True
 	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
 			msg,
 			link, error,
-			add_editable_attribute(dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30)),
+			treeobj.gtree(add_editable_attr=True),
 			treestr))
 
 
@@ -1132,9 +1147,10 @@ def newlabel():
 @loginrequired
 def reattach():
 	"""Re-draw tree after re-attaching node under new parent."""
-	tree, senttok, msg, treestr, orig_senttok, cgel_tree_terminals, sentno = graphical_operation_preamble()
-	dt = DrawTree(tree, senttok)
+	treeobj, cgel_tree_terminals = graphical_operation_preamble()
+	dt = DrawTree(treeobj.ptree, treeobj.senttok)
 	error = ''
+	senttok = treeobj.senttok
 	if request.args.get('newparent') == 'deletenode':
 		# remove nodeid by replacing it with its children
 		_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
@@ -1266,15 +1282,14 @@ def reattach():
 						error = ('ERROR: re-attaching only child creates'
 								' empty node %s; remove manually\n' % node)
 					break
-	treestr, dt, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, orig_senttok, sentno)
+	treeobj, treestr, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals) 
 	if error == '':
 		session['actions'][REATTACH] += 1
 		session.modified = True
 	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
 			msg,
 			link, error,
-			add_editable_attribute(dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30)),
+			treeobj.gtree(add_editable_attr=True),
 			treestr))
 
 
@@ -1400,13 +1415,14 @@ def accept():
 	if 'tree' in request.args:
 		n = 0
 		if app.config['CGELVALIDATE'] is None:
-			treestr = request.args.get('tree')
-			tree_to_train, senttok = discbrackettree(treestr)
+			treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
 			cgel_tree = "none"
 		else:
-			cgel_tree = cgel.parse(request.args.get('tree'))[0]
-			tree_to_train, senttok = brackettree(cgel_tree.ptb(punct=True, complex_lexeme_separator='_'))
-			tree_to_train, _ = tree_process(tree_to_train, senttok)
+			treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
+			cgel_tree = treeobj.cgel_tree
+		tree_to_train = treeobj.ptree
+		senttok = treeobj.senttok
+		treestr = treeobj.brackettreestr()
 		# the tokenization may have been updated with gaps, so store the new one
 		SENTENCES[lineno] = ' '.join(senttok)
 		if False:
