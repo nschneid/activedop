@@ -782,7 +782,7 @@ def edit():
 			treestr = treeobj.brackettreestr()
 		else:
 			treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
-			treestr = str(treeobj.cgel_tree)
+			treestr = treeobj.cgel_tree
 	elif 'n' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
