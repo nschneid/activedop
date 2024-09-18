@@ -172,6 +172,12 @@ class ActivedopTree:
 	
 	def brackettreestr(self, pretty = False):
 		return writediscbrackettree(self.ptree, self.senttok, pretty = pretty)
+
+	def validate(self):
+		_, _, msg = validate(self.brackettreestr(), self.senttok)
+		if app.config['CGELVALIDATE'] is not None:
+			msg += validate_cgel(self.cgel_tree)
+		return msg
 	
 	def treestr(self):
 		if app.config['CGELVALIDATE'] is None:
@@ -1032,14 +1038,7 @@ def redraw():
 	treeobj = ActivedopTree.from_str(request.args.get('tree'))
 	tree_to_accept = treeobj.treestr()
 	tree_for_editdist = re.sub(r'\s+', ' ', str(tree_to_accept))
-	try:
-		tree_to_validate = treeobj.brackettreestr()
-		senttok = treeobj.senttok
-		_, _, msg = validate(tree_to_validate, senttok)
-		if app.config['CGELVALIDATE'] is not None:
-			msg += validate_cgel(treeobj.cgel_tree)
-	except ValueError as err:
-		return str(err)
+	msg = treeobj.validate()
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=sentno, tree=tree_to_accept)))
 	oldtree = request.args.get('oldtree', '')
@@ -1065,9 +1064,7 @@ def graphical_operation_postamble(dt, senttok, cgel_tree_terminals):
 	tree = canonicalize(dt.nodes[0])
 	ptree, senttok = brackettree(writediscbrackettree(tree, senttok))
 	treeobj = ActivedopTree(ptree, senttok, cgel_tree_terminals)
-	_, _, msg = validate(treeobj.brackettreestr(), senttok)
-	if app.config['CGELVALIDATE'] is not None:
-		msg += validate_cgel(treeobj.cgel_tree)
+	msg = treeobj.validate()
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=int(request.args.get('sentno')), tree=treeobj.treestr())))	
 	return treeobj, link, msg
