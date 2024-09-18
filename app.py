@@ -160,6 +160,7 @@ class ActivedopTree:
 	cgel_tree: CGELTree object.
 	cgel_terminals: list of CGELTree terminals.
 	brackettreestr: string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen.
+	treestr: helpful alias for string representation of the tree (CGEL or bracket notation depending on app settings).
 	gtree: html representation of ptree.
 	"""
 
@@ -167,10 +168,16 @@ class ActivedopTree:
 		self.ptree, self.cgel_tree = tree_process(ptree, senttok)
 		self.senttok = senttok
 		if cgel_terminals is not None:
-			self.cgel_tree.update_terminals(cgel_terminals, gaps=True)
+			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 	
 	def brackettreestr(self, pretty = False):
 		return writediscbrackettree(self.ptree, self.senttok, pretty = pretty)
+	
+	def treestr(self):
+		if app.config['CGELVALIDATE'] is None:
+			return self.brackettreestr(pretty=True).rstrip()
+		else:
+			return str(self.cgel_tree)
 	
 	def gtree(self, add_editable_attr = False):
 		out = DrawTree(DrawTree(self.ptree).nodes[0], self.senttok).text(
@@ -180,18 +187,18 @@ class ActivedopTree:
 			return add_editable_attribute(out)
 		else:
 			return out
-	
+
 	@classmethod
-	def from_cgeltree(cls, cgel_tree: CGELTree):
-		cgel_terminals = cgel_tree.terminals(gaps=True)
-		tree = "(ROOT" + cgel_tree.ptb(punct=True) + ")"
-		tree, senttok = brackettree(tree)
-		return cls(tree, senttok, cgel_terminals)
-	
-	@classmethod
-	def from_brackettreestr(cls, bracket_tree: str):
-		tree, senttok = brackettree(bracket_tree)
-		return cls(tree, senttok)
+	def from_str(cls, tree: str):
+		if app.config['CGELVALIDATE'] is None:
+			ptree, senttok = brackettree(tree)
+			return cls(ptree, senttok)
+		else:
+			cgel_tree = cgel.parse(tree)[0]
+			cgel_terminals = cgel_tree.terminals(gaps=True)
+			tree_bracket = "(ROOT" + cgel_tree.ptb(punct=True) + ")"
+			ptree, senttok = brackettree(tree_bracket)
+			return cls(ptree, senttok, cgel_terminals)
 
 # Load default config and override config from an environment variable
 app.config.update(
@@ -777,12 +784,7 @@ def edit():
 	if request.args.get('annotated', False):
 		msg = Markup('<font color=red>You have already annotated '
 				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
-		if app.config['CGELVALIDATE'] is None:
-			treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
-			treestr = treeobj.brackettreestr()
-		else:
-			treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
-			treestr = treeobj.cgel_tree
+		treeobj = ActivedopTree.from_str(request.args.get('tree'))
 	elif 'n' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
@@ -795,27 +797,13 @@ def edit():
 				sent_esc, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
-		if app.config['CGELVALIDATE'] is None:
-			treeobj = ActivedopTree(tree, senttok)
-			treestr = treeobj.brackettreestr()
-		else:
-			treeobj = ActivedopTree(tree, senttok)
-			treestr = treeobj.cgel_tree
+		treeobj = ActivedopTree(tree, senttok)
 	elif 'tree' in request.args:
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
-		if app.config['CGELVALIDATE'] is None:
-			treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
-			treestr = treeobj.brackettreestr()
-		else:
-			treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
-			treestr = treeobj.cgel_tree
+		treeobj = ActivedopTree.from_str(request.args.get('tree'))
 	else:
 		return 'ERROR: pass n or tree argument.'
-	if app.config['CGELVALIDATE'] is None:
-		treestr = treeobj.brackettreestr(pretty = True)
-		rows = max(5, treestr.count('\n') + 1)
-	else:
-		rows = max(5, treestr.depth)
+	rows = max(5, treeobj.treestr().count('\n') + 1)
 	return render_template('edittree.html',
 			prevlink=('/annotate/annotate/%d' % (sentno - 1))
 				if sentno > 1 else '/annotate/annotate/%d' % (len(SENTENCES)),
@@ -823,7 +811,7 @@ def edit():
 				if sentno < len(SENTENCES) else '/annotate/annotate/1',
 			unextlink=('/annotate/annotate/%d' % firstunannotated(username))
 				if sentno < len(SENTENCES) else '#',
-			treestr=treestr, senttok=sent, id=id,
+			treestr=treeobj.treestr(), senttok=sent, id=id,
 			sentno=sentno, lineno=lineno + 1, totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			poslabels=sorted(t for t in workerattr('poslabels') if ('@' not in t) and (t not in PUNCT_TAGS.values()) and (t != SYMBOL_TAG)),
@@ -1041,14 +1029,8 @@ def add_editable_attribute(htmltree :str) -> str:
 def redraw():
 	"""Validate and re-draw tree."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
-	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	orig_senttok, _ = worker.postokenize(sent)
-	if app.config['CGELVALIDATE'] is None:
-		treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
-		tree_to_accept = treeobj.brackettreestr()
-	else: 
-		treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
-		tree_to_accept = str(treeobj.cgel_tree)
+	treeobj = ActivedopTree.from_str(request.args.get('tree'))
+	tree_to_accept = treeobj.treestr()
 	tree_for_editdist = re.sub(r'\s+', ' ', str(tree_to_accept))
 	try:
 		tree_to_validate = treeobj.brackettreestr()
@@ -1072,29 +1054,23 @@ def redraw():
 			))
 
 def graphical_operation_preamble():
+	treeobj = ActivedopTree.from_str(request.args.get('tree'))
 	if app.config['CGELVALIDATE'] is None:
-		treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
 		cgel_tree_terminals = None
 	else:
-		treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
 		cgel_tree_terminals = treeobj.cgel_tree.terminals(gaps=True)
 	return treeobj, cgel_tree_terminals
 
 def graphical_operation_postamble(dt, senttok, cgel_tree_terminals):
 	tree = canonicalize(dt.nodes[0])
 	ptree, senttok = brackettree(writediscbrackettree(tree, senttok))
-	treeobj = ActivedopTree(ptree, senttok)
+	treeobj = ActivedopTree(ptree, senttok, cgel_tree_terminals)
 	_, _, msg = validate(treeobj.brackettreestr(), senttok)
-	if app.config['CGELVALIDATE'] is None:
-		treestr = treeobj.brackettreestr(pretty=True).rstrip()
 	if app.config['CGELVALIDATE'] is not None:
-		treeobj.cgel_tree.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
-		treestr = str(treeobj.cgel_tree)
 		msg += validate_cgel(treeobj.cgel_tree)
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-		% urlencode(dict(sentno=int(request.args.get('sentno')), tree=treestr)))
-	
-	return treeobj, treestr, link, msg
+		% urlencode(dict(sentno=int(request.args.get('sentno')), tree=treeobj.treestr())))	
+	return treeobj, link, msg
 
 @app.route('/annotate/newlabel')
 @loginrequired
@@ -1132,7 +1108,7 @@ def newlabel():
 					m.group(1), m.group(2) or '', label)
 	else:
 		raise ValueError('expected label or function argument')
-	treeobj, treestr, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals) 
+	treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals) 
 	if error == '':
 		session['actions'][RELABEL] += 1
 		session.modified = True
@@ -1140,7 +1116,7 @@ def newlabel():
 			msg,
 			link, error,
 			treeobj.gtree(add_editable_attr=True),
-			treestr))
+			treeobj.treestr()))
 
 
 @app.route('/annotate/reattach')
@@ -1282,7 +1258,7 @@ def reattach():
 						error = ('ERROR: re-attaching only child creates'
 								' empty node %s; remove manually\n' % node)
 					break
-	treeobj, treestr, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals) 
+	treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals) 
 	if error == '':
 		session['actions'][REATTACH] += 1
 		session.modified = True
@@ -1290,7 +1266,7 @@ def reattach():
 			msg,
 			link, error,
 			treeobj.gtree(add_editable_attr=True),
-			treestr))
+			treeobj.treestr()))
 
 
 @app.route('/annotate/reparsesubtree')
@@ -1414,15 +1390,10 @@ def accept():
 		actions[DECTREE] += int(request.args.get('dec', 0))
 	if 'tree' in request.args:
 		n = 0
-		if app.config['CGELVALIDATE'] is None:
-			treeobj = ActivedopTree.from_brackettreestr(request.args.get('tree'))
-			cgel_tree = "none"
-		else:
-			treeobj = ActivedopTree.from_cgeltree(cgel.parse(request.args.get('tree'))[0])
-			cgel_tree = treeobj.cgel_tree
+		treeobj = ActivedopTree.from_str(request.args.get('tree'))
 		tree_to_train = treeobj.ptree
 		senttok = treeobj.senttok
-		treestr = treeobj.brackettreestr()
+		cgel_tree = treeobj.cgel_tree
 		# the tokenization may have been updated with gaps, so store the new one
 		SENTENCES[lineno] = ' '.join(senttok)
 		if False:
