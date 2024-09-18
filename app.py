@@ -1271,20 +1271,13 @@ def reattach():
 def reparsesubtree():
 	"""Re-parse selected subtree."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
-	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	orig_senttok, _ = worker.postokenize(sent)
 	username = session['username']
-	treestr = request.args.get('tree', '')
-	try:
-		tree, senttok, msg = validate(treestr, orig_senttok)
-	except ValueError as err:
-		return str(err)
-	error = ''
-	dt = DrawTree(tree, senttok)
+	treeobj = ActivedopTree.from_str(request.args.get('tree'))
+	dt = DrawTree(treeobj.ptree, treeobj.senttok)
 	_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
 	nodeid = int(nodeid)
 	subseq = sorted(dt.nodes[nodeid].leaves())
-	subsent = ' '.join(senttok[n] for n in subseq)
+	subsent = ' '.join(treeobj.senttok[n] for n in subseq)
 	# FIXME only works when root label of tree matches label in grammar.
 	# need a single label that works across all stages.
 	root = dt.nodes[nodeid].label
@@ -1322,25 +1315,19 @@ def reparsesubtree():
 def replacesubtree():
 	n = int(request.args.get('n', 0))
 	sentno = int(request.args.get('sentno'))  # 1-indexed
-	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	orig_senttok, _ = worker.postokenize(sent)
 	username = session['username']
-	treestr = request.args.get('tree')
-	if app.config['CGELVALIDATE'] is None:
-		treestr = request.args.get('tree')
-	else: 
-		treestr = "(ROOT " + cgel.parse(request.args.get('tree'))[0].ptb(punct=False, complex_lexeme_separator='_') + ")"
-		treestr = writediscbrackettree(DrawTree(treestr).nodes[0],orig_senttok)
 	try:
-		tree, senttok, msg = validate(treestr, orig_senttok)
+		treeobj = ActivedopTree.from_str(request.args.get('tree'))
 	except ValueError as err:
 		return str(err)
 	error = ''
-	dt = DrawTree(tree, senttok)
+	msg = treeobj.validate()
+	dt = DrawTree(treeobj.ptree, treeobj.senttok)
+	cgel_tree_terminals = treeobj.cgel_tree.terminals(gaps=True)
 	_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
 	nodeid = int(nodeid)
 	subseq = sorted(dt.nodes[nodeid].leaves())
-	subsent = ' '.join(senttok[n] for n in subseq)
+	subsent = ' '.join(treeobj.senttok[n] for n in subseq)
 	root = dt.nodes[nodeid].label
 	resp = WORKERS[username].submit(
 			worker.getparses,
@@ -1355,18 +1342,17 @@ def replacesubtree():
 		a[0] = subseq[n]
 	dt.nodes[nodeid][:] = newsubtree[:]
 	tree = canonicalize(dt.nodes[0])
-	dt = DrawTree(tree, senttok)  # kludge..
-	treestr = writediscbrackettree(tree, senttok, pretty=True).rstrip()
+	ptree, senttok = brackettree(writediscbrackettree(tree, treeobj.senttok))
+	treeobj = ActivedopTree(ptree, senttok, cgel_tree_terminals)
 	session['actions'][REPARSE] += 1
 	session.modified = True
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-			% urlencode(dict(sentno=sentno, tree=treestr)))
+			% urlencode(dict(sentno=sentno, tree=treeobj.treestr())))
 	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
 			msg,
 			link, error,
-			dt.text(unicodelines=True, html=True, funcsep='-', morphsep='/',
-				nodeprops='t0', maxwidth=30),
-			treestr))
+			treeobj.gtree(add_editable_attr=True),
+			treeobj.treestr()))
 
 
 @app.route('/annotate/accept')
