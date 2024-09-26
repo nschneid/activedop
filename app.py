@@ -166,11 +166,7 @@ class ActivedopTree:
 
 	def __init__(self, ptree: ParentedTree, senttok: List[str], cgel_terminals = None):
 		self.senttok = senttok
-<<<<<<< HEAD
 		# standardize ptree with correct labels for punctuation and gaps
-=======
-		# standardize ptree and correct punctuation labels
->>>>>>> 6366f5f41de8418be05a0b5d82170f3e567c9c28
 		self.ptree = apply_standard_labels(ptree, self.senttok)
 		ptree_terminals_with_labels = copy.deepcopy([subt for subt in self.ptree.subtrees(lambda t: t.height() == 2)])
 		# convert ptree to a CGELTree object
