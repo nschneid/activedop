@@ -165,8 +165,18 @@ class ActivedopTree:
 	"""
 
 	def __init__(self, ptree: ParentedTree, senttok: List[str], cgel_terminals = None):
-		self.ptree, self.cgel_tree = tree_process(ptree, senttok)
 		self.senttok = senttok
+		# standardize ptree and correct punctuation labels
+		self.ptree = apply_standard_labels(ptree, self.senttok)
+		ptree_terminals_with_labels = copy.deepcopy([subt for subt in self.ptree.subtrees(lambda t: t.height() == 2)])
+		# convert ptree to a CGELTree object
+		self.cgel_tree = ptree_to_cgel(self.ptree, senttok)
+		# update ptree by canonicalizing the position of punctuation terminals/preterminals
+		self.ptree = cgel_to_canonicalized_ptree(self.cgel_tree)
+		# update canonicalized ptree with standardized labels
+		for i, subt in enumerate(self.ptree.subtrees(lambda t: t.height() == 2)):
+			subt.label = ptree_terminals_with_labels[i].label
+		# update cgel_tree with a set of terminals if provided
 		if cgel_terminals is not None:
 			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 	
@@ -195,8 +205,10 @@ class ActivedopTree:
 			return out
 
 	@classmethod
-	def from_str(cls, tree: str):
-		if app.config['CGELVALIDATE'] is None:
+	def from_str(cls, tree: str, from_bracket = False, add_root = True):
+		if from_bracket or app.config['CGELVALIDATE'] is None:
+			if add_root:
+				tree = "(ROOT" + tree + ")"
 			ptree, senttok = brackettree(tree)
 			return cls(ptree, senttok)
 		else:
@@ -597,8 +609,9 @@ def annotate(sentno):
 			worker.domorph(item.tree)
 			tree = writediscbrackettree(item.tree, item.sent)
 		else: 
-			tree = annotation
-			_, senttok = brackettree( "(ROOT" + cgel.parse(annotation)[0].ptb(punct = True) + ")" )
+			treeobj = ActivedopTree.from_str(annotation)
+			senttok = treeobj.senttok
+			tree = treeobj.cgel_tree
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
 	return render_template(
@@ -899,24 +912,20 @@ def remove_punctuation_nodes(tree):
 	_remove_punct(tree_copy)
 	return number_terminals(prune_empty_non_terminals(tree_copy))
 
-def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree, CGELTree]:
+def apply_standard_labels(tree: ParentedTree, senttok: List[str]) -> ParentedTree:
 	"""
 	Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
-	1. Clean it up to canonicalize the position of punctuation, and to enforce consistency of 
-	preterminals and terminals. (If a punctuation or gap preterminal occurs on the wrong type 
-	of terminal, default to N.)
-	2. Create a CGELTree object from the cleaned tree, with prepunct and postpunct attributes 
-	assigned to the terminal nodes.
+	Enforce consistency of preterminal labels and terminals. 
+	(If a punctuation or gap preterminal occurs on the wrong type of terminal, default to N.)
 	"""
 	# guardrails against producing illict tree structures
 	tree_copy = tree.copy(deep=True)
-	ptree_terminals = []
 	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
 		i = subt[0]
 		# if initial parse labels non-gaps as GAP, change to N-Head by default
 		if subt.label.startswith('GAP') and senttok[i] != '_.':
 			subt.label = 'N-Head'
-		# condition 1: label consists of a recognized punctuation pos tag, without a function tag [e.g, the label in node `(, ,)`]. Can occur in `annotate` when tree_process() receives an initial dopparsed tree, and in `edit` when tree_process() receives a ParentedTree-format PTB-converted ctree. 
+		# condition 1: label consists of a recognized punctuation pos tag, without a function tag [e.g, the label in node `(, ,)`]. Can occur in `annotate` when apply_standard_labels() receives an initial dopparsed tree, and in `edit` when apply_standard_labels() receives a ParentedTree-format PTB-converted ctree. 
 		# condition 2: label contains a "p" function tag
 		# condition 3: token is unabiguously punctuation
 		# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
@@ -925,8 +934,16 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 			# if initial parse labels non-punctuation as punctuation, change to N-Head
 		if (not is_possible_punct_token(senttok[i])) and (is_punct_label(subt.label)):
 			subt.label = 'N-Head'
-		ptree_terminals.append(subt)
+	return tree_copy
 
+def ptree_to_cgel(tree: ParentedTree, senttok: List[str]) -> ParentedTree:
+	"""
+	Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
+	Convert it to a CGELTree object, with prepunct and postpunct attributes assigned to the terminal nodes.
+	Assumes that tree has been processed by apply_standard_labels().
+	Outputs both a CGELTree object and a ParentedTree object, the latter of which is the cleaned-up version of the input tree with a canonicalized position for punctuation preterminals/terminals.
+	"""
+	tree_copy = tree.copy(deep=True)
 	# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
 	non_punct_tokens = []
 	prepunct_tokens = [[] for subt in tree_copy.subtrees(lambda t: t.height() == 2) if (not is_punct_label(subt.label))]
@@ -991,15 +1008,17 @@ def tree_process(tree : ParentedTree, senttok: List[str]) -> tuple[ParentedTree,
 			terminal.text = terminal.text.replace("_", " ")
 
 	cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
+	return cgel_tree
+
+def cgel_to_canonicalized_ptree(cgel_tree: CGELTree) -> ParentedTree:
+	"""Convert a cgel_tree to a ParentedTree object. 
+	This step canonicalizes the position of punctuation preterminals/terminals."""
 
 	treestr = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
 	
 	parented_tree, _ = brackettree(treestr)
 
-	for i, subt in enumerate(parented_tree.subtrees(lambda t: t.height() == 2)):
-		subt.label = ptree_terminals[i].label
-
-	return (parented_tree, cgel_tree)
+	return parented_tree
 
 def add_editable_attribute(htmltree :str) -> str:
 	""" 
@@ -1246,7 +1265,7 @@ def reattach():
 						for s in self_and_nearbypunct:
 							# iteratively move all sister punctuation to the target. 
 							# (prevents problematic crossover movement of non-punctuation nodes over punctuation nodes)
-							# punctuation positions are subsequently re-canonicalized with a call to tree_process()
+							# punctuation positions are subsequently re-canonicalized when ActivedopTree is reconstructed
 							node.remove(s)
 							dt.nodes[newparent].append(s)
 						tree = canonicalize(dt.nodes[0])
@@ -1391,7 +1410,8 @@ def accept():
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
-		tree_to_train, cgel_tree = tree_process(tree, senttok)
+		treeobj = ActivedopTree(tree, senttok)
+		tree_to_train, cgel_tree = treeobj.ptree, treeobj.cgel_tree
 		if False:
 			# strip function tags
 			for node in tree.subtrees():
@@ -1753,19 +1773,12 @@ def ptb2ptree(inputfile, outputfile):
 	result = []
 	with open (inputfile, 'r') as f:
 		for line in f:
-			ptree, senttok = brackettree("(ROOT " + line.strip() + ")")
-			# escape punctuation preterminals
-			for subt in ptree.subtrees(lambda t: t.height() == 2):
-				if subt.label in PUNCT_TAGS:
-					subt.label = PUNCT_TAGS[subt.label]
-				elif is_possible_punct_token(subt.label):
-					subt.label = SYMBOL_TAG
-			ptree, _ = tree_process(ptree, senttok)
+			treeobj = ActivedopTree.from_str(line.strip(), from_bracket = True)
 			# remove -p function label for training the parser
-			for subt in ptree.subtrees(lambda t: t.height() == 2):
+			for subt in treeobj.ptree.subtrees(lambda t: t.height() == 2):
 				if subt.label.endswith("-p"):
 					subt.label = subt.label[:-2]
-			ptree = writebrackettree(ptree[0], senttok).rstrip()
+			ptree = writebrackettree(ptree[0], treeobj.senttok).rstrip()
 			result.append(ptree)
 	with open(outputfile, 'w') as f:
 		f.write('\n'.join(result))
