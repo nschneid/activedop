@@ -41,34 +41,34 @@
 	</div>
 </form>
 
+{%block script %}
 <script>
 	function makeEditable() {
 		event.preventDefault();
-		document.getElementById('editableSent').style.display = "none";
-		document.getElementById('editInput').style.display = "inline";
-		document.getElementById('cancelButton').style.display = "inline";
-		document.getElementById('reTokenizeButton').style.display = "inline";
+		$("#editableSent").hide();
+		$("#editInput").css("display", "inline");
+		$("#cancelButton").css("display", "inline");
+		$("#reTokenizeButton").css("display", "inline");
 	}
 	
 	function cancelEdit() {
 		event.preventDefault();
-		document.getElementById('editableSent').style.display = "inline";
-		document.getElementById('editInput').style.display = "none";
-		document.getElementById('cancelButton').style.display = "none";
-		document.getElementById('reTokenizeButton').style.display = "none";
+		$("#editableSent").css("display", "inline");
+		$("#editInput").hide();
+		$("#cancelButton").hide();
+		$("#reTokenizeButton").hide();
 	}
 	
 	function reTokenize(sentno) {
-		var newtext = document.getElementById('editInput').value;
+		var newtext = $("#editInput").val();
 		newtext = newtext.trim();
 		newtext = newtext.replace(/\s+/g, ' ');
-		document.getElementById('editInput').value = newtext;
-		var sentno = document.getElementById('sentno').value;
-		document.getElementById('editableSent').innerText = newtext;
-		document.getElementById('editableSent').style.display = "inline";
-		document.getElementById('editInput').style.display = "none";
-		document.getElementById('cancelButton').style.display = "none";
-		document.getElementById('reTokenizeButton').style.display = "none";
+		var sentno = $("#sentno").val();
+		$("#editableSent").text(newtext)
+		$("#editableSent").css("display", "inline");
+		$("#editInput").hide();
+		$("#cancelButton").hide();
+		$("#reTokenizeButton").hide();
 		fetch('/retokenize', {
 			method: 'POST',
 			headers: {
@@ -83,6 +83,7 @@
 		});
 		}
 </script>
+{% endblock %}
 
 <div style="display: none; " id=constraintdiv>
 	Required: [<span id=showrequire></span>]; Blocked: [<span id=showblock></span>]

@@ -32,14 +32,17 @@
 </div>
 {{ msg }}
 
+{%block script %}
 <script>
+	/*goback() is called by the Go back button, which is passed into this page 
+	from the above jinja {{ msg }} tag */
 	function goback() {
-		var sentno = document.getElementById('sentno').value;
+		var sentno = $('#sentno').val();
 		window.location.href = '/annotate/annotate/' + sentno;
 	}
 	function undoAccept() {
-		var sentid = document.getElementById('sentid').value;
-		var sentno = document.getElementById('sentno').value;
+		var sentid = $('#sentid').val();
+		var sentno = $('#sentno').val();
 		fetch('/undoaccept', {
 			method: 'POST',
 			headers: {
@@ -59,6 +62,7 @@
 		});
 	}
 </script>
+{% endblock %}
 
 <div id=help style="display: none;">
 	<ul>
