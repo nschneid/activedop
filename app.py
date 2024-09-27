@@ -155,13 +155,10 @@ def sent_escape(sent):
 
 class ActivedopTree:
 	"""Wrapper for a ParentedTree object with additional methods for activedop.
-	ptree: ParentedTree object with terminals that are numeric indices.
-	senttok: list of tokens corresponding to the terminals of ptree.
-	cgel_tree: CGELTree object.
-	cgel_terminals: list of CGELTree terminals.
-	brackettreestr: string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen.
-	treestr: helpful alias for string representation of the tree (CGEL or bracket notation depending on app settings).
-	gtree: html representation of ptree.
+	__init__ arguments:
+		ptree: ParentedTree object with terminals that are numeric indices.
+		senttok: list of tokens corresponding to the terminals of ptree.
+		cgel_terminals: a list of CGELTree terminals (optional, to replace terminals of CGELTree in initialization).
 	"""
 
 	def __init__(self, ptree: ParentedTree, senttok: List[str], cgel_terminals = None):
@@ -180,21 +177,25 @@ class ActivedopTree:
 		if cgel_terminals is not None:
 			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 	
+	# brackettreestr: string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen.
 	def brackettreestr(self, pretty = False):
 		return writediscbrackettree(self.ptree, self.senttok, pretty = pretty)
 
+	# validate: run the brackettree validator on the bracket notation of the tree (plus the CGEL validator if enabled); return the message
 	def validate(self):
 		_, _, msg = validate(self.brackettreestr(), self.senttok)
 		if app.config['CGELVALIDATE'] is not None:
 			msg += validate_cgel(self.cgel_tree)
 		return msg
 	
+	# treestr: helpful alias for string representation of the tree (CGEL or bracket notation depending on app settings).
 	def treestr(self):
 		if app.config['CGELVALIDATE'] is None:
 			return self.brackettreestr(pretty=True).rstrip()
 		else:
 			return str(self.cgel_tree)
 	
+	# gtree: html representation of ptree.
 	def gtree(self, add_editable_attr = False):
 		out = DrawTree(DrawTree(self.ptree).nodes[0], self.senttok).text(
 				unicodelines=True, html=True, funcsep='-',
@@ -204,6 +205,7 @@ class ActivedopTree:
 		else:
 			return out
 
+	# from_str: create an ActivedopTree object from a string representation of a tree (CGEL or bracket notation depending on app settings and `from_bracket` param).
 	@classmethod
 	def from_str(cls, tree: str, from_bracket = False, add_root = True):
 		if from_bracket or app.config['CGELVALIDATE'] is None:
