@@ -185,9 +185,18 @@ def workerattr(attr):
 
 
 @app.cli.command('initpriorities')
-def initpriorities():
-	"""Order sentences by entropy of their parse trees probabilities."""
+@click.option('--username', default='JoeAnnotator', help='Username to initialize priorities for.')
+def initpriorities(username):
+	"""Order sentences by entropy of their parse trees probabilities.
+	Sentences with saved annotations are included first in the order and are not re-parsed."""
 	sentfilename = app.config['SENTENCES']
+	db = getdb()
+	cur = db.execute(
+		'SELECT * FROM entries WHERE username = ? ORDER BY sentno ASC',
+		(username, )
+	)
+	dbentries = cur.fetchall()
+	dbentryids = {a[0] for a in dbentries}
 	if sentfilename is None:
 		raise ValueError('SENTENCES not configured')
 	sentences = []
@@ -199,25 +208,32 @@ def initpriorities():
 	# NB: here we do not use a subprocess to do the parsing
 	worker.loadgrammar(app.config['GRAMMAR'], app.config['LIMIT'])
 	queue = []
+	already_annotated = []
 	for n, entry in enumerate(sentences):
 		sent = entry['sentence']
 		id = entry['id']
-		try:
-			senttok, parsetrees, _messages, _elapsed = worker.getparses(sent)
-		except ValueError:
-			parsetrees = []
-			senttok = []
-		app.logger.info('%d. [parse trees=%d] %s',
-				n + 1, len(parsetrees), sent)
-		ent = 0
-		if parsetrees:
-			probs = [prob for prob, _tree, _treestr, _deriv in parsetrees]
+		if id in dbentryids:
+			app.logger.info('%d. [already annotated] %s',
+					n + 1, sent)
+			already_annotated.append((n, 0, sent, id))
+		else:
 			try:
-				ent = entropy(probs)  # / log(len(parsetrees), 2)
-			except (ValueError, ZeroDivisionError):
-				pass
-		queue.append((n, ent, sent, id))
+				senttok, parsetrees, _messages, _elapsed = worker.getparses(sent)
+			except ValueError:
+				parsetrees = []
+				senttok = []
+			app.logger.info('%d. [parse trees=%d] %s',
+					n + 1, len(parsetrees), sent)
+			ent = 0
+			if parsetrees:
+				probs = [prob for prob, _tree, _treestr, _deriv in parsetrees]
+				try:
+					ent = entropy(probs)  # / log(len(parsetrees), 2)
+				except (ValueError, ZeroDivisionError):
+					pass
+			queue.append((n, ent, sent, id))
 	queue.sort(key=lambda x: x[1], reverse=True)
+	queue = already_annotated + queue
 	rankingfilename = '%s.rankings.json' % sentfilename
 	with open(rankingfilename, 'w') as rankingfile:
 		json.dump(queue, rankingfile, indent=4)
