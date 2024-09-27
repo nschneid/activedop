@@ -177,26 +177,27 @@ class ActivedopTree:
 		if cgel_terminals is not None:
 			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 	
-	# brackettreestr: string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen.
 	def brackettreestr(self, pretty = False):
+		"""returns a string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen."""
 		return writediscbrackettree(self.ptree, self.senttok, pretty = pretty)
 
-	# validate: run the brackettree validator on the bracket notation of the tree (plus the CGEL validator if enabled); return the message
 	def validate(self):
+		"""run the brackettree validator on the bracket notation of the tree (plus the CGEL validator if enabled); return the message"""
 		_, _, msg = validate(self.brackettreestr(), self.senttok)
 		if app.config['CGELVALIDATE'] is not None:
 			msg += validate_cgel(self.cgel_tree)
 		return msg
 	
-	# treestr: helpful alias for string representation of the tree (CGEL or bracket notation depending on app settings).
 	def treestr(self):
+		"""helpful alias for string representation of the tree (CGEL or bracket notation depending on app settings)."""
 		if app.config['CGELVALIDATE'] is None:
 			return self.brackettreestr(pretty=True).rstrip()
 		else:
 			return str(self.cgel_tree)
 	
-	# gtree: html representation of ptree.
+	# gtree: 
 	def gtree(self, add_editable_attr = False):
+		"""returns an html representation of the ptree.""""
 		out = DrawTree(DrawTree(self.ptree).nodes[0], self.senttok).text(
 				unicodelines=True, html=True, funcsep='-',
 				morphsep='/', nodeprops='t1', maxwidth=30)
@@ -205,9 +206,9 @@ class ActivedopTree:
 		else:
 			return out
 
-	# from_str: create an ActivedopTree object from a string representation of a tree (CGEL or bracket notation depending on app settings and `from_bracket` param).
 	@classmethod
 	def from_str(cls, tree: str, from_bracket = False, add_root = True):
+		"""create an ActivedopTree object from a string representation of a tree (CGEL or bracket notation depending on app settings and `from_bracket` param)."""
 		if from_bracket or app.config['CGELVALIDATE'] is None:
 			if add_root:
 				tree = "(ROOT" + tree + ")"
