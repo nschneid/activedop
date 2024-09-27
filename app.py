@@ -197,7 +197,7 @@ class ActivedopTree:
 	
 	# gtree: 
 	def gtree(self, add_editable_attr = False):
-		"""returns an html representation of the ptree.""""
+		"""returns an html representation of the ptree."""
 		out = DrawTree(DrawTree(self.ptree).nodes[0], self.senttok).text(
 				unicodelines=True, html=True, funcsep='-',
 				morphsep='/', nodeprops='t1', maxwidth=30)
