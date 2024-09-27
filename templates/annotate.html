@@ -69,15 +69,16 @@
 		$("#editInput").hide();
 		$("#cancelButton").hide();
 		$("#reTokenizeButton").hide();
-		fetch('/retokenize', {
+		$.ajax({
 			method: 'POST',
+			url: '/retokenize',
 			headers: {
-				'Content-Type': 'application/json',
+				"Content-Type":'application/json'
 			},
-			body: JSON.stringify({newtext: newtext, sentno: sentno}),
+			data: JSON.stringify({newtext: newtext, sentno: sentno})
+		}).then(data => {
+			console.log('Success', data);
 		})
-		.then(response => response.json())
-		.then(data => console.log('Success:', data))
 		.catch((error) => {
 			console.error('Error:', error);
 		});

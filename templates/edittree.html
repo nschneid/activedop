@@ -43,20 +43,17 @@
 	function undoAccept() {
 		var sentid = $('#sentid').val();
 		var sentno = $('#sentno').val();
-		fetch('/undoaccept', {
+		$.ajax({
 			method: 'POST',
+			url: '/undoaccept',
 			headers: {
-				'Content-Type': 'application/json',
+				"Content-Type":'application/json'
 			},
-			body: JSON.stringify({sentid: sentid}),
+			data: JSON.stringify({sentid: sentid})
+		}).then(data => {
+			console.log('Success', data);
+			$(location).attr('href', '/annotate/annotate/' + sentno);
 		})
-		.then(response => response.json())
-		.then(data => {
-			console.log('Success:', data);
-			window.location.href = '/annotate/annotate/' + sentno;
-		}
-		)
-		.then(redirect('/annotate/annotate/1'))
 		.catch((error) => {
 			console.error('Error:', error);
 		});
