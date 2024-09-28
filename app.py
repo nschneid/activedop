@@ -154,14 +154,13 @@ def sent_escape(sent):
 	return " ".join(senttok_escape(senttok))
 
 class ActivedopTree:
-	"""Wrapper for a ParentedTree object with additional methods for activedop.
-	__init__ arguments:
+	"""Wrapper for a ParentedTree object with additional methods for activedop."""
+	def __init__(self, ptree: ParentedTree, senttok: List[str], cgel_terminals = None):
+		"""
 		ptree: ParentedTree object with terminals that are numeric indices.
 		senttok: list of tokens corresponding to the terminals of ptree.
 		cgel_terminals: a list of CGELTree terminals (optional, to replace terminals of CGELTree in initialization).
-	"""
-
-	def __init__(self, ptree: ParentedTree, senttok: List[str], cgel_terminals = None):
+		"""
 		self.senttok = senttok
 		# standardize ptree with correct labels for punctuation and gaps
 		self.ptree = apply_standard_labels(ptree, self.senttok)
@@ -195,7 +194,6 @@ class ActivedopTree:
 		else:
 			return str(self.cgel_tree)
 	
-	# gtree: 
 	def gtree(self, add_editable_attr = False):
 		"""returns an html representation of the ptree."""
 		out = DrawTree(DrawTree(self.ptree).nodes[0], self.senttok).text(
