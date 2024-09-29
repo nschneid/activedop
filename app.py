@@ -161,14 +161,15 @@ class ActivedopTree:
 		senttok: list of tokens corresponding to the terminals of ptree.
 		cgel_terminals: a list of CGELTree terminals (optional, to replace terminals of CGELTree in initialization).
 		"""
+		self.ptree = ptree
 		self.senttok = senttok
 		# standardize ptree with correct labels for punctuation and gaps
-		self.ptree = apply_standard_labels(ptree, self.senttok)
+		self.ptree = self.apply_standard_labels()
 		ptree_terminals_with_labels = copy.deepcopy([subt for subt in self.ptree.subtrees(lambda t: t.height() == 2)])
 		# convert ptree to a CGELTree object
-		self.cgel_tree = ptree_to_cgel(self.ptree, senttok)
+		self.cgel_tree = self.ptree_to_cgel()
 		# update ptree by canonicalizing the position of punctuation terminals/preterminals
-		self.ptree = cgel_to_canonicalized_ptree(self.cgel_tree)
+		self.ptree = self.cgel_to_canonicalized_ptree()
 		# update canonicalized ptree with standardized labels
 		for i, subt in enumerate(self.ptree.subtrees(lambda t: t.height() == 2)):
 			subt.label = ptree_terminals_with_labels[i].label
@@ -182,9 +183,9 @@ class ActivedopTree:
 
 	def validate(self):
 		"""run the brackettree validator on the bracket notation of the tree (plus the CGEL validator if enabled); return the message"""
-		_, _, msg = validate(self.brackettreestr(), self.senttok)
+		_, _, msg = self.validate_disc()
 		if app.config['CGELVALIDATE'] is not None:
-			msg += validate_cgel(self.cgel_tree)
+			msg += self.validate_cgel()
 		return msg
 	
 	def treestr(self):
@@ -203,6 +204,290 @@ class ActivedopTree:
 			return add_editable_attribute(out)
 		else:
 			return out
+		
+	def apply_standard_labels(self) -> ParentedTree:
+		"""
+		Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
+		Enforce consistency of preterminal labels and terminals. 
+		(If a punctuation or gap preterminal occurs on the wrong type of terminal, default to N.)
+		"""
+		# guardrails against producing illict tree structures
+		tree, senttok = self.ptree, self.senttok
+		tree_copy = tree.copy(deep=True)
+		for subt in tree_copy.subtrees(lambda t: t.height() == 2):
+			i = subt[0]
+			# if initial parse labels non-gaps as GAP, change to N-Head by default
+			if subt.label.startswith('GAP') and senttok[i] != '_.':
+				subt.label = 'N-Head'
+			# condition 1: label consists of a recognized punctuation pos tag, without a function tag [e.g, the label in node `(, ,)`]. Can occur in `annotate` when apply_standard_labels() receives an initial dopparsed tree, and in `edit` when apply_standard_labels() receives a ParentedTree-format PTB-converted ctree. 
+			# condition 2: label contains a "p" function tag
+			# condition 3: token is unabiguously punctuation
+			# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
+			if is_punct_postag(subt.label) or is_punct_label(subt.label) or (is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM):
+				subt.label = PUNCT_TAGS.get(senttok[i], SYMBOL_TAG) + "-p"
+				# if initial parse labels non-punctuation as punctuation, change to N-Head
+			if (not is_possible_punct_token(senttok[i])) and (is_punct_label(subt.label)):
+				subt.label = 'N-Head'
+		return tree_copy
+			
+	def ptree_to_cgel(self) -> ParentedTree:
+		"""
+		Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
+		Convert it to a CGELTree object, with prepunct and postpunct attributes assigned to the terminal nodes.
+		Assumes that tree has been processed by apply_standard_labels().
+		Outputs both a CGELTree object and a ParentedTree object, the latter of which is the cleaned-up version of the input tree with a canonicalized position for punctuation preterminals/terminals.
+		"""
+		tree, senttok = self.ptree, self.senttok
+		def prune_empty_non_terminals(tree: ParentedTree) -> ParentedTree:
+			"""Recursively prune empty non-terminal nodes from an NLTK ParentedTree."""
+			for i in reversed(range(len(tree))):
+				child = tree[i]
+				if isinstance(child, ParentedTree):
+					pruned_child = prune_empty_non_terminals(child)
+					if len(pruned_child) == 0:
+						del tree[i]
+						
+			return tree
+
+		def number_terminals(tree):
+			"""
+			Number the terminal nodes in a ParentedTree sequentially starting from 0.
+
+			Args:
+			tree (ParentedTree): The ParentedTree to renumber terminal nodes.
+
+			Returns:
+			ParentedTree: The updated ParentedTree with numbered terminal nodes.
+			"""
+			terminal_count = 0  # Initialize the terminal counter
+
+			def _number_terminals(node):
+				nonlocal terminal_count
+				if isinstance(node, ParentedTree):
+					for i, child in enumerate(node):
+						if isinstance(child, ParentedTree):
+							_number_terminals(child)
+						else:
+							# Assign a new terminal number
+							node[i] = terminal_count
+							terminal_count += 1
+
+			# Create a copy of the tree to avoid modifying the original
+			tree_copy = tree.copy(deep=True)
+			_number_terminals(tree_copy)
+			return tree_copy
+
+		def remove_punctuation_nodes(tree):
+			"""
+			Recursively remove punctuation nodes from an NLTK ParentedTree.
+
+			Args:
+			tree (ParentedTree): The tree from which to remove punctuation nodes.
+
+			Returns:
+			ParentedTree: The tree with punctuation nodes removed.
+			"""
+
+			# Traverse the tree and remove punctuation nodes
+			def _remove_punct(tree):
+				if isinstance(tree, ParentedTree):
+					children_to_remove = []
+					for i, child in enumerate(tree):
+						if isinstance(child, ParentedTree):
+							if is_punct_label(child.label):
+								children_to_remove.append(i)
+							else:
+								_remove_punct(child)
+
+					# Remove children from the tree after collecting indices
+					for i in reversed(children_to_remove):
+						del tree[i]
+
+			# Create a copy of the tree to avoid modifying the original
+			tree_copy = tree.copy(deep=True)
+			_remove_punct(tree_copy)
+			return number_terminals(prune_empty_non_terminals(tree_copy))
+
+		tree_copy = tree.copy(deep=True)
+		# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
+		non_punct_tokens = []
+		prepunct_tokens = [[] for subt in tree_copy.subtrees(lambda t: t.height() == 2) if (not is_punct_label(subt.label))]
+		postpunct_tokens = copy.deepcopy(prepunct_tokens)
+
+		token_counter = 0
+
+		# iterate through the tree to update the three lists simultaneously
+		for subt in tree_copy.subtrees(lambda t: t.height() == 2):
+			i = subt[0]
+			if subt.label in INITIAL_PUNCT_LABELS or (is_punct_label(subt.label) and token_counter == 0):
+				prepunct_tokens[token_counter].append(senttok[i])
+			elif not is_punct_label(subt.label):
+				non_punct_tokens.append(senttok[i])
+				token_counter += 1
+			elif is_punct_label(subt.label) or token_counter == len(senttok) - 1:
+				postpunct_tokens[token_counter - 1].append(senttok[i])
+
+		tree_to_cgel = remove_punctuation_nodes(tree_copy) 
+		
+		try:
+			block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
+			block = io.StringIO(block)
+			cgel_tree = next(load_as_cgel(block))
+		except AssertionError:
+			_, _, tb = sys.exc_info()
+			traceback.print_tb(tb)
+			tb_info = traceback.extract_tb(tb)
+			# if we get this error, it means that ROOT has multiple children, which is not allowed by the CGEL parser.
+			# fallback strategy: place contents of ROOT node under a new node labeled 'Clause'
+			if tb_info[1].line == 'assert root is None':
+				# if some subtree is called ROOT (or Clause w/o function), change to Clause-Head by default
+				for subt in tree_to_cgel.subtrees():
+					if subt.label == 'ROOT':
+						subt.label = 'Clause-Head'
+					elif "-" not in subt.label:
+						subt.label = subt.label + "-Head"
+				tree_to_cgel.label = 'Clause'
+				tree_to_cgel = ParentedTree('ROOT', [tree_to_cgel])
+				block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
+				block = io.StringIO(block)
+				cgel_tree = next(load_as_cgel(block))
+
+		cgel_tree_terminals = cgel_tree.terminals(gaps=True)
+
+		def unescape_ptree_tok(token_list):
+			for i, p in enumerate(token_list):
+				for e in PUNCT_ESCAPING:
+					if p == e['ptree_token']:
+						token_list[i] = e['ctree_punct']
+						break
+
+		for i, terminal in enumerate(cgel_tree_terminals):
+
+			prepunct_token_list = prepunct_tokens[i]
+			unescape_ptree_tok(prepunct_token_list)
+			postpunct_token_list = postpunct_tokens[i]
+			unescape_ptree_tok(postpunct_token_list)
+			terminal.prepunct = prepunct_token_list
+			terminal.postpunct = postpunct_token_list
+			if terminal.text:
+				terminal.text = terminal.text.replace("_", " ")
+
+		cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
+		return cgel_tree
+
+	def cgel_to_canonicalized_ptree(self) -> ParentedTree:
+		"""Convert a cgel_tree to a ParentedTree object. 
+		This step canonicalizes the position of punctuation preterminals/terminals."""
+		cgel_tree = self.cgel_tree
+		treestr = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
+		
+		parented_tree, _ = brackettree(treestr)
+
+		return parented_tree
+	
+	def validate_cgel(self):
+		cgeltree = self.cgel_tree
+		STDERR = sys.stderr
+		errS = io.StringIO()
+		sys.stderr = errS
+		msg = ''
+		try:
+			nWarn = cgeltree.validate(require_verb_xpos=False, require_num_xpos=False)
+		except AssertionError:
+			print(traceback.format_exc(), file=errS)
+		sys.stderr = STDERR
+		if not app.config['CGELVALIDATE']:
+			msg += '\n(CGEL VALIDATOR IS OFF)\n'
+		else:
+			errS = errS.getvalue()
+			if errS:
+				msg += '\nCGEL VALIDATOR\n==============\n' + errS
+			else:
+				msg += '\nCGEL VALIDATOR: OK\n'
+		msg = f'<font color=red>{msg}</font>' if msg else ''
+		return msg
+	
+	def validate_disc(self):
+		treestr, senttok = self.brackettreestr(), self.senttok
+		"""Verify whether a user-supplied tree is well-formed."""
+		msg = ''
+		try:
+			tree, sent1 = discbrackettree(treestr)
+		except Exception as err:
+			raise ValueError('ERROR: cannot parse tree bracketing\n%s' % err)
+		# check that sent is not modified
+		if senttok!=sent1:
+			if [x for x in senttok if not isGapToken(x)] == [x for x in sent1 if not isGapToken(x)] and ALLOW_EDIT_GAPS:
+				# change only to gaps, which is OK
+				pass
+			elif ALLOW_EDIT_SENT:
+				msg += 'Sentence has been modified. '
+			else:
+				raise ValueError('ERROR: sentence was modified.\n'
+						'got:\t%s\nshould be:\t%s' % (
+						' '.join(a or '' for a in sent1), ' '.join(senttok)))
+		nGaps = len(list(filter(isGapToken, sent1)))
+		if nGaps>0:
+			msg += f'Sentence contains {nGaps} gap(s). '
+		# check tree structure
+		coindexed = defaultdict(set)	# {coindexationvar -> {labels}}
+		for node in tree.subtrees():
+			if node is not tree.root and node.label==tree.root.label:
+				raise ValueError(('ERROR: non-root node cannot have same label as root: '+node.label))
+			m = LABELRE.match(node.label)
+			if m is None:
+				raise ValueError('malformed label: %r\n'
+						'expected: cat-func/morph or cat-func; e.g. NN-SB/Nom'
+						% node.label)
+			else:
+				mCoidx = COIDXRE.search(node.label)
+				if mCoidx:
+					coindexed[mCoidx.group(1)].add(node.label)
+			if len(node) == 0:
+				raise ValueError(('ERROR: a constituent should have '
+						'one or more children:\n%s' % node))
+			# create copy of node to validate POS and function tags (stripping -p from label if present)
+			node_to_validate = copy.deepcopy(node)
+			if node_to_validate.label.endswith('-p'):
+				node_to_validate.label = node.label[:-2]
+			# a POS tag
+			elif isinstance(node_to_validate[0], int):
+				if not isValidPOS(m.group(1)):
+					raise ValueError(('ERROR: invalid POS tag: %s for %d=%s\n'
+							'valid POS tags: %s' % (
+							node_to_validate.label, node_to_validate[0], senttok[node_to_validate[0]],
+							', '.join(sorted(workerattr('poslabels'))))))
+				elif m.group(2) and not isValidFxn(m.group(2)[1:]):
+					raise ValueError(('ERROR: invalid function tag:\n%s\n'
+							'valid labels: %s' % (
+							node, ', '.join(sorted(workerattr('functiontags'))))))
+				elif len(node) != 1:
+					raise ValueError(('ERROR: a POS tag must have exactly one '
+							'token as child and nothing else:\n%s' % node))
+			# not a POS tag but a phrasal node
+			elif not all(isinstance(child, Tree) for child in node):
+				raise ValueError(('ERROR: a constituent cannot have a token '
+						'as child:\n%s' % node))
+			elif not isValidPhraseCat(m.group(1)):
+				if ALLOW_UNSEEN_VAR_CAT and '.' in m.group(1):
+					msg += f'WARNING: unseen category with variable {m.group(1)} '
+				elif ALLOW_UNSEEN_NONCE_CAT and '+' in m.group(1):
+					msg += f'WARNING: unseen nonce category {m.group(1)} '
+				else:
+					raise ValueError(('ERROR: invalid constituent label:\n%s\n'
+							'valid labels: %s' % (
+							node, ', '.join(sorted(workerattr('phrasallabels'))))))
+			if m.group(2) and not isValidFxn(m.group(2)[1:]):
+				raise ValueError(('ERROR: invalid function tag:\n%s\n'
+						'valid labels: %s' % (
+						node, ', '.join(sorted(workerattr('functiontags'))))))
+		for coindexedset in coindexed.values():
+			if len(coindexedset)<2:
+				msg += f'ERROR: coindexation variable should have at least two (distinct) constituents: {coindexedset!r} '
+				# message not exception because exception blocks display of the tree
+
+		msg = f'<font color=red>{msg}</font>' if msg else ''
+		return tree, sent1, msg
 
 	@classmethod
 	def from_str(cls, tree: str, from_bracket = False, add_root = True):
@@ -843,184 +1128,6 @@ def edit():
 			rows=rows, cols=100,
 			msg=msg)
 
-def prune_empty_non_terminals(tree: ParentedTree) -> ParentedTree:
-	# Recursively prune children first
-	for i in reversed(range(len(tree))):
-		child = tree[i]
-		if isinstance(child, ParentedTree):
-			pruned_child = prune_empty_non_terminals(child)
-			if len(pruned_child) == 0:
-				del tree[i]
-				
-	return tree
-
-def number_terminals(tree):
-	"""
-	Number the terminal nodes in a ParentedTree sequentially starting from 0.
-
-	Args:
-	tree (ParentedTree): The ParentedTree to renumber terminal nodes.
-
-	Returns:
-	ParentedTree: The updated ParentedTree with numbered terminal nodes.
-	"""
-	terminal_count = 0  # Initialize the terminal counter
-
-	def _number_terminals(node):
-		nonlocal terminal_count
-		if isinstance(node, ParentedTree):
-			for i, child in enumerate(node):
-				if isinstance(child, ParentedTree):
-					_number_terminals(child)
-				else:
-					# Assign a new terminal number
-					node[i] = terminal_count
-					terminal_count += 1
-
-	# Create a copy of the tree to avoid modifying the original
-	tree_copy = tree.copy(deep=True)
-	_number_terminals(tree_copy)
-	return tree_copy
-
-def remove_punctuation_nodes(tree):
-	"""
-	Recursively remove punctuation nodes from an NLTK ParentedTree.
-
-	Args:
-	tree (ParentedTree): The tree from which to remove punctuation nodes.
-
-	Returns:
-	ParentedTree: The tree with punctuation nodes removed.
-	"""
-
-	# Traverse the tree and remove punctuation nodes
-	def _remove_punct(tree):
-		if isinstance(tree, ParentedTree):
-			children_to_remove = []
-			for i, child in enumerate(tree):
-				if isinstance(child, ParentedTree):
-					if is_punct_label(child.label):
-						children_to_remove.append(i)
-					else:
-						_remove_punct(child)
-
-			# Remove children from the tree after collecting indices
-			for i in reversed(children_to_remove):
-				del tree[i]
-
-	# Create a copy of the tree to avoid modifying the original
-	tree_copy = tree.copy(deep=True)
-	_remove_punct(tree_copy)
-	return number_terminals(prune_empty_non_terminals(tree_copy))
-
-def apply_standard_labels(tree: ParentedTree, senttok: List[str]) -> ParentedTree:
-	"""
-	Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
-	Enforce consistency of preterminal labels and terminals. 
-	(If a punctuation or gap preterminal occurs on the wrong type of terminal, default to N.)
-	"""
-	# guardrails against producing illict tree structures
-	tree_copy = tree.copy(deep=True)
-	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
-		i = subt[0]
-		# if initial parse labels non-gaps as GAP, change to N-Head by default
-		if subt.label.startswith('GAP') and senttok[i] != '_.':
-			subt.label = 'N-Head'
-		# condition 1: label consists of a recognized punctuation pos tag, without a function tag [e.g, the label in node `(, ,)`]. Can occur in `annotate` when apply_standard_labels() receives an initial dopparsed tree, and in `edit` when apply_standard_labels() receives a ParentedTree-format PTB-converted ctree. 
-		# condition 2: label contains a "p" function tag
-		# condition 3: token is unabiguously punctuation
-		# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
-		if is_punct_postag(subt.label) or is_punct_label(subt.label) or (is_possible_punct_token(senttok[i]) and senttok[i] not in AMBIG_SYM):
-			subt.label = PUNCT_TAGS.get(senttok[i], SYMBOL_TAG) + "-p"
-			# if initial parse labels non-punctuation as punctuation, change to N-Head
-		if (not is_possible_punct_token(senttok[i])) and (is_punct_label(subt.label)):
-			subt.label = 'N-Head'
-	return tree_copy
-
-def ptree_to_cgel(tree: ParentedTree, senttok: List[str]) -> ParentedTree:
-	"""
-	Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
-	Convert it to a CGELTree object, with prepunct and postpunct attributes assigned to the terminal nodes.
-	Assumes that tree has been processed by apply_standard_labels().
-	Outputs both a CGELTree object and a ParentedTree object, the latter of which is the cleaned-up version of the input tree with a canonicalized position for punctuation preterminals/terminals.
-	"""
-	tree_copy = tree.copy(deep=True)
-	# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
-	non_punct_tokens = []
-	prepunct_tokens = [[] for subt in tree_copy.subtrees(lambda t: t.height() == 2) if (not is_punct_label(subt.label))]
-	postpunct_tokens = copy.deepcopy(prepunct_tokens)
-
-	token_counter = 0
-
-	# iterate through the tree to update the three lists simultaneously
-	for subt in tree_copy.subtrees(lambda t: t.height() == 2):
-		i = subt[0]
-		if subt.label in INITIAL_PUNCT_LABELS or (is_punct_label(subt.label) and token_counter == 0):
-			prepunct_tokens[token_counter].append(senttok[i])
-		elif not is_punct_label(subt.label):
-			non_punct_tokens.append(senttok[i])
-			token_counter += 1
-		elif is_punct_label(subt.label) or token_counter == len(senttok) - 1:
-			postpunct_tokens[token_counter - 1].append(senttok[i])
-
-	tree_to_cgel = remove_punctuation_nodes(tree_copy) 
-	
-	try:
-		block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
-		block = io.StringIO(block)
-		cgel_tree = next(load_as_cgel(block))
-	except AssertionError:
-		_, _, tb = sys.exc_info()
-		traceback.print_tb(tb)
-		tb_info = traceback.extract_tb(tb)
-		# if we get this error, it means that ROOT has multiple children, which is not allowed by the CGEL parser.
-		# fallback strategy: place contents of ROOT node under a new node labeled 'Clause'
-		if tb_info[1].line == 'assert root is None':
-			# if some subtree is called ROOT (or Clause w/o function), change to Clause-Head by default
-			for subt in tree_to_cgel.subtrees():
-				if subt.label == 'ROOT':
-					subt.label = 'Clause-Head'
-				elif "-" not in subt.label:
-					subt.label = subt.label + "-Head"
-			tree_to_cgel.label = 'Clause'
-			tree_to_cgel = ParentedTree('ROOT', [tree_to_cgel])
-			block = writetree(tree_to_cgel, non_punct_tokens, '1', 'export', comment='')
-			block = io.StringIO(block)
-			cgel_tree = next(load_as_cgel(block))
-
-	cgel_tree_terminals = cgel_tree.terminals(gaps=True)
-
-	def unescape_ptree_tok(token_list):
-		for i, p in enumerate(token_list):
-			for e in PUNCT_ESCAPING:
-				if p == e['ptree_token']:
-					token_list[i] = e['ctree_punct']
-					break
-
-	for i, terminal in enumerate(cgel_tree_terminals):
-
-		prepunct_token_list = prepunct_tokens[i]
-		unescape_ptree_tok(prepunct_token_list)
-		postpunct_token_list = postpunct_tokens[i]
-		unescape_ptree_tok(postpunct_token_list)
-		terminal.prepunct = prepunct_token_list
-		terminal.postpunct = postpunct_token_list
-		if terminal.text:
-			terminal.text = terminal.text.replace("_", " ")
-
-	cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
-	return cgel_tree
-
-def cgel_to_canonicalized_ptree(cgel_tree: CGELTree) -> ParentedTree:
-	"""Convert a cgel_tree to a ParentedTree object. 
-	This step canonicalizes the position of punctuation preterminals/terminals."""
-
-	treestr = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
-	
-	parented_tree, _ = brackettree(treestr)
-
-	return parented_tree
-
 def add_editable_attribute(htmltree :str) -> str:
 	""" 
 	Given an html rendering of a tree [the output of DrawTree(... html=True ...) or DrawTree.text(... html=True ...)], output an html tree 
@@ -1427,7 +1534,7 @@ def accept():
 	WORKERS[username].submit(worker.augment, [tree_to_train], [senttok])	# update the parser's grammar
 	# validate and stay on this sentence if there are issues
 	if treestr:
-		_tree, _senttok, msg = validate(treestr, senttok)
+		msg = treeobj.validate()
 		if 'ERROR' in msg or 'WARNING' in msg:
 			flash('Your annotation for sentence %d was stored %r but may contain errors. Please click Validate to check.' % (sentno, actions))
 			return redirect(url_for('annotate', sentno=sentno))
@@ -1529,108 +1636,6 @@ def isValidPhraseCat(x):
 
 def isValidFxn(x):
 	return x in workerattr('functiontags') or x in app.config['FUNCTIONTAGWHITELIST'] or (ALLOW_UNSEEN_NONCE_FXN and '+' in x)
-
-def validate_cgel(cgeltree):
-	STDERR = sys.stderr
-	errS = io.StringIO()
-	sys.stderr = errS
-	msg = ''
-	try:
-		nWarn = cgeltree.validate(require_verb_xpos=False, require_num_xpos=False)
-	except AssertionError:
-		print(traceback.format_exc(), file=errS)
-	sys.stderr = STDERR
-	if not app.config['CGELVALIDATE']:
-		msg += '\n(CGEL VALIDATOR IS OFF)\n'
-	else:
-		errS = errS.getvalue()
-		if errS:
-			msg += '\nCGEL VALIDATOR\n==============\n' + errS
-		else:
-			msg += '\nCGEL VALIDATOR: OK\n'
-	msg = f'<font color=red>{msg}</font>' if msg else ''
-	return msg
-
-def validate(treestr, senttok):
-	"""Verify whether a user-supplied tree is well-formed."""
-	msg = ''
-	try:
-		tree, sent1 = discbrackettree(treestr)
-	except Exception as err:
-		raise ValueError('ERROR: cannot parse tree bracketing\n%s' % err)
-	# check that sent is not modified
-	if senttok!=sent1:
-		if [x for x in senttok if not isGapToken(x)] == [x for x in sent1 if not isGapToken(x)] and ALLOW_EDIT_GAPS:
-			# change only to gaps, which is OK
-			pass
-		elif ALLOW_EDIT_SENT:
-			msg += 'Sentence has been modified. '
-		else:
-			raise ValueError('ERROR: sentence was modified.\n'
-					'got:\t%s\nshould be:\t%s' % (
-					' '.join(a or '' for a in sent1), ' '.join(senttok)))
-	nGaps = len(list(filter(isGapToken, sent1)))
-	if nGaps>0:
-		msg += f'Sentence contains {nGaps} gap(s). '
-	# check tree structure
-	coindexed = defaultdict(set)	# {coindexationvar -> {labels}}
-	for node in tree.subtrees():
-		if node is not tree.root and node.label==tree.root.label:
-			raise ValueError(('ERROR: non-root node cannot have same label as root: '+node.label))
-		m = LABELRE.match(node.label)
-		if m is None:
-			raise ValueError('malformed label: %r\n'
-					'expected: cat-func/morph or cat-func; e.g. NN-SB/Nom'
-					% node.label)
-		else:
-			mCoidx = COIDXRE.search(node.label)
-			if mCoidx:
-				coindexed[mCoidx.group(1)].add(node.label)
-		if len(node) == 0:
-			raise ValueError(('ERROR: a constituent should have '
-					'one or more children:\n%s' % node))
-		# create copy of node to validate POS and function tags (stripping -p from label if present)
-		node_to_validate = copy.deepcopy(node)
-		if node_to_validate.label.endswith('-p'):
-			node_to_validate.label = node.label[:-2]
-		# a POS tag
-		elif isinstance(node_to_validate[0], int):
-			if not isValidPOS(m.group(1)):
-				raise ValueError(('ERROR: invalid POS tag: %s for %d=%s\n'
-						'valid POS tags: %s' % (
-						node_to_validate.label, node_to_validate[0], senttok[node_to_validate[0]],
-						', '.join(sorted(workerattr('poslabels'))))))
-			elif m.group(2) and not isValidFxn(m.group(2)[1:]):
-				raise ValueError(('ERROR: invalid function tag:\n%s\n'
-						'valid labels: %s' % (
-						node, ', '.join(sorted(workerattr('functiontags'))))))
-			elif len(node) != 1:
-				raise ValueError(('ERROR: a POS tag must have exactly one '
-						'token as child and nothing else:\n%s' % node))
-		# not a POS tag but a phrasal node
-		elif not all(isinstance(child, Tree) for child in node):
-			raise ValueError(('ERROR: a constituent cannot have a token '
-					'as child:\n%s' % node))
-		elif not isValidPhraseCat(m.group(1)):
-			if ALLOW_UNSEEN_VAR_CAT and '.' in m.group(1):
-				msg += f'WARNING: unseen category with variable {m.group(1)} '
-			elif ALLOW_UNSEEN_NONCE_CAT and '+' in m.group(1):
-				msg += f'WARNING: unseen nonce category {m.group(1)} '
-			else:
-				raise ValueError(('ERROR: invalid constituent label:\n%s\n'
-						'valid labels: %s' % (
-						node, ', '.join(sorted(workerattr('phrasallabels'))))))
-		if m.group(2) and not isValidFxn(m.group(2)[1:]):
-			raise ValueError(('ERROR: invalid function tag:\n%s\n'
-					'valid labels: %s' % (
-					node, ', '.join(sorted(workerattr('functiontags'))))))
-	for coindexedset in coindexed.values():
-		if len(coindexedset)<2:
-			msg += f'ERROR: coindexation variable should have at least two (distinct) constituents: {coindexedset!r} '
-			# message not exception because exception blocks display of the tree
-
-	msg = f'<font color=red>{msg}</font>' if msg else ''
-	return tree, sent1, msg
 
 def entropy(seq):
 	"""Calculate entropy of a probability distribution.
