@@ -409,7 +409,7 @@ class ActivedopTree:
 	
 	def validate_disc(self):
 		treestr, senttok = self.brackettreestr(), self.senttok
-		"""Verify whether a user-supplied tree is well-formed."""
+		"""Verify whether a user-supplied brackettree (the output of the ActivedopTree.brackettreestr() method) is well-formed."""
 		msg = ''
 		try:
 			tree, sent1 = discbrackettree(treestr)
