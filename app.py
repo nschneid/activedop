@@ -896,7 +896,6 @@ def annotate(sentno):
 			tree = writediscbrackettree(item.tree, item.sent)
 		else: 
 			treeobj = ActivedopTree.from_str(annotation)
-			senttok = treeobj.senttok
 			tree = treeobj.cgel_tree
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
