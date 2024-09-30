@@ -8,7 +8,6 @@ from discodop.tree import (Tree, ParentedTree, writediscbrackettree,
 from discodop.treebank import writetree
 import re
 import sys
-from flask import Flask
 from workerattr import workerattr
 
 sys.path.append('./cgel')
