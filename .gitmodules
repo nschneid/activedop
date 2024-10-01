@@ -3,7 +3,7 @@
 	url = https://github.com/nert-nlp/cgel
 [submodule "roaringbitmap"]
 	path = roaringbitmap
-	url = git@github.com:andreasvc/roaringbitmap.git
+	url = https://github.com/andreasvc/roaringbitmap
 [submodule "disco-dop"]
 	path = disco-dop
-	url = git@github.com:andreasvc/disco-dop.git
+	url = https://github.com/andreasvc/disco-dop
