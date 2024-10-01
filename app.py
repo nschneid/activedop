@@ -708,7 +708,7 @@ def edit():
 				if sentno < len(SENTENCES) else '/annotate/annotate/1',
 			unextlink=('/annotate/annotate/%d' % firstunannotated(username))
 				if sentno < len(SENTENCES) else '#',
-			treestr=treeobj.treestr(), senttok=sent, id=id,
+			treestr=treeobj.treestr(), senttok=' '.join(senttok), id=id,
 			sentno=sentno, lineno=lineno + 1, totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			poslabels=sorted(t for t in workerattr('poslabels') if ('@' not in t) and (t not in app.config['PUNCT_TAGS'].values()) and (t != app.config['SYMBOL_TAG'])),
