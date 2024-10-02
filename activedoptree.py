@@ -21,6 +21,8 @@ except ImportError:
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
 PUNCTRE = re.compile(r'^(\W+)$')
 COIDXRE = re.compile(r'\.(\w+)')	# coindexation variable in constituent label
+PARENSEQRE = re.compile(r'\([^() ]+\)')	# sequence of `(S)` (where S a sequence not containing (, ), or whitespace)
+PARENSEQRE_ESCAPED = re.compile(r'﹙[^﹙﹚ ]+﹚')	# sequence of `﹙S﹚` (where S a sequence not containing ﹙, ﹚, or whitespace)
 
 # tree functions
 ALLOW_EDIT_SENT = True
@@ -41,7 +43,11 @@ def is_punct_label(label):
 
 def is_possible_punct_token(token):
 	from flask import current_app as app
-	return re.match(PUNCTRE, token) or token in app.config['PUNCT_TAGS'] or token in [i['ptree_token'] for i in app.config['PUNCT_ESCAPING']]
+	# check to see whether the token contains a sequence in app.config['PUNCT_TAGS']
+	for key in app.config['PUNCT_TAGS']:
+		if key in token and key != '-':
+			return True
+	return re.match(PUNCTRE, token)
 
 class ActivedopTree:
 	"""Wrapper for a ParentedTree object with additional methods for activedop."""
@@ -54,6 +60,10 @@ class ActivedopTree:
 		from flask import current_app
 		self.app = current_app
 		self.ptree = ptree
+		# using PARENSEQRE_ESCAPED, unescape parentheses in senttok by replacing lookalike characters with regular parentheses
+		for i, tok in enumerate(senttok):
+			if re.match(PARENSEQRE_ESCAPED, tok):
+				senttok[i] = tok.replace('﹙', '(').replace('﹚', ')')
 		self.senttok = senttok
 		# standardize ptree with correct labels for punctuation and gaps
 		self.ptree = self._apply_standard_labels()
@@ -158,8 +168,8 @@ class ActivedopTree:
 		Assumes that tree has been processed by apply_standard_labels().
 		Outputs both a CGELTree object and a ParentedTree object, the latter of which is the cleaned-up version of the input tree with a canonicalized position for punctuation preterminals/terminals.
 		"""
-		tree, senttok = self.ptree, self.senttok
-		tree_copy = tree.copy(deep=True)
+		tree_copy = self.ptree.copy(deep=True)
+		senttok = self.senttok
 		# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
 		non_punct_tokens = []
 		prepunct_tokens = [[] for subt in tree_copy.subtrees(lambda t: t.height() == 2) if (not is_punct_label(subt.label))]
@@ -231,10 +241,20 @@ class ActivedopTree:
 		This step canonicalizes the position of punctuation preterminals/terminals."""
 		cgel_tree = self.cgel_tree
 		treestr = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
-		
+
+		# Temporarily escape sequences of (S) (where S a sequence not containing (, ), or whitespace) to avoid parsing errors
+		treestr = self._escape_parentheses(treestr)
 		parented_tree, _ = brackettree(treestr)
 
 		return parented_tree
+	
+	@staticmethod
+	def _escape_parentheses(treestr):
+		"""Escape regular parentheses in a tree string, and replace with lookalike characters.
+		Matches sequences of form (S) (where S a sequence not containing (, ), or whitespace)."""
+		for match in re.findall(PARENSEQRE, treestr):
+				treestr = treestr.replace(match, match.replace('(', '﹙').replace(')', '﹚'))
+		return treestr
 	
 	# helper functions for internal _ptree_to_cgel method
 	
@@ -441,5 +461,6 @@ class ActivedopTree:
 			cgel_tree = cgel.parse(tree)[0]
 			cgel_terminals = cgel_tree.terminals(gaps=True)
 			tree_bracket = "(ROOT" + cgel_tree.ptb(punct=True) + ")"
+			tree_bracket = ActivedopTree._escape_parentheses(tree_bracket)
 			ptree, senttok = brackettree(tree_bracket)
 			return cls(ptree, senttok, cgel_terminals)
