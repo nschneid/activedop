@@ -70,7 +70,7 @@ class ActivedopTree:
 			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
 		# unescape parentheses in cgel_tree terminal text
 		cgel_terminals = self.cgel_tree.terminals(gaps=True)
-		lrb_esc, rrb_esc = self.get_paren_escapes()
+		lrb_esc, rrb_esc = self._get_paren_escapes()
 		for terminal in cgel_terminals:
 			if terminal.text:
 				terminal.text = terminal.text.replace(lrb_esc, "(").replace(rrb_esc, ")")
@@ -227,7 +227,7 @@ class ActivedopTree:
 			terminal.postpunct = postpunct_token_list
 			if terminal.text:
 				# escape parentheses in cgel_tree terminal text (to avoid parsing errors in ptree conversion)
-				lrb_esc, rrb_esc = self.get_paren_escapes()
+				lrb_esc, rrb_esc = self._get_paren_escapes()
 				terminal.text = terminal.text.replace("_", " ").replace("(", lrb_esc).replace(")", rrb_esc)
 
 		cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
@@ -436,7 +436,8 @@ class ActivedopTree:
 		return x in workerattr('functiontags') or x in self.app.config['FUNCTIONTAGWHITELIST'] or (ALLOW_UNSEEN_NONCE_FXN and '+' in x)
 
 	@staticmethod
-	def get_paren_escapes():
+	def _get_paren_escapes():
+		"""return the ptree escape sequences for parentheses (from PUNCT_ESCAPING)."""
 		from flask import current_app as app
 		lrb_esc = None
 		rrb_esc = None
@@ -460,7 +461,7 @@ class ActivedopTree:
 			cgel_tree = cgel.parse(tree)[0]
 			cgel_terminals = cgel_tree.terminals(gaps=True)
 			# escape parentheses in cgel_tree terminal text (to avoid parsing errors in ptree conversion)
-			lrb_esc, rrb_esc = ActivedopTree.get_paren_escapes()
+			lrb_esc, rrb_esc = ActivedopTree._get_paren_escapes()
 			for terminal in cgel_terminals:
 				if terminal.text:
 					terminal.text = terminal.text.replace("(", lrb_esc).replace(")", rrb_esc)
