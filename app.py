@@ -93,6 +93,17 @@ def senttok_escape(senttok):
 				break
 	return senttok
 
+def senttok_unescape(senttok):
+	"""Replace special characters in a tokenized sentence.
+	If a token is a 'ptree_token' property of a PUNCT_ESCAPING element, replace it with the 'istring' property."""
+	senttok = list(senttok)
+	for i, token in enumerate(senttok):
+		for e in app.config['PUNCT_ESCAPING']:
+			if token == e['ptree_token']:
+				senttok[i] = e['istring']
+				break
+	return senttok
+
 def sent_escape(sent):
 	"""Replace special characters in a sentence. (First splits the sentence into tokens.)
 	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
@@ -724,7 +735,7 @@ def edit():
 				if sentno < len(SENTENCES) else '/annotate/annotate/1',
 			unextlink=('/annotate/annotate/%d' % firstunannotated(username))
 				if sentno < len(SENTENCES) else '#',
-			treestr=treeobj.treestr(), senttok=' '.join(senttok), id=id,
+			treestr=treeobj.treestr(), senttok=' '.join(senttok_unescape(senttok)), id=id,
 			sentno=sentno, lineno=lineno + 1, totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
 			poslabels=sorted(t for t in workerattr('poslabels') if ('@' not in t) and (t not in app.config['PUNCT_TAGS'].values()) and (t != app.config['SYMBOL_TAG'])),

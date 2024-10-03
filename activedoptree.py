@@ -19,10 +19,7 @@ except ImportError:
 	load_as_cgel = None
 
 LABELRE = re.compile(r'^([^-/\s]+)(-[^/\s]+)?(/\S+)?$')
-PUNCTRE = re.compile(r'^(\W+)$')
 COIDXRE = re.compile(r'\.(\w+)')	# coindexation variable in constituent label
-PARENSEQRE = re.compile(r'\([^() ]+\)')	# sequence of `(S)` (where S a sequence not containing (, ), or whitespace)
-PARENSEQRE_ESCAPED = re.compile(r'﹙[^﹙﹚ ]+﹚')	# sequence of `﹙S﹚` (where S a sequence not containing ﹙, ﹚, or whitespace)
 
 # tree functions
 ALLOW_EDIT_SENT = True
@@ -44,10 +41,7 @@ def is_punct_label(label):
 def is_possible_punct_token(token):
 	from flask import current_app as app
 	# check to see whether the token contains a sequence in app.config['PUNCT_TAGS']
-	for key in app.config['PUNCT_TAGS']:
-		if key in token and key != '-':
-			return True
-	return re.match(PUNCTRE, token)
+	return token in app.config['PUNCT_TAGS']
 
 class ActivedopTree:
 	"""Wrapper for a ParentedTree object with additional methods for activedop."""
@@ -60,10 +54,6 @@ class ActivedopTree:
 		from flask import current_app
 		self.app = current_app
 		self.ptree = ptree
-		# using PARENSEQRE_ESCAPED, unescape parentheses in senttok by replacing lookalike characters with regular parentheses
-		for i, tok in enumerate(senttok):
-			if re.match(PARENSEQRE_ESCAPED, tok):
-				senttok[i] = tok.replace('﹙', '(').replace('﹚', ')')
 		self.senttok = senttok
 		# standardize ptree with correct labels for punctuation and gaps
 		self.ptree = self._apply_standard_labels()
@@ -78,7 +68,14 @@ class ActivedopTree:
 		# update cgel_tree with a set of terminals if provided
 		if cgel_terminals is not None:
 			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
-	
+		# unescape parentheses in cgel_tree terminal text
+		cgel_terminals = self.cgel_tree.terminals(gaps=True)
+		lrb_esc, rrb_esc = self.get_paren_escapes()
+		for terminal in cgel_terminals:
+			if terminal.text:
+				terminal.text = terminal.text.replace(lrb_esc, "(").replace(rrb_esc, ")")
+		self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
+
 	def brackettreestr(self, pretty = False):
 		"""returns a string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen."""
 		return writediscbrackettree(self.ptree, self.senttok, pretty = pretty)
@@ -152,13 +149,11 @@ class ActivedopTree:
 				subt.label = 'N-Head'
 			# condition 1: label consists of a recognized punctuation pos tag, without a function tag [e.g, the label in node `(, ,)`]. Can occur in `annotate` when apply_standard_labels() receives an initial dopparsed tree, and in `edit` when apply_standard_labels() receives a ParentedTree-format PTB-converted ctree. 
 			# condition 2: label contains a "p" function tag
-			# condition 3: token is unabiguously punctuation
+			# condition 3: token is unambiguously punctuation
+			# condition 4: label contains more than one hyphen (which is not allowed in the CGEL parser)
 			# -> assign the appropriate punctuation label (either from PUNCT_TAGS or the default SYMBOL_TAG)
-			if is_punct_postag(subt.label) or is_punct_label(subt.label) or (is_possible_punct_token(senttok[i]) and senttok[i] not in self.app.config['AMBIG_SYM']):
+			if is_punct_postag(subt.label) or is_punct_label(subt.label) or (is_possible_punct_token(senttok[i]) and senttok[i] not in self.app.config['AMBIG_SYM']) or subt.label.count('-') > 1:
 				subt.label = self.app.config['PUNCT_TAGS'].get(senttok[i], self.app.config['SYMBOL_TAG']) + "-p"
-				# if initial parse labels non-punctuation as punctuation, change to N-Head
-			if (not is_possible_punct_token(senttok[i])) and (is_punct_label(subt.label)):
-				subt.label = 'N-Head'
 		return tree_copy
 			
 	def _ptree_to_cgel(self) -> ParentedTree:
@@ -231,7 +226,9 @@ class ActivedopTree:
 			terminal.prepunct = prepunct_token_list
 			terminal.postpunct = postpunct_token_list
 			if terminal.text:
-				terminal.text = terminal.text.replace("_", " ")
+				# escape parentheses in cgel_tree terminal text (to avoid parsing errors in ptree conversion)
+				lrb_esc, rrb_esc = self.get_paren_escapes()
+				terminal.text = terminal.text.replace("_", " ").replace("(", lrb_esc).replace(")", rrb_esc)
 
 		cgel_tree.update_terminals(cgel_tree_terminals, gaps=True)
 		return cgel_tree
@@ -242,19 +239,9 @@ class ActivedopTree:
 		cgel_tree = self.cgel_tree
 		treestr = "(ROOT " + cgel_tree.ptb(punct=True, complex_lexeme_separator='_') + ")"
 
-		# Temporarily escape sequences of (S) (where S a sequence not containing (, ), or whitespace) to avoid parsing errors
-		treestr = self._escape_parentheses(treestr)
 		parented_tree, _ = brackettree(treestr)
 
 		return parented_tree
-	
-	@staticmethod
-	def _escape_parentheses(treestr):
-		"""Escape regular parentheses in a tree string, and replace with lookalike characters.
-		Matches sequences of form (S) (where S a sequence not containing (, ), or whitespace)."""
-		for match in re.findall(PARENSEQRE, treestr):
-				treestr = treestr.replace(match, match.replace('(', '﹙').replace(')', '﹚'))
-		return treestr
 	
 	# helper functions for internal _ptree_to_cgel method
 	
@@ -448,6 +435,18 @@ class ActivedopTree:
 	def _isValidFxn(self, x):
 		return x in workerattr('functiontags') or x in self.app.config['FUNCTIONTAGWHITELIST'] or (ALLOW_UNSEEN_NONCE_FXN and '+' in x)
 
+	@staticmethod
+	def get_paren_escapes():
+		from flask import current_app as app
+		lrb_esc = None
+		rrb_esc = None
+		for item in app.config["PUNCT_ESCAPING"]:
+			if item['istring'] == "(":
+				lrb_esc = item['ptree_token']
+			elif item['istring'] == ")":
+				rrb_esc = item['ptree_token']
+		return lrb_esc, rrb_esc
+
 	@classmethod
 	def from_str(cls, tree: str, from_bracket = False, add_root = True):
 		"""create an ActivedopTree object from a string representation of a tree (CGEL or bracket notation depending on app settings and `from_bracket` param)."""
@@ -460,7 +459,12 @@ class ActivedopTree:
 		else:
 			cgel_tree = cgel.parse(tree)[0]
 			cgel_terminals = cgel_tree.terminals(gaps=True)
+			# escape parentheses in cgel_tree terminal text (to avoid parsing errors in ptree conversion)
+			lrb_esc, rrb_esc = ActivedopTree.get_paren_escapes()
+			for terminal in cgel_terminals:
+				if terminal.text:
+					terminal.text = terminal.text.replace("(", lrb_esc).replace(")", rrb_esc)
+			cgel_tree.update_terminals(cgel_terminals, gaps=True)
 			tree_bracket = "(ROOT" + cgel_tree.ptb(punct=True) + ")"
-			tree_bracket = ActivedopTree._escape_parentheses(tree_bracket)
 			ptree, senttok = brackettree(tree_bracket)
 			return cls(ptree, senttok, cgel_terminals)
