@@ -49,8 +49,8 @@ from flask import (Flask, Markup, Response, jsonify, request, session, g, flash,
 		stream_with_context)
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-from discodop.tree import (Tree, DrawTree, DrawDependencies,
-		writediscbrackettree, brackettree, writebrackettree)
+from discodop.tree import (Tree, DrawTree, DrawDependencies, ParentedTree,
+		writediscbrackettree)
 from discodop.treebank import writetree, writedependencies, exporttree
 from discodop.treetransforms import canonicalize
 from discodop.treebanktransforms import reversetransform
@@ -60,7 +60,7 @@ from discodop.heads import applyheadrules
 from discodop.eval import editdistance
 import worker
 from workerattr import workerattr
-from activedoptree import ActivedopTree, LABELRE, is_punct_label
+from activedoptree import ActivedopTree, LABELRE, is_punct_label, cgel_to_ptree
 sys.path.append('./cgel')
 try:
 	import cgel
@@ -82,23 +82,6 @@ ANNOTATIONHELP = """
 		) = range(8)
 # e.g., "NN-SB/Nom" => ('NN', '-SB', '/Nom')
 
-def senttok_escape(senttok):
-	"""Replace special characters in a tokenized sentence.
-	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
-	senttok = list(senttok)
-	for i, token in enumerate(senttok):
-		for e in app.config['PUNCT_ESCAPING']:
-			if token == e['istring']:
-				senttok[i] = e['ptree_token']
-				break
-	return senttok
-
-def sent_escape(sent):
-	"""Replace special characters in a sentence. (First splits the sentence into tokens.)
-	If a token is an 'istring' property of a PUNCT_ESCAPING element, replace it with the 'ptree_token' property."""
-	senttok = sent.split()
-	return " ".join(senttok_escape(senttok))
-
 # Load default config and override config from an environment variable
 app.config.update(
 		DATABASE=os.path.join(app.root_path, 'annotate.db'),
@@ -111,7 +94,6 @@ app.config.update(
 		ACCOUNTS=None,  # dictionary mapping usernames to passwords
 		ANNOTATIONHELP=None,  # plain text file summarizing the annotation scheme
 		CGELVALIDATE=None,  # whether to run the CGEL validator when editing
-		PUNCT_ESCAPING=[], # list of dictionaries; each dictionary has 'istring' key (initial string token), 'ptree_token' key (replacement token in ptree), 'ptree_label' key (label in ptree), and 'ctree_punct' key (`:p` attribute in CGEL tree)
 		PUNCT_TAGS={}, # dictionary mapping idiosyncratic punctuation POS tags to their corresponding tokens
 		SYMBOL_TAG=None, # pos tag for symbols (and symbol sequences) that don't have an idiosyncratic tag (in PUNCT_TAGS)
 		AMBIG_SYM={}, # 'ambiguous' symbols that can be punctuation or something else depending on context
@@ -543,7 +525,6 @@ def parse():
 	"""Display parse. To be invoked by an AJAX call."""
 	sentno = int(request.args.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
-	sent_esc = sent_escape(sent)
 	username = session['username']
 	require = request.args.get('require', '')
 	block = request.args.get('block', '')
@@ -561,7 +542,7 @@ def parse():
 	else:
 		resp = WORKERS[username].submit(
 				worker.getparses,
-				sent_esc, require, block).result()
+				sent, require, block).result()
 	senttok, parsetrees, messages, elapsed = resp
 	maxdepth = ''
 	if not parsetrees:
@@ -687,7 +668,6 @@ def edit():
 	lineno = QUEUE[sentno - 1][0]
 	id = QUEUE[sentno - 1][3]
 	sent = SENTENCES[lineno]
-	sent_esc = sent_escape(sent)
 	senttok, _ = worker.postokenize(sent)
 	username = session['username']
 	if 'dec' in request.args:
@@ -707,7 +687,7 @@ def edit():
 		require, block = parseconstraints(require, block)
 		resp = WORKERS[username].submit(
 				worker.getparses,
-				sent_esc, require, block).result()
+				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
 		treeobj = ActivedopTree(tree, senttok)
@@ -727,7 +707,7 @@ def edit():
 			treestr=treeobj.treestr(), senttok=' '.join(senttok), id=id,
 			sentno=sentno, lineno=lineno + 1, totalsents=len(SENTENCES),
 			numannotated=numannotated(username),
-			poslabels=sorted(t for t in workerattr('poslabels') if ('@' not in t) and (t not in app.config['PUNCT_TAGS'].values()) and (t != app.config['SYMBOL_TAG'])),
+			poslabels=sorted(t for t in workerattr('poslabels') if ('@' not in t) and (t not in app.config['PUNCT_TAGS']) and (t not in app.config['PUNCT_TAGS'].values()) and (t != app.config['SYMBOL_TAG'])),
 			phrasallabels=sorted(t for t in workerattr('phrasallabels') if '}' not in t),
 			functiontags=sorted(t for t in (workerattr('functiontags')
 				| set(app.config['FUNCTIONTAGWHITELIST'])) if '}' not in t and '@' not in t and t != "p"),
@@ -767,8 +747,7 @@ def graphical_operation_preamble():
 	return treeobj, cgel_tree_terminals
 
 def graphical_operation_postamble(dt, senttok, cgel_tree_terminals):
-	tree = canonicalize(dt.nodes[0])
-	ptree, senttok = brackettree(writediscbrackettree(tree, senttok))
+	ptree = ParentedTree.convert(canonicalize(dt.nodes[0]))
 	treeobj = ActivedopTree(ptree, senttok, cgel_tree_terminals)
 	msg = treeobj.validate()
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
@@ -1047,9 +1026,8 @@ def replacesubtree():
 	for n, a in enumerate(pos):
 		a[0] = subseq[n]
 	dt.nodes[nodeid][:] = newsubtree[:]
-	tree = canonicalize(dt.nodes[0])
-	ptree, senttok = brackettree(writediscbrackettree(tree, treeobj.senttok))
-	treeobj = ActivedopTree(ptree, senttok, cgel_tree_terminals)
+	ptree = ParentedTree.convert(canonicalize(dt.nodes[0]))
+	treeobj = ActivedopTree(ptree, treeobj.senttok, cgel_tree_terminals)
 	session['actions'][REPARSE] += 1
 	session.modified = True
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
@@ -1105,7 +1083,7 @@ def accept():
 				node.label = LABELRE.match(node.label).group(1)
 	actions[NBEST] = n
 	session.modified = True
-	block = writetree(tree_to_train, senttok, str(lineno + 1), 'export',
+	block = writetree(tree_to_train.copy(deep=True), senttok, str(lineno + 1), 'export',
 		comment='%s %r' % (username, actions))
 	app.logger.info(block)
 	treeout = block
@@ -1314,21 +1292,27 @@ def decisiontree(parsetrees, sent, urlprm):
 if __name__ == '__main__':
 	pass
 
-@app.cli.command('ptb2ptree')
+@app.cli.command('cgel2export')
 @click.option('--inputfile')
 @click.option('--outputfile')
-def ptb2ptree(inputfile, outputfile):
-	"""Convert a list of ptb-labelled bracketed trees from inputfile to ptree-labelled bracketed trees; write to outputfile
-	Produces a list of trees that can be used to train the parser."""
+def cgel2export(inputfile, outputfile):
+	"""Convert a list of cgel trees from inputfile to Negra export format; write to outputfile
+	Produces a list of Negra corpus export-format trees that can be used to train the parser."""
+	import copy
 	result = []
 	with open (inputfile, 'r') as f:
-		for line in f:
-			treeobj = ActivedopTree.from_str(line.strip(), from_bracket = True)
+		key = 0
+		for tree in cgel.trees(f):
+			ptree, senttok = cgel_to_ptree(tree)
+			print(tree.metadata)
+			treeobj = ActivedopTree(ptree, senttok)
 			# remove -p function label for training the parser
 			for subt in treeobj.ptree.subtrees(lambda t: t.height() == 2):
 				if subt.label.endswith("-p"):
 					subt.label = subt.label[:-2]
-			ptree = writebrackettree(ptree[0], treeobj.senttok).rstrip()
-			result.append(ptree)
+			ptree = treeobj.ptree.copy(deep=True)
+			block = writetree(ptree, treeobj.senttok, key=str(key), fmt='export')
+			result.append(block)
+			key += 1
 	with open(outputfile, 'w') as f:
-		f.write('\n'.join(result))
+		f.write(''.join(result))
