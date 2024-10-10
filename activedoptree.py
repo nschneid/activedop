@@ -13,6 +13,7 @@ from workerattr import workerattr
 sys.path.append('./cgel')
 try:
 	import cgel
+	from cgel import Tree as CGELTree
 	from scripts.activedopexport2cgel import load as load_as_cgel
 except ImportError:
 	cgel = None
@@ -199,12 +200,11 @@ class ActivedopTree:
 					subt.label = subt.label.replace(m.group(), '')
 		return tree_copy
 			
-	def _ptree_to_cgel(self) -> ParentedTree:
+	def _ptree_to_cgel(self) -> CGELTree:
 		"""
 		Given a graphical or dopparser-produced tree (punctuation terminals are separate nodes): 
 		Convert it to a CGELTree object, with prepunct and postpunct attributes assigned to the terminal nodes.
 		Assumes that tree has been processed by apply_standard_labels().
-		Outputs both a CGELTree object and a ParentedTree object, the latter of which is the cleaned-up version of the input tree with a canonicalized position for punctuation preterminals/terminals.
 		"""
 		tree_copy = self.ptree.copy(deep=True)
 		senttok = self.senttok
