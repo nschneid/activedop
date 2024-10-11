@@ -108,7 +108,7 @@ class ActivedopTree:
 			subt.label = ptree_terminals_with_labels[i].label
 		# update cgel_tree with a set of terminals if provided
 		if cgel_terminals is not None:
-			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True)
+			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True, restore_old_label=True)
 
 	def brackettreestr(self, pretty = False):
 		"""returns a string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen."""
