@@ -611,7 +611,7 @@ def filterparsetrees():
 			worker.getparses,
 			sent, require, block).result()
 	senttok, parsetrees, _messages, _elapsed = resp
-	parsetrees_ = [(n, prob, tree, treestr, frags)
+	parsetrees_ = [(n, prob, ActivedopTree(tree, senttok), treestr, frags)
 			for n, (prob, tree, treestr, frags) in enumerate(parsetrees)
 			if treestr is None or testconstraints(treestr, frequire, fblock)]
 	if len(parsetrees_) == 0:
@@ -627,10 +627,9 @@ def filterparsetrees():
 					n=n + 1,
 					prob=probstr(prob),
 					urlprm=urlencode(dict(urlprm, n=n + 1)),
-					tree=DrawTree(tree, senttok).text(
-						unicodelines=True, html=True, funcsep='-', morphsep='/',
-						nodeprops='t%d' % (n + 1), maxwidth=30))
-				for n, prob, tree, _treestr, fragments in parsetrees_)))
+					# ad_tree: ActivedopTree object
+					tree=ad_tree.gtree())
+				for n, prob, ad_tree, _treestr, fragments in parsetrees_)))
 	return nbest
 
 
