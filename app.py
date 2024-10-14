@@ -488,6 +488,7 @@ def annotate(sentno):
 		else: 
 			treeobj = ActivedopTree.from_str(annotation)
 			tree = treeobj.cgel_tree
+			SENTENCES[lineno] = ' '.join(treeobj.senttok)
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
 	return render_template(
