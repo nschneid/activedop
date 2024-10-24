@@ -310,13 +310,27 @@ function replacetree() {
 			registerdraggable(el);
 		}
 	};
-	url = '/annotate/redraw?sentno=' + document.queryform.sentno.value
-			+ '&senttok=' + encodeURIComponent(document.queryform.senttok.value)
-			+ '&oldtree=' + oldtree
-			+ '&tree=' + encodeURIComponent(editor.getValue());
-			// + '&tree=' + encodeURIComponent(document.queryform.tree.value);
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
+	// Create the data object to be sent in a POST request
+	const data = {
+		sentno: document.queryform.sentno.value,
+		senttok: document.queryform.senttok.value,
+		oldtree: oldtree,
+		tree: editor.getValue()
+	};
+
+	// Convert the data object to a JSON string
+	const jsonData = JSON.stringify(data);
+
+	// Open the POST request
+	xmlhttp.open("POST", '/annotate/redraw', true);
+
+	// Set the request header to indicate the content type
+	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+	// Send the JSON data in the body of the request
+	xmlhttp.send(jsonData);
+
+	// Update oldtree with the current value from the editor
 	oldtree = editor.getValue();
 }
 
@@ -396,20 +410,34 @@ function pick(labeltype, label) {
 			registerdraggable(el);
 		}
 	};
-	url = '/annotate/newlabel?sentno=' + document.queryform.sentno.value
-			+ '&senttok=' + encodeURIComponent(document.queryform.senttok.value)
-			+ '&nodeid=' + encodeURIComponent(nodeid)
-			+ '&tree=' + encodeURIComponent(editor.getValue());
-			// + '&tree=' + encodeURIComponent(document.queryform.tree.value);
+	// Create the data object to be sent in the POST request
+	const data = {
+		sentno: document.queryform.sentno.value,
+		senttok: document.queryform.senttok.value,
+		nodeid: nodeid,
+		tree: editor.getValue()
+	};
+
+	// Add the appropriate label based on the labeltype
 	if (labeltype == 'function') {
-		url += '&function=' + encodeURIComponent(label);
+		data.function = label;
 	} else if (labeltype == 'morph') {
-		url += '&morph=' + encodeURIComponent(label);
+		data.morph = label;
 	} else {
-		url += '&label=' + encodeURIComponent(label);
+		data.label = label;
 	}
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
+
+	// Convert the data object to a JSON string
+	const jsonData = JSON.stringify(data);
+
+	// Open the POST request
+	xmlhttp.open("POST", '/annotate/newlabel', true);
+
+	// Set the request header to indicate the content type
+	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+	// Send the JSON data in the body of the request
+	xmlhttp.send(jsonData);
 }
 
 function reparsesubtree(ev) {
@@ -514,14 +542,26 @@ function drop(ev) {
 			registerdraggable(el);
 		}
 	};
-	url = '/annotate/reattach?sentno=' + document.queryform.sentno.value
-			+ '&senttok=' + encodeURIComponent(document.queryform.senttok.value)
-			+ '&nodeid=' + encodeURIComponent(childid)
-			+ '&newparent=' + encodeURIComponent(newparentid)
-			+ '&tree=' + encodeURIComponent(editor.getValue());
-			// + '&tree=' + encodeURIComponent(document.queryform.tree.value);
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
+	// Create the data object to be sent in the POST request
+	const data = {
+		sentno: document.queryform.sentno.value,
+		senttok: document.queryform.senttok.value,
+		nodeid: childid,
+		newparent: newparentid,
+		tree: editor.getValue()
+	};
+
+	// Convert the data object to a JSON string
+	const jsonData = JSON.stringify(data);
+
+	// Open the POST request
+	xmlhttp.open("POST", '/annotate/reattach', true);
+
+	// Set the request header to indicate the content type
+	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+	// Send the JSON data in the body of the request
+	xmlhttp.send(jsonData);
 }
 
 function newproj(ev) {
@@ -551,12 +591,68 @@ function newproj(ev) {
 			registerdraggable(el);
 		}
 	};
-	url = '/annotate/reattach?sentno=' + document.queryform.sentno.value
-			+ '&senttok=' + encodeURIComponent(document.queryform.senttok.value)
-			+ '&nodeid=newproj'
-			+ '&newparent=' + encodeURIComponent(targetid)
-			+ '&tree=' + encodeURIComponent(editor.getValue());
-			// + '&tree=' + encodeURIComponent(document.queryform.tree.value);
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
+	// Create the data object to be sent in the POST request
+	const data = {
+		sentno: document.queryform.sentno.value,
+		senttok: document.queryform.senttok.value,
+		nodeid: 'newproj',
+		newparent: targetid,
+		tree: editor.getValue()
+	};
+
+	// Convert the data object to a JSON string
+	const jsonData = JSON.stringify(data);
+
+	// Open the POST request
+	xmlhttp.open("POST", '/annotate/reattach', true);
+
+	// Set the request header to indicate the content type
+	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+	// Send the JSON data in the body of the request
+	xmlhttp.send(jsonData);
+}
+
+function accept() {
+	// make AJAX call to accept the current tree.
+	var xmlhttp = getxmlhttp();
+	var tree = editor.getValue();
+	var sentno = document.getElementById('sentno').value;
+	
+	// Create the data object to be sent in the POST request
+	const data = {
+		sentno: sentno,
+		tree: tree,
+	};
+
+	console.log(data);
+
+	// Convert the data object to a JSON string
+	const jsonData = JSON.stringify(data);
+
+	// Define the callback function to handle the response
+	  xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState === 4) {
+            if (xmlhttp.status === 200 || xmlhttp.status === 302) {
+                var responseURL = xmlhttp.responseURL;
+                if (responseURL) {
+                    // Redirect the user to the specified URL
+                    window.location.href = responseURL;
+                } else {
+                    console.error('No redirect URL found in the response');
+                }
+            } else {
+                console.error('Error: ' + xmlhttp.status);
+            }
+        }
+    };
+
+	// Open the POST request
+	xmlhttp.open("POST", '/annotate/accept', true);
+
+	// Set the request header to indicate the content type
+	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+	// Send the JSON data in the body of the request
+	xmlhttp.send(jsonData);
 }
