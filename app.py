@@ -684,9 +684,6 @@ def edit():
 		senttok, parsetrees, _messages, _elapsed = resp
 		tree = parsetrees[n - 1][1]
 		treeobj = ActivedopTree(tree, senttok)
-	elif 'tree' in request.args:
-		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
-		treeobj = ActivedopTree.from_str(request.args.get('tree'))
 	else:
 		return 'ERROR: pass n or tree argument.'
 	rows = max(5, treeobj.treestr().count('\n') + 1)
