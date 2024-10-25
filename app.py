@@ -479,9 +479,11 @@ def annotate(sentno):
 	sent = SENTENCES[lineno]
 	senttok, _ = worker.postokenize(sent)
 	annotation, n = getannotation(username, id)
-	if annotation is not None:
+	if annotation is not None: # a tree is saved in the database
+		# go directly to edit mode
 		return redirect(url_for(
 				'edit', sentno=sentno, annotated=1, n=n))
+	# render annotate mode: browsing parser outputs for the sentence
 	return render_template(
 			'annotate.html',
 			prevlink=str(sentno - 1) if sentno > 1 else str(len(SENTENCES)),
@@ -665,13 +667,13 @@ def edit():
 		session['actions'][DECTREE] += int(request.args.get('dec', 0))
 	session.modified = True
 	msg = ''
-	if request.args.get('annotated') == '1':
+	if request.args.get('annotated') == '1': # there is a saved tree
 		msg = Markup('<font color=red>You have already annotated '
 				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
 		id = QUEUE[sentno - 1][3]
-		treestr, n = getannotation(username, id)
+		treestr, n = getannotation(username, id) # get tree from database
 		treeobj = ActivedopTree.from_str(treestr)
-	elif 'n' in request.args:
+	elif 'n' in request.args: # edit the nth automatic parse
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
 		session['actions'][NBEST] = n
