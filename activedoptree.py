@@ -50,7 +50,7 @@ def cgel_to_ptree_rec(cgel_tree, head: int, depth: int, punct: bool=True):
 	if punct:
 		for p in node.prepunct:
 			result.append(ParentedTree(p+"-p", []))
-	tag = node.constituent
+	tag = node.constituent.replace("_","")
 	if node.label != '' and node.label is not None:
 		tag += '.' + node.label
 	if node.deprel != '' and node.deprel is not None:
