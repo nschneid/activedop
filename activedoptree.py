@@ -91,6 +91,7 @@ class ActivedopTree:
 		if 'ptree' in kwargs and 'senttok' in kwargs:
 			self.ptree = kwargs.get('ptree')
 			self.senttok = kwargs.get('senttok')
+			# standardize ptree with correct labels for punctuation and gaps
 			self.ptree = self._apply_standard_labels()
 			# convert ptree to a CGELTree object
 			self.cgel_tree = self._ptree_to_cgel()
