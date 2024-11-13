@@ -49,7 +49,7 @@ def cgel_to_ptree_rec(cgel_tree, head: int, depth: int, punct: bool=True):
 	if punct:
 		for p in node.prepunct:
 			result.append(ParentedTree(p+"-p", []))
-	tag = node.constituent
+	tag = node.constituent.replace("_", "")
 	if node.label != '' and node.label is not None:
 		tag += '.' + node.label
 	if node.deprel != '' and node.deprel is not None:
@@ -91,6 +91,7 @@ class ActivedopTree:
 		if 'ptree' in kwargs and 'senttok' in kwargs:
 			self.ptree = kwargs.get('ptree')
 			self.senttok = kwargs.get('senttok')
+			self.ptree = self._apply_standard_labels()
 			# convert ptree to a CGELTree object
 			self.cgel_tree = self._ptree_to_cgel()
 			# update cgel_tree with a set of terminals if provided
@@ -107,21 +108,6 @@ class ActivedopTree:
 		self.ptree, self.senttok = cgel_to_ptree(self.cgel_tree)
 		# standardize ptree with correct labels for punctuation and gaps
 		self.ptree = self._apply_standard_labels()
-		# update canonicalized ptree with standardized labels
-		ptree_terminals_with_labels = copy.deepcopy([subt for subt in self.ptree.subtrees(lambda t: t.height() == 2)])
-		for i, subt in enumerate(self.ptree.subtrees(lambda t: t.height() == 2)):
-				subt.label = ptree_terminals_with_labels[i].label
-		# remove underscores from ptree category labels and hyphens from ptree function labels
-		for subt in self.ptree.subtrees(lambda t: t.height() > 1):
-			cat = None
-			func = None
-			pos = None
-			label = LABELRE.match(subt.label)
-			if label.group(1) is not None:
-				cat = label.group(1).replace('_', '')
-			if label.group(2) is not None:
-				func = label.group(2).replace('-', '')
-			subt.label = cat + (('-' + func) if func is not None else '') + (('/' + pos) if pos is not None else '')
 
 	def brackettreestr(self, pretty = False):
 		"""returns a string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen."""
