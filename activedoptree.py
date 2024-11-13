@@ -85,13 +85,10 @@ def cgel_to_ptree(cgel_tree, punct: bool=True, gap_token_symbol: str='_.', compl
 
 class ActivedopTree:
 	"""Wrapper for a tree object with additional methods for activedop."""
-	def __init__(self, source = 'ptree', **kwargs):
-		"""
-		source ['ptree', 'cgel']: the source of the tree (`ParentedTree` or CGEL `Tree` object)
-		"""
+	def __init__(self, **kwargs):
 		from flask import current_app
 		self.app = current_app
-		if source == 'ptree':
+		if 'ptree' in kwargs and 'senttok' in kwargs:
 			self.ptree = kwargs.get('ptree')
 			self.senttok = kwargs.get('senttok')
 			# convert ptree to a CGELTree object
@@ -100,8 +97,12 @@ class ActivedopTree:
 			cgel_tree_terminals = kwargs.get('cgel_tree_terminals', None)
 			if cgel_tree_terminals is not None:
 				self.cgel_tree.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True, restore_old_label=True)
-		elif source == 'cgel':
+		elif 'cgel_tree' in kwargs:
 			self.cgel_tree = kwargs.get('cgel_tree')
+		elif 'ptree' in kwargs:
+			raise ValueError('missing senttok')
+		else:
+			raise ValueError('source must be either ptree or cgel')
 		# if original source is ptree, back-converting from cgel_tree canonicalizes punctuation positions in the ptree
 		self.ptree, self.senttok = cgel_to_ptree(self.cgel_tree)
 		# standardize ptree with correct labels for punctuation and gaps
@@ -460,7 +461,7 @@ class ActivedopTree:
 			if add_root:
 				tree = "(ROOT" + tree + ")"
 			ptree, senttok = brackettree(tree)
-			return cls(source = 'ptree', ptree = ptree, senttok = senttok)
+			return cls(ptree = ptree, senttok = senttok)
 		else:
 			cgel_tree = cgel.parse(tree)[0]
-			return cls(source = 'cgel', cgel_tree = cgel_tree)
+			return cls(cgel_tree = cgel_tree)
