@@ -805,7 +805,8 @@ def reattach():
 	data = request.get_json()
 	treestr = data.get('tree')
 	treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
-	old_treeobj = treeobj
+	# kludge (can't deep copy treeobj)
+	old_treeobj, _ = graphical_operation_preamble(treestr)
 	try:
 		dt = DrawTree(treeobj.ptree, treeobj.senttok)
 		error = ''
