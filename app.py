@@ -551,7 +551,7 @@ def parse():
 		result = ''
 		dectree, maxdepth, _ = decisiontree(parsetrees, senttok, urlprm)
 		prob, ptree, _treestr, _fragments = parsetrees[0]
-		treeobj = ActivedopTree(ptree, senttok)
+		treeobj = ActivedopTree(ptree = ptree, senttok = senttok)
 		nbest = Markup('%s\nbest tree: %s' % (
 				dectree,
 				('%(n)d. [%(prob)s] '
@@ -605,8 +605,8 @@ def filterparsetrees():
 			worker.getparses,
 			sent, require, block).result()
 	senttok, parsetrees, _messages, _elapsed = resp
-	parsetrees_ = [(n, prob, ActivedopTree(tree, senttok), treestr, frags)
-			for n, (prob, tree, treestr, frags) in enumerate(parsetrees)
+	parsetrees_ = [(n, prob, ActivedopTree(ptree = ptree, senttok = senttok), treestr, frags)
+			for n, (prob, ptree, treestr, frags) in enumerate(parsetrees)
 			if treestr is None or testconstraints(treestr, frequire, fblock)]
 	if len(parsetrees_) == 0:
 		return ('No parse trees after filtering; try pressing Re-parse, '
@@ -684,8 +684,8 @@ def edit():
 				worker.getparses,
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
-		tree = parsetrees[n - 1][1]
-		treeobj = ActivedopTree(tree, senttok)
+		ptree = parsetrees[n - 1][1]
+		treeobj = ActivedopTree(ptree = ptree, senttok = senttok)
 	else:
 		return 'ERROR: pass n or tree argument.'
 	rows = max(5, treeobj.treestr().count('\n') + 1)
@@ -742,7 +742,8 @@ def graphical_operation_preamble(treestr):
 
 def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, sentno):
 	ptree = ParentedTree.convert(canonicalize(dt.nodes[0]))
-	treeobj = ActivedopTree(ptree, senttok, cgel_tree_terminals)
+	treeobj = ActivedopTree(ptree = ptree, senttok = senttok, 
+						 cgel_tree_terminals = cgel_tree_terminals)
 	msg = treeobj.validate()
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 		% urlencode(dict(sentno=sentno, tree=treeobj.treestr())))	
@@ -1025,7 +1026,8 @@ def replacesubtree():
 		a[0] = subseq[n]
 	dt.nodes[nodeid][:] = newsubtree[:]
 	ptree = ParentedTree.convert(canonicalize(dt.nodes[0]))
-	treeobj = ActivedopTree(ptree, treeobj.senttok, cgel_tree_terminals)
+	treeobj = ActivedopTree(ptree = ptree, senttok = treeobj.senttok, 
+						 cgel_tree_terminals = cgel_tree_terminals)
 	session['actions'][REPARSE] += 1
 	session.modified = True
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
@@ -1077,8 +1079,8 @@ def accept():
 				worker.getparses,
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
-		tree = parsetrees[n - 1][1]
-		treeobj = ActivedopTree(tree, senttok)
+		ptree = parsetrees[n - 1][1]
+		treeobj = ActivedopTree(ptree = ptree, senttok = senttok)
 		tree_to_train, cgel_tree = treeobj.ptree, treeobj.cgel_tree
 		if False:
 			# strip function tags
@@ -1308,7 +1310,7 @@ def cgel2export(inputfile, outputfile):
 		for tree in cgel.trees(f):
 			ptree, senttok = cgel_to_ptree(tree)
 			print(tree.metadata)
-			treeobj = ActivedopTree(ptree, senttok)
+			treeobj = ActivedopTree(ptree = ptree, senttok = senttok)
 			# remove -p function label for training the parser
 			for subt in treeobj.ptree.subtrees(lambda t: t.height() == 2):
 				if subt.label.endswith("-p"):
