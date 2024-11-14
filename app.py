@@ -714,23 +714,38 @@ def redraw():
 	"""Validate and re-draw tree."""
 	data = request.get_json()
 	sentno = int(data.get('sentno')) # 1-indexed
-	treeobj = ActivedopTree.from_str(data.get('tree'))
+	has_error = False
+	link = ('''<a href="#" onclick="accept()">accept this tree</a>
+		<input type="hidden" id="sentno" value="%d">'''
+	% (sentno))
+	try:
+		treeobj = ActivedopTree.from_str(data.get('tree'))
+		msg = treeobj.validate()
+	except Exception as err:
+		if len(str(err)) > 0:
+			error_msg = str(err)
+		else:
+			error_msg = "Your CGEL tree is structurally deficient."
+		msg = "ERROR: " + error_msg + "\n\nPlease correct tree errors before proceeding."
+		treeobj = None
+		has_error = True
+		return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
+			msg,
+			link,
+			'',
+			)), 'has_error': has_error})
 	tree_to_accept = treeobj.treestr()
 	tree_for_editdist = re.sub(r'\s+', ' ', str(tree_to_accept))
-	msg = treeobj.validate()
-	link = ('''<a href="#" onclick="accept()">accept this tree</a>
-			<input type="hidden" id="sentno" value="%d">'''
-		% (sentno))
 	oldtree = request.args.get('oldtree', '')
 	oldtree = re.sub(r'\s+', ' ', oldtree)
 	if oldtree and tree_for_editdist != oldtree:
 		session['actions'][EDITDIST] += editdistance(tree_for_editdist, oldtree)
 		session.modified = True
-	return Markup('%s\n\n%s\n\n%s' % (
+	return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
 			msg,
 			link,
 			treeobj.gtree(add_editable_attr=True)
-			))
+			)), 'has_error': has_error})
 
 def graphical_operation_preamble(treestr):
 	treeobj = ActivedopTree.from_str(treestr)
@@ -755,7 +770,15 @@ def newlabel():
 	"""Re-draw tree with newly picked label."""
 	data = request.get_json()
 	treestr = data.get('tree')
-	treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	try:
+		treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	except Exception as err:
+		if len(str(err)) > 0:
+			error_msg = str(err)
+		else:
+			error_msg = "Your CGEL tree is structurally deficient."
+		msg = "ERROR: " + error_msg + "\n\nPlease correct tree errors before proceeding."
+		return Markup(msg)
 	senttok = treeobj.senttok
 	# FIXME: re-factor; check label AFTER replacing it
 	# now actually replace label at nodeid
@@ -804,7 +827,15 @@ def reattach():
 	"""Re-draw tree after re-attaching node under new parent."""
 	data = request.get_json()
 	treestr = data.get('tree')
-	treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	try:
+		treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	except Exception as err:
+		if len(str(err)) > 0:
+			error_msg = str(err)
+		else:
+			error_msg = "Your CGEL tree is structurally deficient."
+		msg = "ERROR: " + error_msg + "\n\nPlease correct tree errors before proceeding."
+		return Markup(msg)
 	# kludge (can't deep copy treeobj)
 	old_treeobj, _ = graphical_operation_preamble(treestr)
 	try:
