@@ -805,149 +805,164 @@ def reattach():
 	data = request.get_json()
 	treestr = data.get('tree')
 	treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
-	dt = DrawTree(treeobj.ptree, treeobj.senttok)
-	error = ''
-	senttok = treeobj.senttok
-	if data.get('newparent') == 'deletenode':
-		# remove nodeid by replacing it with its children
-		_treeid, nodeid = data.get('nodeid', '').lstrip('t').split('_')
-		nodeid = int(nodeid)
-		x = dt.nodes[nodeid]
-		if nodeid == 0 or isinstance(x[0], int):
-			error = 'ERROR: cannot remove ROOT or POS node'
-		else:
-			children = list(x)
-			x[:] = []
-			for y in dt.nodes[0].subtrees():
-				if any(child is x for child in y):
-					i = y.index(x)
-					y[i:i + 1] = children
-					tree = canonicalize(dt.nodes[0])
-					dt = DrawTree(tree, senttok)  # kludge..
-					break
-	elif data.get('nodeid', '') == 'newproj':
-		# splice in a new node under parentid
-		_treeid, newparent = data.get('newparent', ''
-				).lstrip('t').split('_')
-		newparent = int(newparent)
-		y = dt.nodes[newparent]
-		label = y.label
-		if isinstance(y[0], int):
-			error = 'ERROR: cannot add node under POS tag'
-		else:
-			children = list(y)
-			y[:] = []
-			y[:] = [Tree(label, children)]
-			tree = canonicalize(dt.nodes[0])
-			dt = DrawTree(tree, senttok)  # kludge..
-	elif data.get('nodeid', '').startswith('newlabel_'):
-		# splice in a new node under parentid
-		_treeid, newparent = data.get('newparent', ''
-				).lstrip('t').split('_')
-		newparent = int(newparent)
-		label = data.get('nodeid').split('_', 1)[1]
-		y = dt.nodes[newparent]
-		if isinstance(y[0], int):
-			error = 'ERROR: cannot add node under POS tag'
-		else:
-			children = list(y)
-			y[:] = []
-			y[:] = [Tree(label, children)]
-			tree = canonicalize(dt.nodes[0])
-			dt = DrawTree(tree, senttok)  # kludge..
-	else:  # re-attach existing node at existing new parent
-		_treeid, nodeid = data.get('nodeid', '').lstrip('t').split('_')
-		nodeid = int(nodeid)
-		_treeid, newparent = data.get('newparent', ''
-				).lstrip('t').split('_')
-		newparent = int(newparent)
-		# remove node from old parent
-		# dt.nodes[nodeid].parent.pop(dt.nodes[nodeid].parent_index)
-		x = dt.nodes[nodeid]
-		y = dt.nodes[newparent]
-
-		def find_self_and_sisters(tree, subtree):
-			parent = None
-			sisters = []
-
-			# Helper function to find the parent of the subtree
-			def find_parent(node, target):
-				nonlocal parent
-				if target in node.children:
-					parent = node
-					return True
-				for child in node.children:
-					if isinstance(child, int):
-						return False
-					elif find_parent(child, target):
-						return True
-				return False
-
-			# Find the parent of the subtree
-			find_parent(tree, subtree)
-
-			if parent:
-				# Collect all children of the parent node
-				sisters = [child for child in parent.children]
-
-			return sisters
-		
-		def extract_adjacent_punctuation(arr, target):
-			# Find the index of the target character
-			try:
-				target_index = arr.index(target)
-			except ValueError:
-				return []  # If target is not in the list, return an empty list
-	
-			# Initialize the result list with the target character
-			result = [target]
-
-			# Collect punctuation characters to the left of the target
-			left_index = target_index - 1
-			while left_index >= 0 and is_punct_label(arr[left_index].label):
-				result.insert(0, arr[left_index])
-				left_index -= 1
-			
-			# Collect punctuation characters to the right of the target
-			right_index = target_index + 1
-			while right_index < len(arr) and is_punct_label(arr[right_index].label):
-				result.append(arr[right_index])
-				right_index += 1
-	
-			return result
-		
-		for node in x.subtrees():
-			if node is y:
-				error = ('ERROR: cannot re-attach subtree'
-						' under (descendant of) itself\n')
-				break
-		else:
-			for node in dt.nodes[0].subtrees():
-				if any(child is x for child in node):
-					if len(node) > 1:
-						self_and_sisters = find_self_and_sisters(dt.nodes[0], x)
-						self_and_nearbypunct = extract_adjacent_punctuation(self_and_sisters, x)
-						for s in self_and_nearbypunct:
-							# iteratively move all sister punctuation to the target. 
-							# (prevents problematic crossover movement of non-punctuation nodes over punctuation nodes)
-							# punctuation positions are subsequently re-canonicalized when ActivedopTree is reconstructed
-							node.remove(s)
-							dt.nodes[newparent].append(s)
+	# kludge (can't deep copy treeobj)
+	old_treeobj, _ = graphical_operation_preamble(treestr)
+	try:
+		dt = DrawTree(treeobj.ptree, treeobj.senttok)
+		error = ''
+		senttok = treeobj.senttok
+		if data.get('newparent') == 'deletenode':
+			# remove nodeid by replacing it with its children
+			_treeid, nodeid = data.get('nodeid', '').lstrip('t').split('_')
+			nodeid = int(nodeid)
+			x = dt.nodes[nodeid]
+			if nodeid == 0 or isinstance(x[0], int):
+				error = 'ERROR: cannot remove ROOT or POS node'
+			else:
+				children = list(x)
+				x[:] = []
+				for y in dt.nodes[0].subtrees():
+					if any(child is x for child in y):
+						i = y.index(x)
+						y[i:i + 1] = children
 						tree = canonicalize(dt.nodes[0])
 						dt = DrawTree(tree, senttok)  # kludge..
-					else:
-						error = ('ERROR: re-attaching only child creates'
-								' empty node %s; remove manually\n' % node)
+						break
+		elif data.get('nodeid', '') == 'newproj':
+			# splice in a new node under parentid
+			_treeid, newparent = data.get('newparent', ''
+					).lstrip('t').split('_')
+			newparent = int(newparent)
+			y = dt.nodes[newparent]
+			label = y.label
+			if isinstance(y[0], int):
+				error = 'ERROR: cannot add node under POS tag'
+			else:
+				children = list(y)
+				y[:] = []
+				y[:] = [Tree(label, children)]
+				tree = canonicalize(dt.nodes[0])
+				dt = DrawTree(tree, senttok)  # kludge..
+		elif data.get('nodeid', '').startswith('newlabel_'):
+			# splice in a new node under parentid
+			_treeid, newparent = data.get('newparent', ''
+					).lstrip('t').split('_')
+			newparent = int(newparent)
+			label = data.get('nodeid').split('_', 1)[1]
+			y = dt.nodes[newparent]
+			if isinstance(y[0], int):
+				error = 'ERROR: cannot add node under POS tag'
+			else:
+				children = list(y)
+				y[:] = []
+				y[:] = [Tree(label, children)]
+				tree = canonicalize(dt.nodes[0])
+				dt = DrawTree(tree, senttok)  # kludge..
+		else:  # re-attach existing node at existing new parent
+			_treeid, nodeid = data.get('nodeid', '').lstrip('t').split('_')
+			nodeid = int(nodeid)
+			_treeid, newparent = data.get('newparent', ''
+					).lstrip('t').split('_')
+			newparent = int(newparent)
+			# remove node from old parent
+			# dt.nodes[nodeid].parent.pop(dt.nodes[nodeid].parent_index)
+			x = dt.nodes[nodeid]
+			y = dt.nodes[newparent]
+
+			def find_self_and_sisters(tree, subtree):
+				parent = None
+				sisters = []
+
+				# Helper function to find the parent of the subtree
+				def find_parent(node, target):
+					nonlocal parent
+					if target in node.children:
+						parent = node
+						return True
+					for child in node.children:
+						if isinstance(child, int):
+							return False
+						elif find_parent(child, target):
+							return True
+					return False
+
+				# Find the parent of the subtree
+				find_parent(tree, subtree)
+
+				if parent:
+					# Collect all children of the parent node
+					sisters = [child for child in parent.children]
+
+				return sisters
+			
+			def extract_adjacent_punctuation(arr, target):
+				# Find the index of the target character
+				try:
+					target_index = arr.index(target)
+				except ValueError:
+					return []  # If target is not in the list, return an empty list
+		
+				# Initialize the result list with the target character
+				result = [target]
+
+				# Collect punctuation characters to the left of the target
+				left_index = target_index - 1
+				while left_index >= 0 and is_punct_label(arr[left_index].label):
+					result.insert(0, arr[left_index])
+					left_index -= 1
+				
+				# Collect punctuation characters to the right of the target
+				right_index = target_index + 1
+				while right_index < len(arr) and is_punct_label(arr[right_index].label):
+					result.append(arr[right_index])
+					right_index += 1
+		
+				return result
+			
+			for node in x.subtrees():
+				if node is y:
+					error = ('ERROR: cannot re-attach subtree'
+							' under (descendant of) itself\n')
 					break
-	treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, int(data.get('sentno'))) 
-	if error == '':
-		session['actions'][REATTACH] += 1
-		session.modified = True
-	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
-			msg,
-			link, error,
-			treeobj.gtree(add_editable_attr=True),
-			treeobj.treestr()))
+			else:
+				for node in dt.nodes[0].subtrees():
+					if any(child is x for child in node):
+						if len(node) > 1:
+							self_and_sisters = find_self_and_sisters(dt.nodes[0], x)
+							self_and_nearbypunct = extract_adjacent_punctuation(self_and_sisters, x)
+							for s in self_and_nearbypunct:
+								# iteratively move all sister punctuation to the target. 
+								# (prevents problematic crossover movement of non-punctuation nodes over punctuation nodes)
+								# punctuation positions are subsequently re-canonicalized when ActivedopTree is reconstructed
+								node.remove(s)
+								dt.nodes[newparent].append(s)
+							tree = canonicalize(dt.nodes[0])
+							dt = DrawTree(tree, senttok)  # kludge..
+						else:
+							error = ('ERROR: re-attaching only child creates'
+									' empty node %s; remove manually\n' % node)
+						break
+		treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, int(data.get('sentno')))
+		if treeobj.senttok != old_treeobj.senttok:
+			raise ValueError('movement would result in reordered tokens')
+		if error == '':
+			session['actions'][REATTACH] += 1
+			session.modified = True
+		return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+				msg,
+				link, error + "\n",
+				treeobj.gtree(add_editable_attr=True),
+				treeobj.treestr()))
+	except Exception as err:
+		msg = old_treeobj.validate()
+		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
+			% urlencode(dict(sentno=int(data.get('sentno')), tree=old_treeobj.treestr())))
+		error = "ERROR: " + str(err)
+		return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+				msg,
+				link, error + "\n",
+				old_treeobj.gtree(add_editable_attr=True),
+				old_treeobj.treestr()))
 
 
 @app.route('/annotate/reparsesubtree')
