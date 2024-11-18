@@ -191,13 +191,6 @@ class ActivedopTree:
 			# if label is a single POS tag, add '-Head' to the label
 			if subt.label.count('-') == 0:
 				subt.label += '-Head'
-			# if label contains a coindexation variable but there are no gaps in the sentence, remove the period and following character from the label
-			if subt.label.count('.') > 0 and senttok.count('_.') == 0:
-				# match period and following character
-				m = re.search(r'\.(\w)', subt.label)
-				# if there is a match, remove the period and following character
-				if m:
-					subt.label = subt.label.replace(m.group(), '')
 		return tree_copy
 			
 	def _ptree_to_cgel(self) -> CGELTree:
