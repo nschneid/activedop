@@ -168,7 +168,7 @@ def initpriorities(username):
 @app.before_first_request
 def initapp():
 	"""Load sentences, check config."""
-	global SENTENCES, QUEUE, ANNOTATIONHELP
+	global SENTENCES, SENTENCES_ORIG, QUEUE, ANNOTATIONHELP
 	sentfilename = app.config['SENTENCES']
 	if sentfilename is None:
 		raise ValueError('SENTENCES not configured')
@@ -184,6 +184,7 @@ def initapp():
 			if any(field.strip() for field in row.values()):
 				sentences.append(row['sentence'])
 	SENTENCES = sentences
+	SENTENCES_ORIG = list(SENTENCES)
 	rankingfilename = '%s.rankings.json' % sentfilename
 	if (os.path.exists(rankingfilename) and
 			os.stat(rankingfilename).st_mtime
@@ -314,13 +315,13 @@ def readannotations(username=None):
 	return OrderedDict(entries)
 
 
-def addentry(id, sentno, tree, cgel_tree, actions):
+def addentry(id, sentno, tree, cgel_tree, senttok, origtok, actions):
 	"""Add an annotation to the database."""
 	db = getdb()
 	db.execute(
 			'insert or replace into entries '
-			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			(id, sentno, session['username'], tree, cgel_tree, *actions,
+			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			(id, sentno, session['username'], tree, cgel_tree, senttok, origtok, *actions,
 			datetime.now().strftime('%F %H:%M:%S')))
 	db.commit()
 
@@ -1108,7 +1109,8 @@ def accept():
 		comment='%s %r' % (username, actions))
 	app.logger.info(block)
 	treeout = block
-	addentry(id, lineno, treeout, str(cgel_tree), actions)	# save annotation in the database
+	origtok = SENTENCES_ORIG[lineno]
+	addentry(id, lineno, treeout, str(cgel_tree), " ".join(senttok), origtok, actions)	# save annotation in the database
 	WORKERS[username].submit(worker.augment, [tree_to_train], [senttok])	# update the parser's grammar
 	# validate and stay on this sentence if there are issues
 	if treestr:
