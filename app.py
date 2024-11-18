@@ -673,6 +673,7 @@ def edit():
 		id = QUEUE[sentno - 1][3]
 		treestr, n = getannotation(username, id) # get tree from database
 		treeobj = ActivedopTree.from_str(treestr)
+		senttok = treeobj.senttok
 	elif 'n' in request.args: # edit the nth automatic parse
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
