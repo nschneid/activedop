@@ -721,12 +721,8 @@ def redraw():
 	try:
 		treeobj = ActivedopTree.from_str(data.get('tree'))
 		msg = treeobj.validate()
-	except Exception as err:
-		if len(str(err)) > 0:
-			error_msg = str(err)
-		else:
-			error_msg = "Your CGEL tree is structurally deficient."
-		msg = "ERROR: " + error_msg + "\n\nPlease correct tree errors before proceeding."
+	except ValueError as err:
+		msg = str(err)
 		treeobj = None
 		has_error = True
 		return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
@@ -772,13 +768,8 @@ def newlabel():
 	treestr = data.get('tree')
 	try:
 		treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
-	except Exception as err:
-		if len(str(err)) > 0:
-			error_msg = str(err)
-		else:
-			error_msg = "Your CGEL tree is structurally deficient."
-		msg = "ERROR: " + error_msg + "\n\nPlease correct tree errors before proceeding."
-		return Markup(msg)
+	except ValueError as err:
+		return Markup(str(err))
 	senttok = treeobj.senttok
 	# FIXME: re-factor; check label AFTER replacing it
 	# now actually replace label at nodeid
@@ -829,13 +820,8 @@ def reattach():
 	treestr = data.get('tree')
 	try:
 		treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
-	except Exception as err:
-		if len(str(err)) > 0:
-			error_msg = str(err)
-		else:
-			error_msg = "Your CGEL tree is structurally deficient."
-		msg = "ERROR: " + error_msg + "\n\nPlease correct tree errors before proceeding."
-		return Markup(msg)
+	except ValueError as err:
+		return Markup(str(err))
 	# kludge (can't deep copy treeobj)
 	old_treeobj, _ = graphical_operation_preamble(treestr)
 	try:
