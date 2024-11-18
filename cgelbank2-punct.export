@@ -1,2442 +1,2020 @@
 #BOS 0
-abortion	--	N-Head	--	--	500
-was	--	Vaux-Head	--	--	544
-so	--	Adv-Head	--	--	502
-powerful	--	Adj-Head	--	--	503
-and	--	Coordinator-Marker	--	--	505
-dominant	--	Adj-Head	--	--	504
-an	--	D-Head	--	--	508
-issue	--	N-Head	--	--	509
-that	--	Sdr-Marker	--	--	542
-it	--	Npro-Head	--	--	512
-overcame	--	V-Head	--	--	521
-voter	--	N-Head	--	--	514
-frustrations	--	N-Head	--	--	515
-about	--	P-Head	--	--	518
-inflation	--	N-Head	--	--	516
-at	--	P-Head	--	--	539
-a	--	D-Head	--	--	522
-time	--	N-Head	--	--	537
-when	--	P-Head	--	--	523
-inflation	--	N-Head	--	--	524
-was	--	Vaux-Head	--	--	533
-significantly	--	Adv-Head	--	--	526
-worse	--	Adj-Head	--	--	531
-than	--	P-Head	--	--	530
-current	--	Adj-Head	--	--	527
-rates	--	N-Head	--	--	528
-.	--	.	--	--	528
-_.	--	GAP.x-Mod	--	--	534
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	545
-#502	--	AdvP-Mod	--	--	507
-#503	--	AdjP-Coordinate	--	--	506
-#504	--	AdjP-Head	--	--	505
-#505	--	AdjP-Coordinate	--	--	506
-#506	--	Coordination-Head	--	--	507
-#507	--	AdjP-Mod	--	--	511
-#508	--	DP-Det	--	--	510
-#509	--	Nom-Head	--	--	510
-#510	--	NP-Head	--	--	511
-#511	--	NP-Head	--	--	543
-#512	--	Nom-Head	--	--	513
-#513	--	NP-Subj	--	--	541
-#514	--	Nom-Mod	--	--	515
-#515	--	Nom-Head	--	--	519
-#516	--	Nom-Head	--	--	517
-#517	--	NP-Obj	--	--	518
-#518	--	PP-Comp	--	--	519
-#519	--	Nom-Head	--	--	520
-#520	--	NP-Obj	--	--	521
-#521	--	VP-Head	--	--	540
-#522	--	DP-Det	--	--	538
-#523	--	PP.x-Prenucleus	--	--	536
-#524	--	Nom-Head	--	--	525
-#525	--	NP-Subj	--	--	535
-#526	--	AdvP-Mod	--	--	532
-#527	--	AdjP-Mod	--	--	528
-#528	--	Nom-Head	--	--	529
-#529	--	NP-Obj	--	--	530
-#530	--	PP-Comp	--	--	531
-#531	--	AdjP-Head	--	--	532
-#532	--	AdjP-PredComp	--	--	533
-#533	--	VP-Head	--	--	534
-#534	--	VP-Head	--	--	535
-#535	--	Clauserel-Head	--	--	536
-#536	--	Clauserel-Mod	--	--	537
-#537	--	Nom-Head	--	--	538
-#538	--	NP-Obj	--	--	539
-#539	--	PP-Mod	--	--	540
-#540	--	VP-Head	--	--	541
-#541	--	Clause-Head	--	--	542
-#542	--	Clause-Comp_ind	--	--	543
-#543	--	NP-PredComp	--	--	544
-#544	--	VP-Head	--	--	545
-#545	--	Clause	--	--	0
-#EOS 0
-#BOS 1
-and	--	Coordinator-Marker	--	--	571
-I	--	Npro-Head	--	--	500
-'ll	--	Vaux-Head	--	--	524
-tell	--	V-Head	--	--	522
-you	--	Npro-Head	--	--	502
-something	--	D-Head	--	--	504
-else	--	P-Head	--	--	505
-that	--	Sdr-Marker	--	--	519
-_.	--	GAP.y-Subj	--	--	518
-is	--	Vaux-Head	--	--	508
-not	--	Adv-Head	--	--	507
-helping	--	V-Head	--	--	513
-my	--	Npro-Head	--	--	509
-appetite	--	N-Head	--	--	511
-any	--	D-Head	--	--	514
-:	--	:	--	--	514
-our	--	Npro-Head	--	--	526
-refrigerator	--	N-Head	--	--	528
-currently	--	Adv-Head	--	--	530
-contains	--	V-Head	--	--	568
-a	--	D-Head	--	--	531
-jug	--	N-Head	--	--	566
-of	--	P-Head	--	--	565
-pond	--	N-Head	--	--	532
-water	--	N-Head	--	--	533
-infested	--	V-Head	--	--	561
-with	--	P-Head	--	--	560
-mosquito	--	N-Head	--	--	534
-larvae	--	N-Head	--	--	535
-,	--	,	--	--	535
-which	--	Npro-Head	--	--	536
-_.	--	GAP.x-Subj	--	--	557
-are	--	Vaux-Head	--	--	556
-so	--	Adv-Head	--	--	538
-unappetizing	--	Adj-Head	--	--	539
-as	--	P-Head	--	--	554
-to	--	Sdr-Marker	--	--	552
-make	--	V-Head	--	--	551
-semi-digested	--	Adj-Head	--	--	540
-lizard	--	N-Head	--	--	541
-parts	--	N-Head	--	--	542
-look	--	V-Head	--	--	549
-like	--	P-Head	--	--	548
-Chicken	--	N-Head	--	--	545
-McNuggets	--	N-Head	--	--	546
-.	--	.	--	--	546
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	525
+the	--	D-Head	--	--	500
+Convention	--	N-Head	--	--	521
+on	--	P-Head	--	--	520
+the	--	D-Head	--	--	501
+Recognition	--	N-Head	--	--	502
+and	--	Coordinator-Marker	--	--	506
+Enforcement	--	N-Head	--	--	504
+of	--	P-Head	--	--	517
+Foreign	--	Adj-Head	--	--	508
+Arbitral	--	Adj-Head	--	--	509
+Awards	--	N-Head	--	--	510
+of	--	P-Head	--	--	515
+June	--	N-Flat	--	--	512
+10	--	N-Flat	--	--	512
+,	--	,	--	--	512
+1958	--	N-Flat	--	--	512
+,	--	,	--	--	512
+shall	--	Vaux-Head	--	--	541
+be	--	Vaux-Head	--	--	539
+enforced	--	V-Head	--	--	529
+in	--	P-Head	--	--	528
+United	--	Adj-Head	--	--	523
+States	--	N-Head	--	--	524
+courts	--	N-Head	--	--	526
+in	--	P-Head	--	--	536
+accordance	--	N-Head	--	--	534
+with	--	P-Head	--	--	533
+this	--	D-Head	--	--	530
+chapter	--	N-Head	--	--	531
+.	--	.	--	--	531
+#500	--	DP-Det	--	--	522
+#501	--	DP-Det	--	--	519
 #502	--	Nom-Head	--	--	503
-#503	--	NP-Obj_ind	--	--	522
-#504	--	DP-DetHead	--	--	506
-#505	--	PP-Mod	--	--	506
-#506	--	Nom.y-Head	--	--	520
-#507	--	AdvP-Mod	--	--	508
-#508	--	VP-Head	--	--	517
-#509	--	Nom-Head	--	--	510
-#510	--	NP-Det	--	--	512
-#511	--	Nom-Head	--	--	512
-#512	--	NP-Obj	--	--	513
-#513	--	VP-Head	--	--	515
-#514	--	DP-Mod	--	--	515
-#515	--	VP-Head	--	--	516
-#516	--	Clause-Comp	--	--	517
-#517	--	VP-Head	--	--	518
-#518	--	Clauserel-Head	--	--	519
-#519	--	Clauserel-Mod	--	--	520
-#520	--	Nom-Head	--	--	521
-#521	--	NP-Obj_dir	--	--	522
-#522	--	VP-Head	--	--	523
-#523	--	Clause-Comp	--	--	524
-#524	--	VP-Head	--	--	525
-#525	--	Clause-Head	--	--	571
-#526	--	Nom-Head	--	--	527
-#527	--	NP-Det	--	--	529
-#528	--	Nom-Head	--	--	529
-#529	--	NP-Subj	--	--	570
-#530	--	AdvP-Mod	--	--	569
-#531	--	DP-Det	--	--	567
-#532	--	Nom-Mod	--	--	533
-#533	--	Nom-Head	--	--	563
-#534	--	Nom-Mod	--	--	535
-#535	--	Nom-Head	--	--	559
-#536	--	Nom-Head	--	--	537
-#537	--	NP.x-Prenucleus	--	--	558
-#538	--	AdvP-Mod	--	--	539
-#539	--	AdjP-Head	--	--	555
-#540	--	AdjP-Mod	--	--	543
-#541	--	Nom-Mod	--	--	542
-#542	--	Nom-Head	--	--	543
-#543	--	Nom-Head	--	--	544
-#544	--	NP-Obj	--	--	551
-#545	--	Nom-Mod	--	--	546
-#546	--	Nom-Head	--	--	547
-#547	--	NP-Obj	--	--	548
-#548	--	PP-PredComp	--	--	549
-#549	--	VP-Head	--	--	550
-#550	--	Clause-Comp	--	--	551
-#551	--	VP-Head	--	--	552
-#552	--	VP-Head	--	--	553
-#553	--	Clause-Comp	--	--	554
-#554	--	PP-Comp_ind	--	--	555
-#555	--	AdjP-PredComp	--	--	556
-#556	--	VP-Head	--	--	557
-#557	--	Clauserel-Head	--	--	558
-#558	--	Clauserel-Supplement	--	--	559
-#559	--	NP-Obj	--	--	560
-#560	--	PP-Comp	--	--	561
-#561	--	VP-Head	--	--	562
-#562	--	Clause-Mod	--	--	563
-#563	--	Nom-Head	--	--	564
-#564	--	NP-Obj	--	--	565
-#565	--	PP-Comp	--	--	566
-#566	--	Nom-Head	--	--	567
-#567	--	NP-Obj	--	--	568
-#568	--	VP-Head	--	--	569
-#569	--	VP-Head	--	--	570
-#570	--	Clause-Supplement	--	--	571
-#571	--	Clause	--	--	0
-#EOS 1
-#BOS 2
-I	--	Npro-Head	--	--	500
-have	--	Vaux-Head	--	--	582
-said	--	V-Head	--	--	503
-above	--	P-Head	--	--	502
-,	--	,	--	--	502
-that	--	Sdr-Marker	--	--	579
-the	--	D-Head	--	--	504
-atonement	--	N-Head	--	--	505
-is	--	Vaux-Head	--	--	577
-to	--	Sdr-Marker	--	--	575
-be	--	Vaux-Head	--	--	574
-regarded	--	V-Head	--	--	572
-as	--	P-Head	--	--	571
-that	--	D-Head	--	--	507
-by	--	P-Head	--	--	510
-which	--	Npro-Head	--	--	508
-God	--	N-Head	--	--	511
-has	--	Vaux-Head	--	--	565
-bridged	--	V-Head	--	--	563
-over	--	P-Head	--	--	513
-the	--	D-Head	--	--	514
-gulf	--	N-Head	--	--	561
-which	--	Npro-Head	--	--	515
-_.	--	GAP.y-Subj	--	--	559
-separated	--	V-Head	--	--	558
-between	--	P-Head	--	--	557
-what	--	Npro-Head	--	--	517
-sin	--	N-Head	--	--	519
-had	--	Vaux-Head	--	--	525
-made	--	V-Head	--	--	523
-us	--	Npro-Head	--	--	521
-,	--	,	--	--	521
-_.	--	GAP.x-PredComp	--	--	523
-and	--	Coordinator-Marker	--	--	555
-what	--	Npro-Head	--	--	530
-it	--	Npro-Head	--	--	532
-was	--	Vaux-Head	--	--	542
-the	--	D-Head	--	--	534
-desire	--	N-Head	--	--	540
-of	--	P-Head	--	--	539
-the	--	D-Head	--	--	535
-divine	--	N-Head	--	--	536
-love	--	N-Head	--	--	537
-that	--	Sdr-Marker	--	--	549
-we	--	Npro-Head	--	--	543
-should	--	Vaux-Head	--	--	547
-become	--	V-Head	--	--	545
-.	--	.	--	--	545
-_.	--	GAP.b-PredComp	--	--	545
-_.	--	GAP.z-Mod	--	--	566
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	583
-#502	--	PP-Mod	--	--	503
-#503	--	VP-Head	--	--	580
-#504	--	DP-Det	--	--	506
-#505	--	Nom-Head	--	--	506
-#506	--	NP-Subj	--	--	578
-#507	--	DP-DetHead	--	--	569
-#508	--	Nom-Head	--	--	509
-#509	--	NP-Obj	--	--	510
-#510	--	PP.z-Prenucleus	--	--	568
-#511	--	Nom-Head	--	--	512
-#512	--	NP-Subj	--	--	567
-#513	--	PP-Particle	--	--	563
-#514	--	DP-Det	--	--	562
-#515	--	Nom-Head	--	--	516
-#516	--	NP.y-Prenucleus	--	--	560
-#517	--	Nom-Head	--	--	518
-#518	--	NP.x-HeadPrenucleus	--	--	527
-#519	--	Nom-Head	--	--	520
-#520	--	NP-Subj	--	--	526
-#521	--	Nom-Head	--	--	522
-#522	--	NP-Obj	--	--	523
-#523	--	VP-Head	--	--	524
-#524	--	Clause-Comp	--	--	525
-#525	--	VP-Head	--	--	526
-#526	--	Clauserel-Head	--	--	527
-#527	--	Clauserel-Mod	--	--	528
-#528	--	Nom-Head	--	--	529
-#529	--	NP-Coordinate	--	--	556
-#530	--	Nom-Head	--	--	531
-#531	--	NP.b-HeadPrenucleus	--	--	552
-#532	--	Nom-Head	--	--	533
-#533	--	NP-Subj	--	--	551
-#534	--	DP-Det	--	--	541
-#535	--	DP-Det	--	--	538
-#536	--	Nom-Mod	--	--	537
-#537	--	Nom-Head	--	--	538
-#538	--	NP-Obj	--	--	539
-#539	--	PP-Mod	--	--	540
-#540	--	Nom-Head	--	--	541
-#541	--	NP-PredComp	--	--	542
-#542	--	VP-Head	--	--	550
-#543	--	Nom-Head	--	--	544
-#544	--	NP-Subj	--	--	548
-#545	--	VP-Head	--	--	546
-#546	--	Clause-Comp	--	--	547
-#547	--	VP-Head	--	--	548
-#548	--	Clause-Head	--	--	549
-#549	--	Clause-ExtraposedSubj	--	--	550
-#550	--	VP-Head	--	--	551
-#551	--	Clauserel-Head	--	--	552
-#552	--	Clauserel-Mod	--	--	553
-#553	--	Nom-Head	--	--	554
-#554	--	NP-Head	--	--	555
-#555	--	NP-Coordinate	--	--	556
-#556	--	Coordination-Obj	--	--	557
-#557	--	PP-Comp	--	--	558
-#558	--	VP-Head	--	--	559
-#559	--	Clauserel-Head	--	--	560
-#560	--	Clauserel-Mod	--	--	561
-#561	--	Nom-Head	--	--	562
-#562	--	NP-Obj	--	--	563
-#563	--	VP-Head	--	--	564
-#564	--	Clause-Comp	--	--	565
-#565	--	VP-Head	--	--	566
-#566	--	VP-Head	--	--	567
-#567	--	Clauserel-Head	--	--	568
-#568	--	Clauserel-Mod	--	--	569
-#569	--	Nom-Head	--	--	570
-#570	--	NP-PredComp	--	--	571
-#571	--	PP-Comp	--	--	572
-#572	--	VP-Head	--	--	573
-#573	--	Clause-Comp	--	--	574
-#574	--	VP-Head	--	--	575
-#575	--	VP-Head	--	--	576
-#576	--	Clause-Comp	--	--	577
-#577	--	VP-Head	--	--	578
-#578	--	Clause-Head	--	--	579
-#579	--	Clause-Comp	--	--	580
-#580	--	VP-Head	--	--	581
-#581	--	Clause-Comp	--	--	582
-#582	--	VP-Head	--	--	583
-#583	--	Clause	--	--	0
-#EOS 2
-#BOS 3
-there	--	Npro-Head	--	--	500
-'s	--	Vaux-Head	--	--	545
-a	--	D-Head	--	--	502
-real	--	Adj-Head	--	--	503
-range	--	N-Head	--	--	542
-of	--	P-Head	--	--	541
-views	--	N-Head	--	--	539
-about	--	P-Head	--	--	538
-how	--	Adv-Head	--	--	504
-expansive	--	Adj-Head	--	--	505
-Congress's	--	N-Head	--	--	506
-authority	--	N-Head	--	--	525
-to	--	Sdr-Marker	--	--	523
-even	--	Adv-Head	--	--	508
-create	--	V-Head	--	--	521
-the	--	D-Head	--	--	509
-ability	--	N-Head	--	--	519
-to	--	Sdr-Marker	--	--	517
-go	--	V-Head	--	--	513
-to	--	P-Head	--	--	512
-court	--	N-Head	--	--	510
-and	--	Coordinator-Marker	--	--	515
-sue	--	V-Head	--	--	514
-should	--	Vaux-Head	--	--	534
-be	--	Vaux-Head	--	--	532
-understood	--	V-Head	--	--	530
-to	--	Sdr-Marker	--	--	528
-be	--	Vaux-Head	--	--	527
-.	--	.	--	--	527
-_.	--	GAP.x-PredComp	--	--	527
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	546
-#502	--	DP-Det	--	--	544
-#503	--	AdjP-Mod	--	--	543
-#504	--	AdvP-Mod	--	--	505
-#505	--	AdjP.x-Prenucleus	--	--	537
-#506	--	Nom-Head	--	--	507
-#507	--	NP-Det	--	--	526
-#508	--	AdvP-Mod	--	--	522
-#509	--	DP-Det	--	--	520
+#503	--	NP-Coordinate	--	--	507
+#504	--	Nom-Head	--	--	505
+#505	--	NP-Head	--	--	506
+#506	--	NP-Coordinate	--	--	507
+#507	--	Coordination-Head	--	--	518
+#508	--	AdjP-Mod	--	--	511
+#509	--	AdjP-Mod	--	--	510
 #510	--	Nom-Head	--	--	511
-#511	--	NP-Obj	--	--	512
-#512	--	PP-Comp	--	--	513
-#513	--	VP-Coordinate	--	--	516
-#514	--	VP-Head	--	--	515
-#515	--	VP-Coordinate	--	--	516
-#516	--	Coordination-Head	--	--	517
-#517	--	VP-Head	--	--	518
-#518	--	Clause-Comp	--	--	519
-#519	--	Nom-Head	--	--	520
-#520	--	NP-Obj	--	--	521
-#521	--	VP-Head	--	--	522
-#522	--	VP-Head	--	--	523
-#523	--	VP-Head	--	--	524
-#524	--	Clause-Comp	--	--	525
-#525	--	Nom-Head	--	--	526
-#526	--	NP-Subj	--	--	536
-#527	--	VP-Head	--	--	528
-#528	--	VP-Head	--	--	529
-#529	--	Clause-Comp	--	--	530
-#530	--	VP-Head	--	--	531
-#531	--	Clause-Comp	--	--	532
-#532	--	VP-Head	--	--	533
-#533	--	Clause-Comp	--	--	534
-#534	--	VP-Head	--	--	535
-#535	--	Clause-Head	--	--	536
-#536	--	Clause-Head	--	--	537
-#537	--	Clause-Comp	--	--	538
-#538	--	PP-Comp	--	--	539
-#539	--	Nom-Head	--	--	540
-#540	--	NP-Obj	--	--	541
-#541	--	PP-Comp	--	--	542
-#542	--	Nom-Head	--	--	543
-#543	--	Nom-Head	--	--	544
-#544	--	NP-DisplacedSubj	--	--	545
-#545	--	VP-Head	--	--	546
-#546	--	Clause	--	--	0
-#EOS 3
-#BOS 4
-I	--	Npro-Head	--	--	500
-thought	--	V-Head	--	--	611
-it	--	Npro-Head	--	--	502
-would	--	Vaux-Head	--	--	609
-be	--	Vaux-Head	--	--	607
-worth	--	Adj-Head	--	--	606
-returning	--	V-Head	--	--	505
-again	--	Adv-Head	--	--	504
-to	--	P-Head	--	--	603
-why	--	Adv-Head	--	--	506
-I	--	Npro-Head	--	--	507
-have	--	Vaux-Head	--	--	535
-always	--	Adv-Head	--	--	509
-given	--	V-Head	--	--	525
-the	--	D-Head	--	--	510
-Ukrainian	--	Adj-Head	--	--	511
-government	--	N-Head	--	--	512
-/	--	Coordinator-Marker	--	--	514
-military	--	N-Head	--	--	513
-the	--	D-Head	--	--	518
-benefit	--	N-Head	--	--	523
-of	--	P-Head	--	--	522
-the	--	D-Head	--	--	519
-doubt	--	N-Head	--	--	520
-with	--	P-Head	--	--	531
-their	--	Npro-Head	--	--	526
-Bakhmut	--	N-Head	--	--	528
-strategy	--	N-Head	--	--	529
-,	--	,	--	--	529
-_.	--	GAP.x-Mod	--	--	536
-and	--	Coordinator-Marker	--	--	601
-why	--	Adv-Head	--	--	540
-I	--	Npro-Head	--	--	541
-believe	--	V-Head	--	--	596
-that	--	Sdr-Marker	--	--	595
-had	--	Vaux.i-Prenucleus	--	--	581
-they	--	Npro-Head	--	--	543
-_.	--	GAP.i-Head	--	--	579
-listened	--	V-Head	--	--	577
-to	--	P-Head	--	--	576
-those	--	D-Head	--	--	545
-who	--	Npro-Head	--	--	546
-_.	--	GAP.y-Subj	--	--	572
-were	--	Vaux-Head	--	--	571
-saying	--	V-Head	--	--	569
-it	--	Npro-Head	--	--	548
-was	--	Vaux-Head	--	--	551
-now	--	P-Head	--	--	550
-a	--	D-Head	--	--	552
-bad	--	Adj-Head	--	--	553
-place	--	N-Head	--	--	554
-to	--	Sdr-Marker	--	--	555
-fight	--	V-Head	--	--	555
-_.	--	GAP.j-Mod	--	--	556
-and	--	Coordinator-Marker	--	--	567
-should	--	Vaux-Head	--	--	565
-pull	--	V-Head	--	--	563
-out	--	P-Head	--	--	562
-,	--	,	--	--	562
-it	--	Npro-Head	--	--	582
-would	--	Vaux-Head	--	--	592
-most	--	Adv-Head	--	--	584
-likely	--	Adv-Head	--	--	585
-have	--	Vaux-Head	--	--	590
-been	--	Vaux-Head	--	--	588
-extremely	--	Adv-Head	--	--	586
-counterproductive	--	Adj-Head	--	--	587
-.	--	.	--	--	587
-_.	--	GAP.z-Mod	--	--	597
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	612
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Subj	--	--	610
-#504	--	AdvP-Mod	--	--	505
-#505	--	VP-Head	--	--	604
-#506	--	AdvP.x-HeadPrenucleus	--	--	538
-#507	--	Nom-Head	--	--	508
-#508	--	NP-Subj	--	--	537
-#509	--	AdvP-Mod	--	--	533
-#510	--	DP-Det	--	--	517
-#511	--	AdjP-Mod	--	--	516
-#512	--	Nom-Coordinate	--	--	515
+#511	--	Nom-Head	--	--	516
+#512	--	N-Head	--	--	513
 #513	--	Nom-Head	--	--	514
-#514	--	Nom-Coordinate	--	--	515
-#515	--	Coordination-Head	--	--	516
-#516	--	Nom-Head	--	--	517
-#517	--	NP-Obj_ind	--	--	525
-#518	--	DP-Det	--	--	524
-#519	--	DP-Det	--	--	521
-#520	--	Nom-Head	--	--	521
-#521	--	NP-Obj	--	--	522
-#522	--	PP-Mod	--	--	523
-#523	--	Nom-Head	--	--	524
-#524	--	NP-Obj_dir	--	--	525
-#525	--	VP-Head	--	--	532
-#526	--	Nom-Head	--	--	527
-#527	--	NP-Det	--	--	530
-#528	--	Nom-Mod	--	--	529
-#529	--	Nom-Head	--	--	530
-#530	--	NP-Obj	--	--	531
-#531	--	PP-Mod	--	--	532
-#532	--	VP-Head	--	--	533
-#533	--	VP-Head	--	--	534
-#534	--	Clause-Comp	--	--	535
-#535	--	VP-Head	--	--	536
-#536	--	VP-Head	--	--	537
-#537	--	Clauserel-Head	--	--	538
-#538	--	Clauserel-Mod	--	--	539
-#539	--	AdvP-Coordinate	--	--	602
-#540	--	AdvP.z-HeadPrenucleus	--	--	599
-#541	--	Nom-Head	--	--	542
-#542	--	NP-Subj	--	--	598
-#543	--	Nom-Head	--	--	544
-#544	--	NP-Subj	--	--	580
-#545	--	DP-DetHead	--	--	574
-#546	--	Nom-Head	--	--	547
-#547	--	NP.y-Prenucleus	--	--	573
-#548	--	Nom-Head	--	--	549
-#549	--	NP-Subj	--	--	561
-#550	--	PP-Mod	--	--	551
-#551	--	VP-Head	--	--	560
-#552	--	DP-Det	--	--	559
-#553	--	AdjP-Mod	--	--	554
-#554	--	Nom.j-Head	--	--	558
-#555	--	VP-Head	--	--	556
-#556	--	VP-Head	--	--	557
-#557	--	Clause-Comp_ind	--	--	558
-#558	--	Nom-Head	--	--	559
-#559	--	NP-PredComp	--	--	560
-#560	--	VP-Head	--	--	561
-#561	--	Clause-Coordinate	--	--	568
-#562	--	PP-Comp	--	--	563
-#563	--	VP-Head	--	--	564
-#564	--	Clause-Comp	--	--	565
-#565	--	VP-Head	--	--	566
-#566	--	Clause-Head	--	--	567
-#567	--	Clause-Coordinate	--	--	568
-#568	--	Coordination-Comp	--	--	569
-#569	--	VP-Head	--	--	570
-#570	--	Clause-Comp	--	--	571
-#571	--	VP-Head	--	--	572
-#572	--	Clauserel-Head	--	--	573
-#573	--	Clauserel-Mod	--	--	574
-#574	--	Nom-Head	--	--	575
-#575	--	NP-Obj	--	--	576
-#576	--	PP-Comp	--	--	577
-#577	--	VP-Head	--	--	578
-#578	--	Clause-Comp	--	--	579
-#579	--	VP-Head	--	--	580
-#580	--	Clause-Head	--	--	581
-#581	--	Clause-Mod	--	--	594
-#582	--	Nom-Head	--	--	583
-#583	--	NP-Subj	--	--	593
-#584	--	AdvP-Mod	--	--	585
-#585	--	AdvP-Supplement	--	--	592
-#586	--	AdvP-Mod	--	--	587
-#587	--	AdjP-PredComp	--	--	588
-#588	--	VP-Head	--	--	589
-#589	--	Clause-Comp	--	--	590
-#590	--	VP-Head	--	--	591
-#591	--	Clause-Comp	--	--	592
-#592	--	VP-Head	--	--	593
-#593	--	Clause-Head	--	--	594
-#594	--	Clause-Head	--	--	595
-#595	--	Clause-Comp	--	--	596
-#596	--	VP-Head	--	--	597
-#597	--	VP-Head	--	--	598
-#598	--	Clauserel-Head	--	--	599
-#599	--	Clauserel-Mod	--	--	600
-#600	--	AdvP-Head	--	--	601
-#601	--	AdvP-Coordinate	--	--	602
-#602	--	Coordination-Comp	--	--	603
-#603	--	PP-Comp	--	--	604
-#604	--	VP-Head	--	--	605
-#605	--	Clause-Comp	--	--	606
-#606	--	AdjP-PredComp	--	--	607
-#607	--	VP-Head	--	--	608
-#608	--	Clause-Comp	--	--	609
-#609	--	VP-Head	--	--	610
-#610	--	Clause-Comp	--	--	611
-#611	--	VP-Head	--	--	612
-#612	--	Clause	--	--	0
-#EOS 4
-#BOS 5
-I	--	Npro-Head	--	--	500
-wonder	--	V-Head	--	--	541
-when	--	P-Head	--	--	502
-my	--	Npro-Head	--	--	503
-kids	--	N-Head	--	--	505
-will	--	Vaux-Head	--	--	538
-figure	--	V-Head	--	--	535
-out	--	P-Head	--	--	507
-how	--	Adv-Head	--	--	508
-closely	--	Adv-Head	--	--	509
-linked	--	Adj-Head	--	--	510
-_.	--	GAP.p-Comp	--	--	510
-their	--	Npro-Head	--	--	512
-bedtime	--	N-Head	--	--	514
-is	--	Vaux-Head	--	--	516
-_.	--	GAP.x-PredComp	--	--	516
-to	--	P-Head	--	--	533
-how	--	Adv-Head	--	--	519
-annoying	--	Adj-Head	--	--	520
-they	--	Npro-Head	--	--	521
-'ve	--	Vaux-Head	--	--	525
-been	--	Vaux-Head	--	--	523
-_.	--	GAP.y-PredComp	--	--	523
-throughout	--	P-Head	--	--	529
-the	--	D-Head	--	--	526
-day	--	N-Head	--	--	527
-.	--	.	--	--	527
-_.	--	GAP.w-Mod	--	--	536
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	542
-#502	--	PP.w-Prenucleus	--	--	540
-#503	--	Nom-Head	--	--	504
-#504	--	NP-Det	--	--	506
-#505	--	Nom-Head	--	--	506
-#506	--	NP-Subj	--	--	539
-#507	--	PP-Particle	--	--	535
-#508	--	AdvP-Mod	--	--	509
-#509	--	AdvP-Mod	--	--	511
-#510	--	AdjP-Head	--	--	511
-#511	--	AdjP.x-Prenucleus	--	--	518
-#512	--	Nom-Head	--	--	513
-#513	--	NP-Det	--	--	515
-#514	--	Nom-Head	--	--	515
-#515	--	NP-Subj	--	--	517
-#516	--	VP-Head	--	--	517
-#517	--	Clause-Head	--	--	518
-#518	--	Clause-Head	--	--	534
-#519	--	AdvP-Mod	--	--	520
-#520	--	AdjP.y-Prenucleus	--	--	532
+#514	--	NP-Obj	--	--	515
+#515	--	PP-Comp	--	--	516
+#516	--	NP-Obj	--	--	517
+#517	--	PP-Comp	--	--	518
+#518	--	NP-Head	--	--	519
+#519	--	NP-Obj	--	--	520
+#520	--	PP-Mod	--	--	521
 #521	--	Nom-Head	--	--	522
-#522	--	NP-Subj	--	--	531
-#523	--	VP-Head	--	--	524
-#524	--	Clause-Comp	--	--	525
-#525	--	VP-Head	--	--	530
-#526	--	DP-Det	--	--	528
-#527	--	Nom-Head	--	--	528
-#528	--	NP-Obj	--	--	529
-#529	--	PP-Mod	--	--	530
-#530	--	VP-Head	--	--	531
-#531	--	Clause-Head	--	--	532
-#532	--	Clause-Comp	--	--	533
-#533	--	PP.p-Postnucleus	--	--	534
-#534	--	Clause-Comp	--	--	535
-#535	--	VP-Head	--	--	536
-#536	--	VP-Head	--	--	537
-#537	--	Clause-Comp	--	--	538
-#538	--	VP-Head	--	--	539
-#539	--	Clause-Head	--	--	540
+#522	--	NP-Subj	--	--	542
+#523	--	AdjP-Mod	--	--	524
+#524	--	Nom-Head	--	--	525
+#525	--	NP-Mod	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	528
+#528	--	PP-Mod	--	--	529
+#529	--	VP-Head	--	--	537
+#530	--	DP-Det	--	--	532
+#531	--	Nom-Head	--	--	532
+#532	--	NP-Obj	--	--	533
+#533	--	PP-Comp	--	--	534
+#534	--	Nom-Head	--	--	535
+#535	--	NP-Obj	--	--	536
+#536	--	PP-Mod	--	--	537
+#537	--	VP-Head	--	--	538
+#538	--	Clause-Comp	--	--	539
+#539	--	VP-Head	--	--	540
 #540	--	Clause-Comp	--	--	541
 #541	--	VP-Head	--	--	542
 #542	--	Clause	--	--	0
-#EOS 5
-#BOS 6
-be	--	Vaux-Head	--	--	516
+#EOS 0
+#BOS 1
 the	--	D-Head	--	--	500
-best	--	Adj-Head	--	--	501
-you	--	Npro-Head	--	--	503
-can	--	Vaux-Head	--	--	512
-be	--	Vaux-Head	--	--	510
-bothered	--	V-Head	--	--	508
-to	--	Sdr-Marker	--	--	506
-be	--	Vaux-Head	--	--	505
-.	--	.	--	--	505
-_.	--	GAP.x-PredComp	--	--	505
-#500	--	DP-Det	--	--	515
-#501	--	AdjP-ModHead	--	--	502
-#502	--	Nom.x-Head	--	--	514
-#503	--	Nom-Head	--	--	504
-#504	--	NP-Subj	--	--	513
-#505	--	VP-Head	--	--	506
-#506	--	VP-Head	--	--	507
-#507	--	Clause-Comp	--	--	508
-#508	--	VP-Head	--	--	509
-#509	--	Clause-Comp	--	--	510
-#510	--	VP-Head	--	--	511
-#511	--	Clause-Comp	--	--	512
-#512	--	VP-Head	--	--	513
-#513	--	Clauserel-Mod	--	--	514
-#514	--	Nom-Head	--	--	515
-#515	--	NP-PredComp	--	--	516
-#516	--	VP-Head	--	--	517
-#517	--	Clause	--	--	0
-#EOS 6
-#BOS 7
-people	--	N-Head	--	--	500
-do	--	Vaux-Head	--	--	503
-not	--	Adv-Head	--	--	502
-know	--	V-Head	--	--	534
-as	--	Adv-Head	--	--	504
-much	--	D-Head	--	--	505
-about	--	P-Head	--	--	509
-English	--	N-Head	--	--	506
-grammar	--	N-Head	--	--	507
-as	--	P-Head	--	--	531
-they	--	Npro-Head	--	--	511
-pretend	--	V-Head	--	--	516
-to	--	Sdr-MarkerHead	--	--	513
-when	--	P-Head	--	--	528
-they	--	Npro-Head	--	--	517
-’re	--	Vaux-Head	--	--	526
-bullying	--	V-Head	--	--	524
-you	--	Npro-Head	--	--	519
-about	--	P-Head	--	--	523
-it	--	Npro-Head	--	--	521
-.	--	.	--	--	521
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	537
-#502	--	AdvP-Mod	--	--	503
-#503	--	VP-Head	--	--	536
-#504	--	AdvP-Mod	--	--	505
-#505	--	DP-DetHead	--	--	510
+definition	--	N-Head	--	--	501
+excludes	--	V-Head	--	--	511
+judicial	--	Adj-Head	--	--	503
+liens	--	N-Head	--	--	504
+and	--	Coordinator-Marker	--	--	509
+security	--	N-Head	--	--	506
+interests	--	N-Head	--	--	507
+,	--	,	--	--	507
+whether_or_not	--	Sdr-Marker	--	--	527
+they	--	Npro-Head	--	--	512
+are	--	Vaux-Head	--	--	517
+provided	--	V-Head	--	--	515
+for	--	P-Head	--	--	514
+or	--	Coordinator-Marker	--	--	524
+are	--	Vaux-Head	--	--	523
+dependent	--	Adj-Head	--	--	522
+on	--	P-Head	--	--	521
+a	--	D-Head	--	--	518
+statute	--	Npro-Head	--	--	519
+,	--	,	--	--	519
+and	--	Coordinator-Marker	--	--	540
+whether_or_not	--	Sdr-Marker	--	--	539
+they	--	Npro-Head	--	--	528
+are	--	Vaux-Head	--	--	537
+made	--	V-Head	--	--	535
+fully	--	Adv-Head	--	--	530
+effective	--	Adj-Head	--	--	531
+by	--	P-Head	--	--	534
+statute	--	N-Head	--	--	532
+.	--	.	--	--	532
+#500	--	DP-Det	--	--	502
+#501	--	Nom-Head	--	--	502
+#502	--	NP-Subj	--	--	542
+#503	--	AdjP-Mod	--	--	504
+#504	--	Nom-Head	--	--	505
+#505	--	NP-Coordinate	--	--	510
 #506	--	Nom-Mod	--	--	507
 #507	--	Nom-Head	--	--	508
-#508	--	NP-Obj	--	--	509
-#509	--	PP-Mod	--	--	510
-#510	--	Nom-Head	--	--	532
-#511	--	Nom-Head	--	--	512
-#512	--	NP-Subj	--	--	530
-#513	--	VP-Head	--	--	514
-#514	--	VP-Head	--	--	515
-#515	--	Clause-Comp	--	--	516
-#516	--	VP-Head	--	--	529
-#517	--	Nom-Head	--	--	518
-#518	--	NP-Subj	--	--	527
-#519	--	Nom-Head	--	--	520
-#520	--	NP-Obj	--	--	524
-#521	--	Nom-Head	--	--	522
-#522	--	NP-Obj	--	--	523
-#523	--	PP-Comp	--	--	524
-#524	--	VP-Head	--	--	525
-#525	--	Clause-Comp	--	--	526
-#526	--	VP-Head	--	--	527
-#527	--	Clause-Comp	--	--	528
-#528	--	PP-Mod	--	--	529
-#529	--	VP-Head	--	--	530
-#530	--	Clause-Comp	--	--	531
-#531	--	PP-Comp_ind	--	--	532
-#532	--	Nom-Head	--	--	533
-#533	--	NP-Obj	--	--	534
-#534	--	VP-Head	--	--	535
-#535	--	Clause-Comp	--	--	536
-#536	--	VP-Head	--	--	537
-#537	--	Clause	--	--	0
-#EOS 7
-#BOS 8
-that	--	D-Head	--	--	500
-'s	--	Vaux-Head	--	--	521
-actually	--	Adv-Head	--	--	503
-where	--	P-Head	--	--	504
-the	--	D-Head	--	--	505
-dinner	--	N.x-Head	--	--	515
-that	--	Sdr-Marker	--	--	514
-I	--	Npro-Head	--	--	506
-have	--	V-Head	--	--	512
-to	--	Sdr-Marker	--	--	510
-leave	--	V-Head	--	--	509
-for	--	P-Head	--	--	508
-_.	--	GAP.x-Obj	--	--	508
-is	--	V-Head	--	--	518
-at	--	P-Head	--	--	517
-.	--	.	--	--	517
-_.	--	GAP.y-Obj	--	--	517
-#500	--	DP-DetHead	--	--	501
-#501	--	Nom-Head	--	--	502
-#502	--	NP-Subj	--	--	522
-#503	--	AdvP-Supplement	--	--	521
-#504	--	PP.y-Prenucleus	--	--	520
-#505	--	DP-Det	--	--	516
-#506	--	Nom-Head	--	--	507
-#507	--	NP-Subj	--	--	513
-#508	--	PPstrand-Comp	--	--	509
-#509	--	VP-Head	--	--	510
-#510	--	VP-Head	--	--	511
-#511	--	Clause-Comp	--	--	512
-#512	--	VP-Head	--	--	513
-#513	--	Clauserel-Head	--	--	514
-#514	--	Clauserel-Mod	--	--	515
-#515	--	Nom-Head	--	--	516
-#516	--	NP-Subj	--	--	519
-#517	--	PPstrand-Comp	--	--	518
-#518	--	VP-Head	--	--	519
-#519	--	Clause-Head	--	--	520
-#520	--	Clause-PredComp	--	--	521
-#521	--	VP-Head	--	--	522
-#522	--	Clause	--	--	0
-#EOS 8
-#BOS 9
-giving	--	V-Head	--	--	510
-a	--	D-Head	--	--	500
-hand	--	N-Head	--	--	502
-up	--	P-Head	--	--	501
-to	--	P-Head	--	--	509
-the	--	D-Head	--	--	504
-advantaged	--	Adj-Head	--	--	505
-#500	--	DP-Det	--	--	503
-#501	--	PP-Mod	--	--	502
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Obj	--	--	510
-#504	--	DP-Det	--	--	508
-#505	--	AdjP-ModHead	--	--	506
-#506	--	Nom-Head	--	--	507
-#507	--	Nom-Head	--	--	508
-#508	--	NP-Obj	--	--	509
-#509	--	PP-Comp	--	--	510
-#510	--	VP-Head	--	--	511
-#511	--	Clause	--	--	0
-#EOS 9
-#BOS 10
-rules	--	N-Head	--	--	504
-like	--	P-Head	--	--	503
-these	--	D-Head	--	--	500
-are	--	Vaux-Head	--	--	530
-,	--	,	--	--	530
-however	--	Adv-Head	--	--	506
-,	--	,	--	--	506
-neither	--	D-Head	--	--	507
-the	--	D-Head	--	--	508
-only	--	Adj-Head	--	--	509
-_.	--	GAP.x-Head	--	--	510
-nor	--	Coordinator-Marker	--	--	520
-even	--	Adv-Head	--	--	513
-the	--	D-Head	--	--	514
-most	--	Adv-Head	--	--	515
-interesting	--	Adj-Head	--	--	516
-_.	--	GAP.x-Head	--	--	517
-variety	--	N-Head	--	--	528
-displayed	--	V-Head	--	--	526
-by	--	P-Head	--	--	525
-historical	--	Adj-Head	--	--	522
-study	--	N-Head	--	--	523
-.	--	.	--	--	523
-#500	--	DP-DetHead	--	--	501
-#501	--	Nom-Head	--	--	502
-#502	--	NP-Obj	--	--	503
-#503	--	PP-Mod	--	--	504
-#504	--	Nom-Head	--	--	505
-#505	--	NP-Subj	--	--	531
-#506	--	AdvP-Supplement	--	--	530
-#507	--	DP-Marker	--	--	512
-#508	--	DP-Det	--	--	511
-#509	--	AdjP-Mod	--	--	510
-#510	--	Nom-Head	--	--	511
-#511	--	NP-Head	--	--	512
-#512	--	NP-Coordinate	--	--	521
-#513	--	AdvP-Mod	--	--	519
-#514	--	DP-Det	--	--	518
-#515	--	AdvP-Mod	--	--	516
-#516	--	AdjP-Mod	--	--	517
-#517	--	Nom-Head	--	--	518
-#518	--	NP-Head	--	--	519
-#519	--	NP-Head	--	--	520
-#520	--	NP-Coordinate	--	--	521
-#521	--	Coordination-Head	--	--	529
-#522	--	AdjP-Mod	--	--	523
-#523	--	Nom-Head	--	--	524
-#524	--	NP-Obj	--	--	525
-#525	--	PP-Comp	--	--	526
-#526	--	VP-Head	--	--	527
-#527	--	Clause-Mod	--	--	528
-#528	--	Nom.x-Postnucleus	--	--	529
-#529	--	NP-PredComp	--	--	530
-#530	--	VP-Head	--	--	531
-#531	--	Clause	--	--	0
-#EOS 10
-#BOS 11
-MSU	--	N-Head	--	--	500
-does	--	V-Head	--	--	509
-a	--	D-Head	--	--	502
-lot	--	N-Head	--	--	507
-of	--	P-Head	--	--	506
-EPM	--	N-Head	--	--	503
-studies	--	N-Head	--	--	504
-because	--	P-Head	--	--	521
-of	--	P-Head	--	--	520
-how	--	Adv-Head	--	--	510
-common	--	Adj-Head	--	--	511
-it	--	Npro-Head	--	--	512
-is	--	V-Head	--	--	514
-_.	--	GAP.x-PredComp	--	--	514
-here	--	P-Head	--	--	515
-.	--	.	--	--	515
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	523
-#502	--	DP-Det	--	--	508
-#503	--	Nom-Mod	--	--	504
-#504	--	Nom-Head	--	--	505
-#505	--	NP-Obj	--	--	506
-#506	--	PP-Comp	--	--	507
-#507	--	Nom-Head	--	--	508
-#508	--	NP-Obj	--	--	509
-#509	--	VP-Head	--	--	522
-#510	--	AdvP-Mod	--	--	511
-#511	--	AdjP.x-HeadPrenucleus	--	--	518
+#508	--	NP-Head	--	--	509
+#509	--	NP-Coordinate	--	--	510
+#510	--	Coordination-Obj	--	--	511
+#511	--	VP-Head	--	--	542
 #512	--	Nom-Head	--	--	513
-#513	--	NP-Subj	--	--	517
-#514	--	VP-Head	--	--	516
-#515	--	PP-Mod	--	--	516
-#516	--	VP-Head	--	--	517
-#517	--	Clauserel-Head	--	--	518
-#518	--	Clauserel-Mod	--	--	519
-#519	--	AdjP-Comp	--	--	520
-#520	--	PP-Comp	--	--	521
-#521	--	PP-Mod	--	--	522
-#522	--	VP-Head	--	--	523
-#523	--	Clause	--	--	0
-#EOS 11
-#BOS 12
-exactly	--	Adv-Head	--	--	500
-how	--	Adv-Head	--	--	501
-stupid	--	Adj-Head	--	--	502
-was	--	Vaux.x-Prenucleus	--	--	518
-what	--	Npro-Head	--	--	503
-OpenAI	--	N-Head	--	--	505
-did	--	V-Head	--	--	511
-_.	--	GAP.z-Obj	--	--	511
-to	--	P-Head	--	--	510
-Scarlett	--	N-Flat	--	--	507
-Johansson	--	N-Flat	--	--	507
-?	--	.	--	--	507
-_.	--	GAP.x-Head	--	--	516
-_.	--	GAP.y-PredComp	--	--	516
-#500	--	AdvP-Mod	--	--	501
-#501	--	AdvP-Mod	--	--	502
-#502	--	AdjP.y-Prenucleus	--	--	519
-#503	--	Nom-Head	--	--	504
-#504	--	NP.z-HeadPrenucleus	--	--	513
-#505	--	Nom-Head	--	--	506
-#506	--	NP-Subj	--	--	512
-#507	--	N-Head	--	--	508
-#508	--	Nom-Head	--	--	509
-#509	--	NP-Obj	--	--	510
-#510	--	PP-Comp	--	--	511
-#511	--	VP-Head	--	--	512
-#512	--	Clauserel-Head	--	--	513
-#513	--	Clauserel-Mod	--	--	514
-#514	--	Nom-Head	--	--	515
-#515	--	NP-Subj	--	--	517
-#516	--	VP-Head	--	--	517
-#517	--	Clause-Head	--	--	518
-#518	--	Clause-Head	--	--	519
-#519	--	Clause	--	--	0
-#EOS 12
-#BOS 13
-just	--	Adv-Head	--	--	500
-sitting	--	V-Head	--	--	502
-here	--	P-Head	--	--	501
-thinking	--	V-Head	--	--	506
-about	--	P-Head	--	--	505
-it	--	Npro-Head	--	--	503
-,	--	,	--	--	503
-I	--	Npro-Head	--	--	511
-would	--	Vaux-Head	--	--	582
-estimate	--	V-Head	--	--	580
-that	--	Sdr-Marker	--	--	579
-there	--	Npro-Head	--	--	513
-are	--	Vaux-Head	--	--	532
-over	--	P-Head	--	--	519
-600	--	D-Flat	--	--	515
-billion	--	D-Flat	--	--	515
-species	--	N-Head	--	--	523
-of	--	P-Head	--	--	522
-insect	--	N-Head	--	--	520
-in	--	P-Head	--	--	531
-my	--	Npro-Head	--	--	525
-basement	--	N-Head	--	--	527
-alone	--	Adv-Head	--	--	529
-,	--	,	--	--	529
-which	--	Npro-Head	--	--	533
-_.	--	GAP.y-Subj	--	--	540
-is	--	Vaux-Head	--	--	539
-a	--	D-Head	--	--	535
-real	--	Adj-Head	--	--	536
-puzzle	--	N-Head	--	--	537
-because	--	P-Head	--	--	575
-we	--	Npro-Head	--	--	541
-pay	--	V-Head	--	--	549
-16	--	D-Head	--	--	543
-$	--	N-Head	--	--	547
-a	--	D-Head	--	--	544
-month	--	N-Head	--	--	545
-to	--	Sdr-Marker	--	--	571
-have	--	V-Head	--	--	570
-a	--	D-Head	--	--	550
-man	--	N-Head	--	--	551
-come	--	V-Head	--	--	553
-and	--	Coordinator-Marker	--	--	568
-spray	--	V-Head	--	--	566
-an	--	D-Head	--	--	555
-allegedly	--	Adv-Head	--	--	556
-lethal	--	Adj-Head	--	--	557
-chemical	--	N-Head	--	--	558
-all	--	D-Head	--	--	560
-over	--	P-Head	--	--	564
-the	--	D-Head	--	--	561
-place	--	N-Head	--	--	562
-.	--	.	--	--	562
-#500	--	AdvP-Mod	--	--	509
-#501	--	PP-Comp	--	--	502
-#502	--	VP-Head	--	--	508
-#503	--	Nom-Head	--	--	504
-#504	--	NP-Obj	--	--	505
-#505	--	PP-Comp	--	--	506
-#506	--	VP-Head	--	--	507
-#507	--	Clause-Mod	--	--	508
-#508	--	VP-Head	--	--	509
-#509	--	VP-Head	--	--	510
-#510	--	Clause-Supplement	--	--	583
-#511	--	Nom-Head	--	--	512
-#512	--	NP-Subj	--	--	583
-#513	--	Nom-Head	--	--	514
-#514	--	NP-Subj	--	--	578
-#515	--	D-Head	--	--	516
-#516	--	DP-DetHead	--	--	517
-#517	--	Nom-Head	--	--	518
-#518	--	NP-Obj	--	--	519
-#519	--	PP-Det	--	--	524
-#520	--	Nom-Head	--	--	521
-#521	--	NP-Obj	--	--	522
-#522	--	PP-Comp	--	--	523
-#523	--	Nom-Head	--	--	524
-#524	--	NP-DisplacedSubj	--	--	532
-#525	--	Nom-Head	--	--	526
-#526	--	NP-Det	--	--	528
-#527	--	Nom-Head	--	--	528
-#528	--	NP-Head	--	--	530
-#529	--	AdvP-Mod	--	--	530
-#530	--	NP-Obj	--	--	531
-#531	--	PP-PredComp	--	--	532
-#532	--	VP-Head	--	--	578
-#533	--	Nom-Head	--	--	534
-#534	--	NP.y-Prenucleus	--	--	577
-#535	--	DP-Det	--	--	538
-#536	--	AdjP-Mod	--	--	537
-#537	--	Nom-Head	--	--	538
-#538	--	NP-PredComp	--	--	539
-#539	--	VP-Head	--	--	540
-#540	--	Clauserel-Head	--	--	576
-#541	--	Nom-Head	--	--	542
-#542	--	NP-Subj	--	--	574
-#543	--	DP-Det	--	--	548
-#544	--	DP-Det	--	--	546
-#545	--	Nom-Head	--	--	546
-#546	--	NP-Mod	--	--	547
-#547	--	Nom-Head	--	--	548
-#548	--	NP-Obj	--	--	549
-#549	--	VP-Head	--	--	573
-#550	--	DP-Det	--	--	552
-#551	--	Nom-Head	--	--	552
-#552	--	NP-Obj	--	--	570
-#553	--	VP-Head	--	--	554
-#554	--	Clause-Coordinate	--	--	569
-#555	--	DP-Det	--	--	559
-#556	--	AdvP-Mod	--	--	557
-#557	--	AdjP-Mod	--	--	558
-#558	--	Nom-Head	--	--	559
-#559	--	NP-Obj	--	--	566
-#560	--	DP-Mod	--	--	565
-#561	--	DP-Det	--	--	563
-#562	--	Nom-Head	--	--	563
-#563	--	NP-Obj	--	--	564
-#564	--	PP-Head	--	--	565
-#565	--	PP-Comp	--	--	566
-#566	--	VP-Head	--	--	567
-#567	--	Clause-Head	--	--	568
-#568	--	Clause-Coordinate	--	--	569
-#569	--	Coordination-Comp	--	--	570
-#570	--	VP-Head	--	--	571
-#571	--	VP-Head	--	--	572
-#572	--	Clause-Mod	--	--	573
-#573	--	VP-Head	--	--	574
-#574	--	Clause-Comp	--	--	575
-#575	--	PP-Mod	--	--	576
-#576	--	Clauserel-Head	--	--	577
-#577	--	Clauserel-Supplement	--	--	578
-#578	--	Clause-Head	--	--	579
-#579	--	Clause-Comp	--	--	580
-#580	--	VP-Head	--	--	581
-#581	--	Clause-Comp	--	--	582
-#582	--	VP-Head	--	--	583
-#583	--	Clause	--	--	0
-#EOS 13
-#BOS 14
-so	--	Adv-Head	--	--	500
-huge	--	Adj-Head	--	--	501
-in	--	P-Head	--	--	504
-fact	--	N-Head	--	--	502
-,	--	,	--	--	502
-that	--	Sdr-Marker	--	--	539
-Toronto	--	N-Head	--	--	505
-slang	--	N-Head	--	--	506
-is	--	Vaux-Head	--	--	511
-influenced	--	V-Head	--	--	509
-by	--	P-Head	--	--	508
-_.	--	GAP.x-Obj	--	--	508
-and	--	Coordinator-Marker	--	--	513
-has	--	V-Head	--	--	512
-_.	--	GAP.x-Obj	--	--	512
-Jamaican	--	Adj-Head	--	--	515
-references	--	N-Head	--	--	516
-,	--	,	--	--	516
-and	--	Coordinator-Marker	--	--	537
-Jamaican	--	Adj-Head	--	--	520
-beef	--	N-Head	--	--	521
-patties	--	N-Head	--	--	522
-are	--	Vaux-Head	--	--	527
-staples	--	N-Head	--	--	525
-in	--	P-Head	--	--	534
-my	--	Npro-Head	--	--	528
-high	--	Adj-Head	--	--	530
-school	--	N-Head	--	--	531
-cafeteria	--	N-Head	--	--	532
-.	--	.	--	--	532
-#500	--	AdvP-Mod	--	--	501
-#501	--	AdjP-Head	--	--	540
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Obj	--	--	504
-#504	--	PP-Supplement	--	--	540
-#505	--	Nom-Mod	--	--	506
-#506	--	Nom-Head	--	--	507
-#507	--	NP-Subj	--	--	519
-#508	--	PP-Comp	--	--	509
-#509	--	VP-Head	--	--	510
-#510	--	Clause-Comp	--	--	511
-#511	--	VP-Coordinate	--	--	514
-#512	--	VP-Head	--	--	513
-#513	--	VP-Coordinate	--	--	514
-#514	--	Coordination-Head	--	--	518
-#515	--	AdjP-Mod	--	--	516
-#516	--	Nom-Head	--	--	517
-#517	--	NP.x-Postnucleus	--	--	518
-#518	--	VP-Head	--	--	519
-#519	--	Clause-Coordinate	--	--	538
-#520	--	AdjP-Mod	--	--	523
-#521	--	Nom-Mod	--	--	522
-#522	--	Nom-Head	--	--	523
-#523	--	Nom-Head	--	--	524
-#524	--	NP-Subj	--	--	536
-#525	--	Nom-Head	--	--	526
-#526	--	NP-PredComp	--	--	527
-#527	--	VP-Head	--	--	535
+#513	--	NP-Subj	--	--	526
+#514	--	PP-Comp	--	--	515
+#515	--	VP-Head	--	--	516
+#516	--	Clause-Comp	--	--	517
+#517	--	VP-Coordinate	--	--	525
+#518	--	DP-Det	--	--	520
+#519	--	Nom-Head	--	--	520
+#520	--	NP-Obj	--	--	521
+#521	--	PP-Comp	--	--	522
+#522	--	AdjP-PredComp	--	--	523
+#523	--	VP-Head	--	--	524
+#524	--	VP-Coordinate	--	--	525
+#525	--	Coordination-Head	--	--	526
+#526	--	Clause-Head	--	--	527
+#527	--	Clause-Coordinate	--	--	541
 #528	--	Nom-Head	--	--	529
-#529	--	NP-Det	--	--	533
-#530	--	AdjP-Mod	--	--	531
-#531	--	Nom-Mod	--	--	532
+#529	--	NP-Subj	--	--	538
+#530	--	AdvP-Mod	--	--	531
+#531	--	AdjP-PredComp	--	--	535
 #532	--	Nom-Head	--	--	533
 #533	--	NP-Obj	--	--	534
-#534	--	PP-Mod	--	--	535
-#535	--	VP-Head	--	--	536
-#536	--	Clause-Head	--	--	537
-#537	--	Clause-Coordinate	--	--	538
-#538	--	Coordination-Head	--	--	539
-#539	--	Clause-Comp_ind	--	--	540
-#540	--	AdjP	--	--	0
-#EOS 14
-#BOS 15
-do	--	Vaux.y-Prenucleus	--	--	539
-you	--	Npro-Head	--	--	500
-_.	--	GAP.y-Head	--	--	537
-think	--	V-Head	--	--	535
-that	--	Sdr-Marker	--	--	534
-Kamala	--	N-Flat	--	--	502
-Harris	--	N-Flat	--	--	502
-has	--	V-Head	--	--	532
-a	--	D-Head	--	--	505
-better	--	Adj-Head	--	--	506
-chance	--	N-Head	--	--	507
-_.	--	GAP.x-Comp	--	--	507
-than	--	P-Head	--	--	514
-Joe	--	N-Flat	--	--	509
-Biden	--	N-Flat	--	--	509
-did	--	Vaux-Head	--	--	512
-to	--	Sdr-Marker	--	--	528
-defeat	--	V-Head	--	--	519
-Donald	--	N-Flat	--	--	516
-Trump	--	N-Flat	--	--	516
-in	--	P-Head	--	--	526
-the	--	D-Head	--	--	520
-2024	--	N-Head	--	--	521
-presidential	--	Adj-Head	--	--	522
-election	--	N-Head	--	--	523
-?	--	.	--	--	523
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	538
-#502	--	N-Head	--	--	503
-#503	--	Nom-Head	--	--	504
-#504	--	NP-Subj	--	--	533
-#505	--	DP-Det	--	--	531
-#506	--	AdjP-Mod	--	--	508
-#507	--	Nom-Head	--	--	508
-#508	--	Nom-Head	--	--	515
-#509	--	N-Head	--	--	510
-#510	--	Nom-Head	--	--	511
-#511	--	NP-Subj	--	--	513
-#512	--	VP-Head	--	--	513
-#513	--	Clause-Comp	--	--	514
-#514	--	PP-Comp_ind	--	--	515
-#515	--	Nom-Head	--	--	530
-#516	--	N-Head	--	--	517
-#517	--	Nom-Head	--	--	518
-#518	--	NP-Obj	--	--	519
-#519	--	VP-Head	--	--	527
-#520	--	DP-Det	--	--	525
-#521	--	Nom-Mod	--	--	524
-#522	--	AdjP-Mod	--	--	523
-#523	--	Nom-Head	--	--	524
-#524	--	Nom-Head	--	--	525
-#525	--	NP-Obj	--	--	526
-#526	--	PP-Mod	--	--	527
-#527	--	VP-Head	--	--	528
-#528	--	VP-Head	--	--	529
-#529	--	Clause.x-Postnucleus	--	--	530
-#530	--	Nom-Head	--	--	531
-#531	--	NP-PredComp	--	--	532
-#532	--	VP-Head	--	--	533
-#533	--	Clause-Head	--	--	534
-#534	--	Clause-Comp	--	--	535
+#534	--	PP-Comp	--	--	535
 #535	--	VP-Head	--	--	536
 #536	--	Clause-Comp	--	--	537
 #537	--	VP-Head	--	--	538
 #538	--	Clause-Head	--	--	539
-#539	--	Clause	--	--	0
-#EOS 15
-#BOS 16
-the	--	D-Head	--	--	500
-kind	--	N-Head	--	--	504
-of	--	P-Head	--	--	503
-friend	--	N-Head	--	--	501
-you	--	Npro-Head	--	--	505
-always	--	Adv-Head	--	--	507
-have	--	V-Head	--	--	516
-something	--	D-Head	--	--	508
-to	--	Sdr-Marker	--	--	512
-talk	--	V-Head	--	--	511
-about	--	P-Head	--	--	509
-_.	--	GAP.x-Obj	--	--	509
-with	--	P-Head	--	--	510
-_.	--	GAP.y-Obj	--	--	510
-#500	--	DP-Det	--	--	520
-#501	--	Nom-Head	--	--	502
-#502	--	NP-Obj	--	--	503
-#503	--	PP-Comp	--	--	504
-#504	--	Nom.y-Head	--	--	519
-#505	--	Nom-Head	--	--	506
-#506	--	NP-Subj	--	--	518
-#507	--	AdvP-Mod	--	--	517
-#508	--	DP.x-DetHead	--	--	514
-#509	--	PPstrand-Comp	--	--	511
-#510	--	PPstrand-Comp	--	--	511
-#511	--	VP-Head	--	--	512
-#512	--	VP-Head	--	--	513
-#513	--	Clauserel-Mod	--	--	514
-#514	--	Nom-Head	--	--	515
-#515	--	NP-Obj	--	--	516
-#516	--	VP-Head	--	--	517
-#517	--	VP-Head	--	--	518
-#518	--	Clauserel-Mod	--	--	519
-#519	--	Nom-Head	--	--	520
-#520	--	NP	--	--	0
-#EOS 16
-#BOS 17
-as	--	P-Head	--	--	506
-he	--	Npro-Head	--	--	500
-explained	--	V-Head	--	--	504
-it	--	Npro-Head	--	--	502
-,	--	,	--	--	502
-basically	--	Adv-Head	--	--	507
+#539	--	Clause-Head	--	--	540
+#540	--	Clause-Coordinate	--	--	541
+#541	--	Coordination-Supplement	--	--	542
+#542	--	Clause	--	--	0
+#EOS 1
+#BOS 2
+whenever	--	P-Head	--	--	520
+there	--	Npro-Head	--	--	500
+is	--	Vaux-Head	--	--	518
+an	--	D-Head	--	--	502
+actual	--	Adj-Head	--	--	503
+dispute	--	N-Head	--	--	504
+,	--	,	--	--	504
+other_than	--	P-Head	--	--	509
+an	--	D-Head	--	--	505
+adversary	--	Adj-Head	--	--	506
+proceeding	--	N-Head	--	--	507
 ,	--	,	--	--	507
-we	--	Npro-Head	--	--	508
-were	--	Vaux-Head	--	--	524
-supposed	--	V-Head	--	--	522
-to	--	Sdr-Marker	--	--	520
-give	--	V-Head	--	--	519
-them	--	Npro-Head	--	--	510
-11,000	--	D-Head	--	--	512
-$	--	N-Head	--	--	513
-plus	--	P-Head	--	--	517
-annual	--	Adj-Head	--	--	514
-dues	--	N-Head	--	--	515
-,	--	,	--	--	515
-and	--	Coordinator-Marker	--	--	571
-then	--	P-Head	--	--	526
-we	--	Npro-Head	--	--	527
-could	--	Vaux-Head	--	--	568
-spend	--	V-Head	--	--	566
-our	--	Npro-Head	--	--	529
-leisure	--	N-Head	--	--	531
-time	--	N-Head	--	--	532
-at	--	P-Head	--	--	565
-these	--	D-Head	--	--	534
-resorts	--	N-Head	--	--	535
-,	--	,	--	--	535
-which	--	Npro-Head	--	--	536
-Joe's	--	N-Head	--	--	538
-company	--	N-Head	--	--	539
-had	--	Vaux-Head	--	--	549
-already	--	Adv-Head	--	--	541
-built	--	V-Head	--	--	546
-some	--	D-Head	--	--	542
-of	--	P-Head	--	--	543
-_.	--	GAP.x-Obj	--	--	543
-and	--	Coordinator-Marker	--	--	560
-plans	--	V-Head	--	--	559
-to	--	Sdr-Marker	--	--	557
-build	--	V-Head	--	--	556
-lots	--	N-Head	--	--	550
-more	--	D-Head	--	--	552
-of	--	P-Head	--	--	553
-.	--	.	--	--	553
-_.	--	GAP.x-Obj	--	--	553
+before	--	P-Head	--	--	515
+the	--	D-Head	--	--	511
+bankruptcy	--	N-Head	--	--	512
+court	--	N-Head	--	--	513
+,	--	,	--	--	513
+the	--	D-Head	--	--	521
+litigation	--	N-Head	--	--	528
+to	--	Sdr-Marker	--	--	526
+resolve	--	V-Head	--	--	525
+that	--	D-Head	--	--	522
+dispute	--	N-Head	--	--	523
+is	--	Vaux-Head	--	--	534
+a	--	D-Head	--	--	530
+contested	--	Adj-Head	--	--	531
+matter	--	N-Head	--	--	532
+.	--	.	--	--	532
 #500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	505
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Obj	--	--	504
-#504	--	VP-Head	--	--	505
-#505	--	Clause-Comp	--	--	506
-#506	--	PP-Supplement	--	--	572
-#507	--	AdvP-Supplement	--	--	572
-#508	--	Nom-Head	--	--	509
-#509	--	NP-Subj	--	--	525
-#510	--	Nom-Head	--	--	511
-#511	--	NP-Obj_ind	--	--	519
-#512	--	DP-Det	--	--	518
-#513	--	Nom-Head	--	--	518
-#514	--	AdjP-Mod	--	--	515
-#515	--	Nom-Head	--	--	516
-#516	--	NP-Obj	--	--	517
-#517	--	PP-Supplement	--	--	518
-#518	--	NP-Obj_dir	--	--	519
-#519	--	VP-Head	--	--	520
-#520	--	VP-Head	--	--	521
-#521	--	Clause-Comp	--	--	522
-#522	--	VP-Head	--	--	523
-#523	--	Clause-Comp	--	--	524
-#524	--	VP-Head	--	--	525
-#525	--	Clause-Coordinate	--	--	572
-#526	--	PP-Mod	--	--	570
-#527	--	Nom-Head	--	--	528
-#528	--	NP-Subj	--	--	569
-#529	--	Nom-Head	--	--	530
-#530	--	NP-Det	--	--	533
-#531	--	Nom-Mod	--	--	532
+#501	--	NP-Subj	--	--	519
+#502	--	DP-Det	--	--	517
+#503	--	AdjP-Mod	--	--	504
+#504	--	Nom-Head	--	--	510
+#505	--	DP-Det	--	--	508
+#506	--	AdjP-Mod	--	--	507
+#507	--	Nom-Head	--	--	508
+#508	--	NP-Obj	--	--	509
+#509	--	PP-Supplement	--	--	510
+#510	--	Nom-Head	--	--	516
+#511	--	DP-Det	--	--	514
+#512	--	Nom-Mod	--	--	513
+#513	--	Nom-Head	--	--	514
+#514	--	NP-Obj	--	--	515
+#515	--	PP-Mod	--	--	516
+#516	--	Nom-Head	--	--	517
+#517	--	NP-DisplacedSubj	--	--	518
+#518	--	VP-Head	--	--	519
+#519	--	Clause-Comp	--	--	520
+#520	--	PP-Mod	--	--	536
+#521	--	DP-Det	--	--	529
+#522	--	DP-Det	--	--	524
+#523	--	Nom-Head	--	--	524
+#524	--	NP-Obj	--	--	525
+#525	--	VP-Head	--	--	526
+#526	--	VP-Head	--	--	527
+#527	--	Clause-Comp	--	--	528
+#528	--	Nom-Head	--	--	529
+#529	--	NP-Subj	--	--	535
+#530	--	DP-Det	--	--	533
+#531	--	AdjP-Mod	--	--	532
 #532	--	Nom-Head	--	--	533
-#533	--	NP-Obj	--	--	566
-#534	--	DP-Det	--	--	564
-#535	--	Nom-Head	--	--	564
-#536	--	Nom-Head	--	--	537
-#537	--	NP.x-Prenucleus	--	--	563
+#533	--	NP-PredComp	--	--	534
+#534	--	VP-Head	--	--	535
+#535	--	Clause-Head	--	--	536
+#536	--	Clause	--	--	0
+#EOS 2
+#BOS 3
+such	--	Adj-Head	--	--	500
+filings	--	N-Head	--	--	501
+present	--	V-Head	--	--	518
+a	--	D-Head	--	--	503
+significant	--	Adj-Head	--	--	504
+opportunity	--	N-Head	--	--	515
+for	--	P-Head	--	--	514
+the	--	D-Head	--	--	505
+efficient	--	Adj-Head	--	--	506
+administration	--	N-Head	--	--	511
+of	--	P-Head	--	--	510
+large	--	Adj-Head	--	--	507
+cases	--	N-Head	--	--	508
+,	--	,	--	--	508
+but	--	Coordinator-Marker	--	--	554
+the	--	D-Head	--	--	520
+rule	--	N-Head	--	--	521
+includes	--	V-Head	--	--	534
+restrictions	--	N-Head	--	--	532
+on	--	P-Head	--	--	531
+the	--	D-Head	--	--	523
+use	--	N-Head	--	--	529
+of	--	P-Head	--	--	528
+these	--	D-Head	--	--	524
+omnibus	--	Adj-Head	--	--	525
+objections	--	N-Head	--	--	526
+to	--	Sdr-Marker	--	--	550
+ensure	--	V-Head	--	--	549
+the	--	D-Head	--	--	535
+protection	--	N-Head	--	--	547
+of	--	P-Head	--	--	546
+the	--	D-Head	--	--	536
+due	--	Adj-Head	--	--	537
+process	--	N-Head	--	--	538
+rights	--	N-Head	--	--	539
+of	--	P-Head	--	--	543
+the	--	D-Head	--	--	540
+claimants	--	N-Head	--	--	541
+.	--	.	--	--	541
+#500	--	AdjP-Mod	--	--	501
+#501	--	Nom-Head	--	--	502
+#502	--	NP-Subj	--	--	519
+#503	--	DP-Det	--	--	517
+#504	--	AdjP-Mod	--	--	516
+#505	--	DP-Det	--	--	513
+#506	--	AdjP-Mod	--	--	512
+#507	--	AdjP-Mod	--	--	508
+#508	--	Nom-Head	--	--	509
+#509	--	NP-Obj	--	--	510
+#510	--	PP-Comp	--	--	511
+#511	--	Nom-Head	--	--	512
+#512	--	Nom-Head	--	--	513
+#513	--	NP-Obj	--	--	514
+#514	--	PP-Comp	--	--	515
+#515	--	Nom-Head	--	--	516
+#516	--	Nom-Head	--	--	517
+#517	--	NP-Obj	--	--	518
+#518	--	VP-Head	--	--	519
+#519	--	Clause-Coordinate	--	--	555
+#520	--	DP-Det	--	--	522
+#521	--	Nom-Head	--	--	522
+#522	--	NP-Subj	--	--	553
+#523	--	DP-Det	--	--	530
+#524	--	DP-Det	--	--	527
+#525	--	AdjP-Mod	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	528
+#528	--	PP-Comp	--	--	529
+#529	--	Nom-Head	--	--	530
+#530	--	NP-Obj	--	--	531
+#531	--	PP-Comp	--	--	532
+#532	--	Nom-Head	--	--	533
+#533	--	NP-Obj	--	--	534
+#534	--	VP-Head	--	--	552
+#535	--	DP-Det	--	--	548
+#536	--	DP-Det	--	--	545
+#537	--	AdjP-Mod	--	--	538
 #538	--	Nom-Mod	--	--	539
-#539	--	Nom-Head	--	--	540
-#540	--	NP-Subj	--	--	562
-#541	--	AdvP-Mod	--	--	547
-#542	--	DP-DetHead	--	--	544
-#543	--	PP-Comp	--	--	544
+#539	--	Nom-Head	--	--	544
+#540	--	DP-Det	--	--	542
+#541	--	Nom-Head	--	--	542
+#542	--	NP-Obj	--	--	543
+#543	--	PP-Mod	--	--	544
 #544	--	Nom-Head	--	--	545
 #545	--	NP-Obj	--	--	546
-#546	--	VP-Head	--	--	547
-#547	--	VP-Head	--	--	548
-#548	--	Clause-Comp	--	--	549
-#549	--	VP-Coordinate	--	--	561
-#550	--	Nom-Head	--	--	551
-#551	--	NP-Mod	--	--	552
-#552	--	DP-DetHead	--	--	554
-#553	--	PP-Comp	--	--	554
-#554	--	Nom-Head	--	--	555
-#555	--	NP-Obj	--	--	556
-#556	--	VP-Head	--	--	557
-#557	--	VP-Head	--	--	558
-#558	--	Clause-Comp	--	--	559
-#559	--	VP-Head	--	--	560
-#560	--	VP-Coordinate	--	--	561
-#561	--	Coordination-Head	--	--	562
-#562	--	Clauserel-Head	--	--	563
-#563	--	Clauserel-Supplement	--	--	564
-#564	--	NP-Obj	--	--	565
-#565	--	PP-Comp	--	--	566
-#566	--	VP-Head	--	--	567
-#567	--	Clause-Comp	--	--	568
-#568	--	VP-Head	--	--	569
-#569	--	Clause-Head	--	--	570
-#570	--	Clause-Head	--	--	571
-#571	--	Clause-Coordinate	--	--	572
-#572	--	Coordination	--	--	0
-#EOS 17
-#BOS 18
-look	--	V-Head	--	--	518
-around	--	P-Head	--	--	500
-at	--	P-Head	--	--	517
-how	--	Adv-Head	--	--	501
-lucky	--	Adj-Head	--	--	502
-_.	--	GAP.y-Comp	--	--	502
-we	--	Npro-Head	--	--	504
-are	--	Vaux-Head	--	--	506
-_.	--	GAP.x-PredComp	--	--	506
-to	--	Sdr-Marker	--	--	514
-be	--	Vaux-Head	--	--	510
-alive	--	Adj-Head	--	--	509
-right	--	Adv-Head	--	--	511
-now	--	P-Head	--	--	512
-!	--	.	--	--	512
-#500	--	PP-Comp	--	--	518
-#501	--	AdvP-Mod	--	--	503
-#502	--	AdjP-Head	--	--	503
-#503	--	AdjP.x-Prenucleus	--	--	508
-#504	--	Nom-Head	--	--	505
-#505	--	NP-Subj	--	--	507
-#506	--	VP-Head	--	--	507
-#507	--	Clause-Head	--	--	508
-#508	--	Clause-Head	--	--	516
-#509	--	AdjP-PredComp	--	--	510
-#510	--	VP-Head	--	--	513
-#511	--	AdvP-Mod	--	--	512
-#512	--	PP-Mod	--	--	513
-#513	--	VP-Head	--	--	514
-#514	--	VP-Head	--	--	515
-#515	--	Clause.y-Postnucleus	--	--	516
-#516	--	Clause-Comp	--	--	517
-#517	--	PP-Comp	--	--	518
-#518	--	VP-Head	--	--	519
-#519	--	Clause	--	--	0
-#EOS 18
-#BOS 19
-and	--	Coordinator-Marker	--	--	578
-my	--	Npro-Head	--	--	500
-body	--	N-Head	--	--	502
-lunged	--	V-Head	--	--	505
-violently	--	Adv-Head	--	--	504
-sideways	--	P-Head	--	--	506
-,	--	,	--	--	506
-in	--	P-Head	--	--	532
+#546	--	PP-Comp	--	--	547
+#547	--	Nom-Head	--	--	548
+#548	--	NP-Obj	--	--	549
+#549	--	VP-Head	--	--	550
+#550	--	VP-Head	--	--	551
+#551	--	Clause-Mod	--	--	552
+#552	--	VP-Head	--	--	553
+#553	--	Clause-Head	--	--	554
+#554	--	Clause-Coordinate	--	--	555
+#555	--	Coordination	--	--	0
+#EOS 3
+#BOS 4
+thus	--	Adv-Head	--	--	500
+,	--	,	--	--	500
+when	--	P-Head	--	--	514
+an	--	D-Head	--	--	501
+interested	--	Adj-Head	--	--	502
+party	--	N-Head	--	--	503
+presents	--	V-Head	--	--	512
+the	--	D-Head	--	--	505
+dispute	--	N-Head	--	--	506
+to	--	P-Head	--	--	511
 the	--	D-Head	--	--	508
-direction	--	N-Head	--	--	530
-opposite	--	P-Head	--	--	529
-the	--	D-Head	--	--	509
-side	--	N-Head	--	--	527
-where	--	P-Head	--	--	510
-the	--	D-Head	--	--	511
-ball	--	N-Head	--	--	512
-had	--	Vaux-Head	--	--	524
-passed	--	V-Head	--	--	514
-_.	--	GAP.y-Mod	--	--	514
-a	--	D-Head	--	--	515
-full	--	Adj-Head	--	--	516
-two	--	D-Head	--	--	517
-seconds	--	N-Head	--	--	518
-earlier	--	Adv-Head	--	--	521
-,	--	,	--	--	521
-flopping	--	V-Head	--	--	537
-onto	--	P-Head	--	--	536
-the	--	D-Head	--	--	533
-ground	--	N-Head	--	--	534
-like	--	P-Head	--	--	563
-some	--	D-Head	--	--	538
-pathetic	--	Adj-Head	--	--	539
-spawning	--	V-Head	--	--	540
-salmon	--	N-Head	--	--	541
-whose	--	Npro-Head	--	--	543
-central	--	Adj-Head	--	--	545
-nervous	--	Adj-Head	--	--	546
-system	--	N-Head	--	--	547
-_.	--	GAP.x-Subj	--	--	559
-had	--	Vaux-Head	--	--	558
-been	--	Vaux-Head	--	--	556
-destroyed	--	V-Head	--	--	554
-by	--	P-Head	--	--	553
-toxic	--	Adj-Head	--	--	550
-waste	--	N-Head	--	--	551
-,	--	,	--	--	551
-as	--	P-Head	--	--	573
-Gerry	--	N-Flat	--	--	565
-Sinnott	--	N-Flat	--	--	565
-cruised	--	V-Head	--	--	571
-toward	--	P-Head	--	--	570
-home	--	N-Head	--	--	568
-.	--	.	--	--	568
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Det	--	--	503
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Subj	--	--	577
-#504	--	AdvP-Mod	--	--	505
-#505	--	VP-Head	--	--	507
-#506	--	PP-Mod	--	--	507
-#507	--	VP-Head	--	--	576
-#508	--	DP-Det	--	--	531
-#509	--	DP-Det	--	--	528
-#510	--	PP.y-Prenucleus	--	--	526
-#511	--	DP-Det	--	--	513
-#512	--	Nom-Head	--	--	513
-#513	--	NP-Subj	--	--	525
-#514	--	VP-Head	--	--	522
-#515	--	DP-Det	--	--	520
-#516	--	AdjP-Mod	--	--	519
-#517	--	DP-Mod	--	--	518
-#518	--	Nom-Head	--	--	519
+court	--	N-Head	--	--	509
+,	--	,	--	--	509
+its	--	Npro-Head	--	--	515
+prompt	--	Adj-Head	--	--	517
+resolution	--	N-Head	--	--	522
+by	--	P-Head	--	--	521
+the	--	D-Head	--	--	518
+court	--	N-Head	--	--	519
+will	--	Vaux-Head	--	--	530
+determine	--	V-Head	--	--	528
+the	--	D-Head	--	--	525
+dispute	--	N-Head	--	--	526
+and	--	Coordinator-Marker	--	--	552
+a	--	D-Head	--	--	532
+new	--	Adj-Head	--	--	533
+or	--	Coordinator-Marker	--	--	535
+adjourned	--	Adj-Head	--	--	534
+meeting	--	N-Head	--	--	543
+to	--	Sdr-Marker	--	--	541
+conduct	--	V-Head	--	--	540
+the	--	D-Head	--	--	537
+election	--	N-Head	--	--	538
+may	--	Vaux-Head	--	--	550
+be	--	Vaux-Head	--	--	548
+avoided	--	V-Head	--	--	546
+.	--	.	--	--	546
+#500	--	AdvP-Supplement	--	--	554
+#501	--	DP-Det	--	--	504
+#502	--	AdjP-Mod	--	--	503
+#503	--	Nom-Head	--	--	504
+#504	--	NP-Subj	--	--	513
+#505	--	DP-Det	--	--	507
+#506	--	Nom-Head	--	--	507
+#507	--	NP-Obj	--	--	512
+#508	--	DP-Det	--	--	510
+#509	--	Nom-Head	--	--	510
+#510	--	NP-Obj	--	--	511
+#511	--	PP-Comp	--	--	512
+#512	--	VP-Head	--	--	513
+#513	--	Clause-Comp	--	--	514
+#514	--	PP-Mod	--	--	554
+#515	--	Nom-Head	--	--	516
+#516	--	NP-Det	--	--	524
+#517	--	AdjP-Mod	--	--	523
+#518	--	DP-Det	--	--	520
 #519	--	Nom-Head	--	--	520
-#520	--	NP-Mod	--	--	521
-#521	--	AdvP-Mod	--	--	522
-#522	--	VP-Head	--	--	523
-#523	--	Clause-Comp	--	--	524
-#524	--	VP-Head	--	--	525
-#525	--	Clauserel-Head	--	--	526
-#526	--	Clauserel-Mod	--	--	527
+#520	--	NP-Obj	--	--	521
+#521	--	PP-Comp	--	--	522
+#522	--	Nom-Head	--	--	523
+#523	--	NP-Head	--	--	524
+#524	--	NP-Subj	--	--	531
+#525	--	DP-Det	--	--	527
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	528
+#528	--	VP-Head	--	--	529
+#529	--	Clause-Comp	--	--	530
+#530	--	VP-Head	--	--	531
+#531	--	Clause-Coordinate	--	--	553
+#532	--	DP-Det	--	--	545
+#533	--	AdjP-Coordinate	--	--	536
+#534	--	AdjP-Head	--	--	535
+#535	--	AdjP-Coordinate	--	--	536
+#536	--	Coordination-Mod	--	--	544
+#537	--	DP-Det	--	--	539
+#538	--	Nom-Head	--	--	539
+#539	--	NP-Obj	--	--	540
+#540	--	VP-Head	--	--	541
+#541	--	VP-Head	--	--	542
+#542	--	Clause-Mod	--	--	543
+#543	--	Nom-Head	--	--	544
+#544	--	Nom-Head	--	--	545
+#545	--	NP-Subj	--	--	551
+#546	--	VP-Head	--	--	547
+#547	--	Clause-Comp	--	--	548
+#548	--	VP-Head	--	--	549
+#549	--	Clause-Comp	--	--	550
+#550	--	VP-Head	--	--	551
+#551	--	Clause-Head	--	--	552
+#552	--	Clause-Coordinate	--	--	553
+#553	--	Coordination-Head	--	--	554
+#554	--	Clause	--	--	0
+#EOS 4
+#BOS 5
+the	--	D-Head	--	--	500
+provisions	--	N-Head	--	--	505
+of	--	P-Head	--	--	504
+this	--	D-Head	--	--	501
+section	--	N-Head	--	--	502
+,	--	,	--	--	502
+or	--	Coordinator-Marker	--	--	522
+any	--	D-Head	--	--	507
+failure	--	N-Head	--	--	512
+by	--	P-Head	--	--	511
+the	--	D-Head	--	--	508
+Corporation	--	N-Head	--	--	509
+to	--	Sdr-Marker	--	--	518
+comply	--	V-Head	--	--	517
+with	--	P-Head	--	--	516
+such	--	Adj-Head	--	--	513
+provisions	--	N-Head	--	--	514
+,	--	,	--	--	514
+may	--	Vaux-Head	--	--	525
+not	--	Adv-Head	--	--	524
+be	--	Vaux-Head	--	--	558
+used	--	V-Head	--	--	530
+by	--	P-Head	--	--	529
+any	--	D-Head	--	--	526
+person	--	N-Head	--	--	527
+to	--	Sdr-Marker	--	--	554
+attack	--	V-Head	--	--	531
+or	--	Coordinator-Marker	--	--	533
+defeat	--	V-Head	--	--	532
+any	--	D-Head	--	--	535
+title	--	N-Head	--	--	539
+to	--	P-Head	--	--	538
+property	--	N-Head	--	--	536
+after	--	P-Head	--	--	552
+it	--	Npro-Head	--	--	542
+is	--	Vaux-Head	--	--	550
+conveyed	--	V-Head	--	--	548
+by	--	P-Head	--	--	547
+the	--	D-Head	--	--	544
+Corporation	--	N-Head	--	--	545
+.	--	.	--	--	545
+#500	--	DP-Det	--	--	506
+#501	--	DP-Det	--	--	503
+#502	--	Nom-Head	--	--	503
+#503	--	NP-Obj	--	--	504
+#504	--	PP-Comp	--	--	505
+#505	--	Nom-Head	--	--	506
+#506	--	NP-Coordinate	--	--	523
+#507	--	DP-Det	--	--	521
+#508	--	DP-Det	--	--	510
+#509	--	Nom-Head	--	--	510
+#510	--	NP-Obj	--	--	511
+#511	--	PP-Comp	--	--	512
+#512	--	Nom-Head	--	--	520
+#513	--	AdjP-Mod	--	--	514
+#514	--	Nom-Head	--	--	515
+#515	--	NP-Obj	--	--	516
+#516	--	PP-Comp	--	--	517
+#517	--	VP-Head	--	--	518
+#518	--	VP-Head	--	--	519
+#519	--	Clause-Comp	--	--	520
+#520	--	Nom-Head	--	--	521
+#521	--	NP-Head	--	--	522
+#522	--	NP-Coordinate	--	--	523
+#523	--	Coordination-Subj	--	--	561
+#524	--	AdvP-Mod	--	--	525
+#525	--	VP-Head	--	--	560
+#526	--	DP-Det	--	--	528
 #527	--	Nom-Head	--	--	528
 #528	--	NP-Obj	--	--	529
 #529	--	PP-Comp	--	--	530
-#530	--	Nom-Head	--	--	531
-#531	--	NP-Obj	--	--	532
-#532	--	PP-Mod	--	--	576
-#533	--	DP-Det	--	--	535
-#534	--	Nom-Head	--	--	535
-#535	--	NP-Obj	--	--	536
-#536	--	PP-Comp	--	--	537
-#537	--	VP-Head	--	--	564
-#538	--	DP-Det	--	--	562
-#539	--	AdjP-Mod	--	--	542
-#540	--	VP-Mod	--	--	541
-#541	--	Nom-Head	--	--	542
-#542	--	Nom-Head	--	--	561
-#543	--	Nom-Head	--	--	544
-#544	--	NP-Det	--	--	549
-#545	--	AdjP-Mod	--	--	548
-#546	--	AdjP-Mod	--	--	547
-#547	--	Nom-Head	--	--	548
-#548	--	Nom-Head	--	--	549
-#549	--	NP.x-Prenucleus	--	--	560
-#550	--	AdjP-Mod	--	--	551
-#551	--	Nom-Head	--	--	552
-#552	--	NP-Obj	--	--	553
-#553	--	PP-Comp	--	--	554
+#530	--	VP-Head	--	--	556
+#531	--	VP-Coordinate	--	--	534
+#532	--	VP-Head	--	--	533
+#533	--	VP-Coordinate	--	--	534
+#534	--	Coordination-Head	--	--	541
+#535	--	DP-Det	--	--	540
+#536	--	Nom-Head	--	--	537
+#537	--	NP-Obj	--	--	538
+#538	--	PP-Comp	--	--	539
+#539	--	Nom-Head	--	--	540
+#540	--	NP-Obj	--	--	541
+#541	--	VP-Head	--	--	553
+#542	--	Nom-Head	--	--	543
+#543	--	NP-Subj	--	--	551
+#544	--	DP-Det	--	--	546
+#545	--	Nom-Head	--	--	546
+#546	--	NP-Obj	--	--	547
+#547	--	PP-Comp	--	--	548
+#548	--	VP-Head	--	--	549
+#549	--	Clause-Comp	--	--	550
+#550	--	VP-Head	--	--	551
+#551	--	Clause-Comp	--	--	552
+#552	--	PP-Mod	--	--	553
+#553	--	VP-Head	--	--	554
 #554	--	VP-Head	--	--	555
 #555	--	Clause-Comp	--	--	556
 #556	--	VP-Head	--	--	557
 #557	--	Clause-Comp	--	--	558
 #558	--	VP-Head	--	--	559
-#559	--	Clauserel-Head	--	--	560
-#560	--	Clauserel-Mod	--	--	561
-#561	--	Nom-Head	--	--	562
-#562	--	NP-Obj	--	--	563
-#563	--	PP-Mod	--	--	564
-#564	--	VP-Head	--	--	574
-#565	--	N-Head	--	--	566
-#566	--	Nom-Head	--	--	567
-#567	--	NP-Subj	--	--	572
-#568	--	Nom-Head	--	--	569
-#569	--	NP-Obj	--	--	570
-#570	--	PP-Comp	--	--	571
-#571	--	VP-Head	--	--	572
-#572	--	Clause-Comp	--	--	573
-#573	--	PP-Mod	--	--	574
-#574	--	VP-Head	--	--	575
-#575	--	Clause-Supplement	--	--	576
-#576	--	VP-Head	--	--	577
-#577	--	Clause-Head	--	--	578
-#578	--	Clause	--	--	0
-#EOS 19
-#BOS 20
-according	--	P-Head	--	--	505
-to	--	P-Head	--	--	504
+#559	--	Clause-Comp	--	--	560
+#560	--	VP-Head	--	--	561
+#561	--	Clause	--	--	0
+#EOS 5
+#BOS 6
 the	--	D-Head	--	--	500
-Sun	--	N-Head	--	--	501
-article	--	N-Head	--	--	502
-,	--	,	--	--	502
-what	--	Npro-Head	--	--	506
-_.	--	GAP.y-Subj	--	--	509
-happened	--	V-Head	--	--	508
-was	--	Vaux-Head	--	--	579
-that	--	Sdr-Marker	--	--	578
+entire	--	Adj-Head	--	--	501
+rating	--	N-Head	--	--	502
+structure	--	N-Head	--	--	503
+for	--	P-Head	--	--	507
+enlisted	--	Adj-Head	--	--	504
+men	--	N-Head	--	--	505
+is	--	Vaux-Head	--	--	523
+left	--	V-Head	--	--	521
+to	--	P-Head	--	--	520
+the	--	D-Head	--	--	511
+administrative	--	Adj-Head	--	--	512
+discretion	--	N-Head	--	--	517
+of	--	P-Head	--	--	516
 the	--	D-Head	--	--	513
-American	--	Adj-Head	--	--	514
-farmer	--	N-Head	--	--	515
-,	--	,	--	--	515
-all	--	D-Head	--	--	517
-the	--	D-Head	--	--	518
-while	--	N.x-Head	--	--	530
-we	--	Npro-Head	--	--	519
-were	--	Vaux-Head	--	--	528
-feeling	--	V-Head	--	--	525
-sorry	--	Adj-Head	--	--	524
-for	--	P-Head	--	--	523
-him	--	Npro-Head	--	--	521
-,	--	,	--	--	521
-_.	--	GAP.x-Mod	--	--	526
-was	--	Vaux-Head	--	--	541
-deluging	--	V-Head	--	--	539
-the	--	D-Head	--	--	533
-soil	--	N-Head	--	--	534
-with	--	P-Head	--	--	538
-herbicides	--	N-Head	--	--	536
-,	--	,	--	--	536
-despite	--	P-Head	--	--	576
-the	--	D-Head	--	--	542
-known	--	V-Head	--	--	543
-scientific	--	Adj-Head	--	--	544
-fact	--	N-Head	--	--	545
-that	--	Sdr-Marker	--	--	573
-chemicals	--	N-Head	--	--	547
-cause	--	V-Head	--	--	558
-insects	--	N-Head	--	--	549
-to	--	Sdr-Marker	--	--	556
-mutate	--	V-Head	--	--	551
-and	--	Coordinator-Marker	--	--	554
-become	--	V-Head	--	--	553
-enormous	--	Adj-Head	--	--	552
-,	--	,	--	--	552
-as	--	P-Head	--	--	571
-has	--	Vaux-Head	--	--	569
-been	--	Vaux-Head	--	--	567
-documented	--	V-Head	--	--	565
-in	--	P-Head	--	--	564
-countless	--	Adj-Head	--	--	559
-Japanese	--	Adj-Head	--	--	560
-movies	--	N-Head	--	--	561
-.	--	.	--	--	561
-#500	--	DP-Det	--	--	503
-#501	--	Nom-Mod	--	--	502
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Obj	--	--	504
-#504	--	PP-Comp	--	--	505
-#505	--	PP-Supplement	--	--	580
-#506	--	Nom-Head	--	--	507
-#507	--	NP.y-HeadPrenucleus	--	--	510
-#508	--	VP-Head	--	--	509
-#509	--	Clauserel-Head	--	--	510
-#510	--	Clauserel-Mod	--	--	511
-#511	--	Nom-Head	--	--	512
-#512	--	NP-Subj	--	--	580
-#513	--	DP-Det	--	--	516
-#514	--	AdjP-Mod	--	--	515
+Secretary	--	N-Head	--	--	514
+,	--	,	--	--	514
+as	--	P-Head	--	--	528
+in	--	P-Head	--	--	527
+the	--	D-Head	--	--	524
+past	--	N-Head	--	--	525
+,	--	,	--	--	525
+for	--	P-Head	--	--	534
+reasons	--	N-Head	--	--	532
+of	--	P-Head	--	--	531
+flexibility	--	N-Head	--	--	529
+.	--	.	--	--	529
+#500	--	DP-Det	--	--	510
+#501	--	AdjP-Mod	--	--	509
+#502	--	Nom-Mod	--	--	503
+#503	--	Nom-Head	--	--	508
+#504	--	AdjP-Mod	--	--	505
+#505	--	Nom-Head	--	--	506
+#506	--	NP-Obj	--	--	507
+#507	--	PP-Comp	--	--	508
+#508	--	Nom-Head	--	--	509
+#509	--	Nom-Head	--	--	510
+#510	--	NP-Subj	--	--	536
+#511	--	DP-Det	--	--	519
+#512	--	AdjP-Mod	--	--	518
+#513	--	DP-Det	--	--	515
+#514	--	Nom-Head	--	--	515
+#515	--	NP-Obj	--	--	516
+#516	--	PP-Comp	--	--	517
+#517	--	Nom-Head	--	--	518
+#518	--	Nom-Head	--	--	519
+#519	--	NP-Obj	--	--	520
+#520	--	PP-Comp	--	--	521
+#521	--	VP-Head	--	--	522
+#522	--	Clause-Comp	--	--	523
+#523	--	VP-Head	--	--	535
+#524	--	DP-Det	--	--	526
+#525	--	Nom-Head	--	--	526
+#526	--	NP-Obj	--	--	527
+#527	--	PP-Comp	--	--	528
+#528	--	PP-Supplement	--	--	535
+#529	--	Nom-Head	--	--	530
+#530	--	NP-Obj	--	--	531
+#531	--	PP-Comp	--	--	532
+#532	--	Nom-Head	--	--	533
+#533	--	NP-Obj	--	--	534
+#534	--	PP-Mod	--	--	535
+#535	--	VP-Head	--	--	536
+#536	--	Clause	--	--	0
+#EOS 6
+#BOS 7
+a	--	D-Head	--	--	500
+closed	--	Adj-Head	--	--	501
+circuit	--	N-Head	--	--	502
+wire	--	N-Head	--	--	503
+system	--	N-Head	--	--	504
+that	--	Sdr-Marker	--	--	524
+_.	--	GAP.x-Subj	--	--	523
+only	--	Adv-Head	--	--	506
+originates	--	V-Head	--	--	509
+programs	--	N-Head	--	--	507
+and	--	Coordinator-Marker	--	--	520
+does	--	Vaux-Head	--	--	512
+not	--	Adv-Head	--	--	511
+carry	--	V-Head	--	--	517
+television	--	N-Head	--	--	513
+broadcast	--	N-Head	--	--	514
+signals	--	N-Head	--	--	515
+would	--	Vaux-Head	--	--	528
+not	--	Adv-Head	--	--	527
+come	--	V-Head	--	--	533
+within	--	P-Head	--	--	532
+the	--	D-Head	--	--	529
+definition	--	N-Head	--	--	530
+.	--	.	--	--	530
+#500	--	DP-Det	--	--	526
+#501	--	AdjP-Mod	--	--	502
+#502	--	Nom-Mod	--	--	505
+#503	--	Nom-Mod	--	--	504
+#504	--	Nom-Head	--	--	505
+#505	--	Nom.x-Head	--	--	525
+#506	--	AdvP-Mod	--	--	510
+#507	--	Nom-Head	--	--	508
+#508	--	NP-Obj	--	--	509
+#509	--	VP-Head	--	--	510
+#510	--	VP-Coordinate	--	--	521
+#511	--	AdvP-Mod	--	--	512
+#512	--	VP-Head	--	--	519
+#513	--	Nom-Mod	--	--	514
+#514	--	Nom-Mod	--	--	515
 #515	--	Nom-Head	--	--	516
-#516	--	NP-Subj	--	--	577
-#517	--	DP-Mod	--	--	532
-#518	--	DP-Det	--	--	531
-#519	--	Nom-Head	--	--	520
-#520	--	NP-Subj	--	--	529
-#521	--	Nom-Head	--	--	522
-#522	--	NP-Obj	--	--	523
-#523	--	PP-Comp	--	--	524
-#524	--	AdjP-PredComp	--	--	525
-#525	--	VP-Head	--	--	526
-#526	--	VP-Head	--	--	527
-#527	--	Clause-Comp	--	--	528
-#528	--	VP-Head	--	--	529
-#529	--	Clauserel-Mod	--	--	530
+#516	--	NP-Obj	--	--	517
+#517	--	VP-Head	--	--	518
+#518	--	Clause-Comp	--	--	519
+#519	--	VP-Head	--	--	520
+#520	--	VP-Coordinate	--	--	521
+#521	--	Coordination-Head	--	--	522
+#522	--	VP-Head	--	--	523
+#523	--	Clauserel-Head	--	--	524
+#524	--	Clauserel-Mod	--	--	525
+#525	--	Nom-Head	--	--	526
+#526	--	NP-Subj	--	--	536
+#527	--	AdvP-Mod	--	--	528
+#528	--	VP-Head	--	--	535
+#529	--	DP-Det	--	--	531
 #530	--	Nom-Head	--	--	531
-#531	--	NP-Head	--	--	532
-#532	--	NP-Supplement	--	--	577
-#533	--	DP-Det	--	--	535
+#531	--	NP-Obj	--	--	532
+#532	--	PP-Comp	--	--	533
+#533	--	VP-Head	--	--	534
+#534	--	Clause-Comp	--	--	535
+#535	--	VP-Head	--	--	536
+#536	--	Clause	--	--	0
+#EOS 7
+#BOS 8
+the	--	D-Head	--	--	500
+court	--	N-Head	--	--	501
+may	--	Vaux-Head	--	--	549
+inquire	--	V-Head	--	--	514
+as_to	--	P-Head	--	--	513
+the	--	D-Head	--	--	503
+good	--	Adj-Head	--	--	504
+faith	--	N-Head	--	--	505
+of	--	P-Head	--	--	510
+the	--	D-Head	--	--	506
+assisting	--	Adj-Head	--	--	507
+personnel	--	N-Head	--	--	508
+,	--	,	--	--	508
+to	--	Sdr-Marker	--	--	546
+ensure	--	V-Head	--	--	545
+that	--	Sdr-Marker	--	--	544
+access	--	N-Head	--	--	518
+to	--	P-Head	--	--	517
+material	--	N-Head	--	--	515
+is	--	Vaux-Head	--	--	521
+not	--	Adv-Head	--	--	520
+merely	--	Adv-Head	--	--	522
+a	--	D-Head	--	--	523
+subterfuge	--	N-Head	--	--	539
+to	--	Sdr-Marker	--	--	537
+gather	--	V-Head	--	--	536
+evidence	--	N-Head	--	--	534
+unattainable	--	Adj-Head	--	--	533
+by	--	P-Head	--	--	532
+means	--	N-Head	--	--	530
+other	--	Adj-Head	--	--	529
+than	--	P-Head	--	--	528
+the	--	D-Head	--	--	524
+grand	--	Adj-Head	--	--	525
+jury	--	N-Head	--	--	526
+.	--	.	--	--	526
+#500	--	DP-Det	--	--	502
+#501	--	Nom-Head	--	--	502
+#502	--	NP-Subj	--	--	550
+#503	--	DP-Det	--	--	512
+#504	--	AdjP-Mod	--	--	505
+#505	--	Nom-Head	--	--	511
+#506	--	DP-Det	--	--	509
+#507	--	AdjP-Mod	--	--	508
+#508	--	Nom-Head	--	--	509
+#509	--	NP-Obj	--	--	510
+#510	--	PP-Mod	--	--	511
+#511	--	Nom-Head	--	--	512
+#512	--	NP-Obj	--	--	513
+#513	--	PP-Comp	--	--	514
+#514	--	VP-Head	--	--	548
+#515	--	Nom-Head	--	--	516
+#516	--	NP-Obj	--	--	517
+#517	--	PP-Comp	--	--	518
+#518	--	Nom-Head	--	--	519
+#519	--	NP-Subj	--	--	543
+#520	--	AdvP-Mod	--	--	521
+#521	--	VP-Head	--	--	542
+#522	--	AdvP-Mod	--	--	541
+#523	--	DP-Det	--	--	540
+#524	--	DP-Det	--	--	527
+#525	--	AdjP-Mod	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	528
+#528	--	PP-Mod	--	--	529
+#529	--	AdjP-Mod	--	--	530
+#530	--	Nom-Head	--	--	531
+#531	--	NP-Obj	--	--	532
+#532	--	PP-Mod	--	--	533
+#533	--	AdjP-Mod	--	--	534
 #534	--	Nom-Head	--	--	535
-#535	--	NP-Obj	--	--	539
+#535	--	NP-Obj	--	--	536
+#536	--	VP-Head	--	--	537
+#537	--	VP-Head	--	--	538
+#538	--	Clause-Mod	--	--	539
+#539	--	Nom-Head	--	--	540
+#540	--	NP-Head	--	--	541
+#541	--	NP-PredComp	--	--	542
+#542	--	VP-Head	--	--	543
+#543	--	Clause-Head	--	--	544
+#544	--	Clause-Comp	--	--	545
+#545	--	VP-Head	--	--	546
+#546	--	VP-Head	--	--	547
+#547	--	Clause-Mod	--	--	548
+#548	--	Clause-Comp	--	--	549
+#549	--	VP-Head	--	--	550
+#550	--	Clause	--	--	0
+#EOS 8
+#BOS 9
+the	--	D-Head	--	--	500
+Attorney	--	N-Head	--	--	502
+General	--	Adj-Head	--	--	501
+may	--	Vaux-Head	--	--	505
+not	--	Adv-Head	--	--	504
+award	--	V-Head	--	--	552
+a	--	D-Head	--	--	506
+grant	--	N-Head	--	--	511
+under	--	P-Head	--	--	510
+this	--	D-Head	--	--	507
+subchapter	--	N-Head	--	--	508
+to	--	P-Head	--	--	551
+a	--	D-Head	--	--	513
+nonprofit	--	Adj-Head	--	--	514
+organization	--	N-Head	--	--	515
+that	--	Sdr-Marker	--	--	548
+_.	--	GAP.x-Subj	--	--	547
+holds	--	V-Head	--	--	518
+money	--	N-Head	--	--	516
+in	--	P-Head	--	--	522
+offshore	--	Adj-Head	--	--	519
+accounts	--	N-Head	--	--	520
+for	--	P-Head	--	--	545
+the	--	D-Head	--	--	524
+purpose	--	N-Head	--	--	543
+of	--	P-Head	--	--	542
+avoiding	--	V-Head	--	--	540
+paying	--	V-Head	--	--	538
+the	--	D-Head	--	--	525
+tax	--	N-Head	--	--	536
+described	--	V-Head	--	--	534
+in	--	P-Head	--	--	533
+section	--	N-Head	--	--	526
+511(a)	--	N-Head	--	--	527
+of	--	P-Head	--	--	531
+title	--	N-Head	--	--	528
+26	--	N-Head	--	--	529
+.	--	.	--	--	529
+#500	--	DP-Det	--	--	503
+#501	--	AdjP-Mod	--	--	502
+#502	--	Nom-Head	--	--	503
+#503	--	NP-Subj	--	--	555
+#504	--	AdvP-Mod	--	--	505
+#505	--	VP-Head	--	--	554
+#506	--	DP-Det	--	--	512
+#507	--	DP-Det	--	--	509
+#508	--	Nom-Head	--	--	509
+#509	--	NP-Obj	--	--	510
+#510	--	PP-Mod	--	--	511
+#511	--	Nom-Head	--	--	512
+#512	--	NP-Obj	--	--	552
+#513	--	DP-Det	--	--	550
+#514	--	AdjP-Mod	--	--	515
+#515	--	Nom.x-Head	--	--	549
+#516	--	Nom-Head	--	--	517
+#517	--	NP-Obj	--	--	518
+#518	--	VP-Head	--	--	523
+#519	--	AdjP-Mod	--	--	520
+#520	--	Nom-Head	--	--	521
+#521	--	NP-Obj	--	--	522
+#522	--	PP-Mod	--	--	523
+#523	--	VP-Head	--	--	546
+#524	--	DP-Det	--	--	544
+#525	--	DP-Det	--	--	537
+#526	--	Nom-Mod	--	--	527
+#527	--	Nom-Head	--	--	532
+#528	--	Nom-Mod	--	--	529
+#529	--	Nom-Head	--	--	530
+#530	--	NP-Obj	--	--	531
+#531	--	PP-Mod	--	--	532
+#532	--	NP-Obj	--	--	533
+#533	--	PP-Mod	--	--	534
+#534	--	VP-Head	--	--	535
+#535	--	Clause-Mod	--	--	536
 #536	--	Nom-Head	--	--	537
 #537	--	NP-Obj	--	--	538
-#538	--	PP-Comp	--	--	539
-#539	--	VP-Head	--	--	540
-#540	--	Clause-Comp	--	--	541
-#541	--	VP-Head	--	--	577
-#542	--	DP-Det	--	--	575
-#543	--	VP-Mod	--	--	546
-#544	--	AdjP-Mod	--	--	545
-#545	--	Nom-Head	--	--	546
-#546	--	Nom-Head	--	--	574
-#547	--	Nom-Head	--	--	548
-#548	--	NP-Subj	--	--	572
-#549	--	Nom-Head	--	--	550
-#550	--	NP-Obj	--	--	558
-#551	--	VP-Coordinate	--	--	555
-#552	--	AdjP-PredComp	--	--	553
-#553	--	VP-Head	--	--	554
-#554	--	VP-Coordinate	--	--	555
-#555	--	Coordination-Head	--	--	556
-#556	--	VP-Head	--	--	557
-#557	--	Clause-Comp	--	--	558
-#558	--	VP-Head	--	--	572
-#559	--	AdjP-Mod	--	--	562
-#560	--	AdjP-Mod	--	--	561
-#561	--	Nom-Head	--	--	562
-#562	--	Nom-Head	--	--	563
-#563	--	NP-Obj	--	--	564
-#564	--	PP-Mod	--	--	565
-#565	--	VP-Head	--	--	566
-#566	--	Clause-Comp	--	--	567
-#567	--	VP-Head	--	--	568
-#568	--	Clause-Comp	--	--	569
-#569	--	VP-Head	--	--	570
-#570	--	Clause-Comp	--	--	571
-#571	--	PP-Supplement	--	--	572
-#572	--	Clause-Head	--	--	573
-#573	--	Clause-Comp	--	--	574
-#574	--	Nom-Head	--	--	575
-#575	--	NP-Obj	--	--	576
-#576	--	PP-Supplement	--	--	577
-#577	--	Clause-Head	--	--	578
-#578	--	Clause-Comp	--	--	579
-#579	--	VP-Head	--	--	580
-#580	--	Clause	--	--	0
-#EOS 20
-#BOS 21
-the	--	D-Head	--	--	500
-males	--	N-Head	--	--	501
-,	--	,	--	--	501
-their	--	Npro-Head	--	--	502
-brains	--	N-Head	--	--	504
-badly	--	Adv-Head	--	--	506
-corroded	--	V-Head	--	--	515
-by	--	P-Head	--	--	514
-drugs	--	N-Head	--	--	507
-and	--	Coordinator-Marker	--	--	512
-organic	--	Adj-Head	--	--	509
-food	--	N-Head	--	--	510
-,	--	,	--	--	510
-wrote	--	V-Head	--	--	550
-smarmy	--	Adj-Head	--	--	520
-articles	--	N-Head	--	--	547
-about	--	P-Head	--	--	546
-what	--	Adj-Head	--	--	521
-a	--	D-Head	--	--	522
-Meaningful	--	Adj-Head	--	--	523
-Experience	--	N-Head	--	--	524
-it	--	Npro-Head	--	--	527
-is	--	Vaux-Head	--	--	529
-_.	--	GAP.x-PredComp	--	--	529
-to	--	Sdr-Marker	--	--	541
-see	--	V-Head	--	--	540
-a	--	D-Head	--	--	530
-New	--	Adj-Head	--	--	531
-Life	--	N-Head	--	--	532
-Come	--	V-Head	--	--	538
-Into	--	P-Head	--	--	537
-the	--	D-Head	--	--	534
-World	--	N-Head	--	--	535
-.	--	.	--	--	535
-#500	--	DP-Det	--	--	519
-#501	--	Nom-Head	--	--	519
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Det	--	--	505
-#504	--	Nom-Head	--	--	505
-#505	--	NP-Subj	--	--	518
-#506	--	AdvP-Mod	--	--	516
-#507	--	Nom-Head	--	--	508
-#508	--	NP-Coordinate	--	--	513
-#509	--	AdjP-Mod	--	--	510
-#510	--	Nom-Head	--	--	511
-#511	--	NP-Head	--	--	512
-#512	--	NP-Coordinate	--	--	513
-#513	--	Coordination-Obj	--	--	514
-#514	--	PP-Comp	--	--	515
-#515	--	VP-Head	--	--	516
-#516	--	VP-Head	--	--	517
-#517	--	Clause-PredComp	--	--	518
-#518	--	NP+Clause-Supplement	--	--	519
-#519	--	NP-Subj	--	--	551
-#520	--	AdjP-Mod	--	--	548
-#521	--	AdjP-Mod	--	--	526
-#522	--	DP-Det	--	--	525
-#523	--	AdjP-Mod	--	--	524
-#524	--	Nom-Head	--	--	525
-#525	--	NP-Head	--	--	526
-#526	--	NP.x-Prenucleus	--	--	545
-#527	--	Nom-Head	--	--	528
-#528	--	NP-Subj	--	--	544
-#529	--	VP-Head	--	--	543
-#530	--	DP-Det	--	--	533
-#531	--	AdjP-Mod	--	--	532
-#532	--	Nom-Head	--	--	533
-#533	--	NP-Obj	--	--	540
-#534	--	DP-Det	--	--	536
-#535	--	Nom-Head	--	--	536
-#536	--	NP-Obj	--	--	537
-#537	--	PP-Comp	--	--	538
 #538	--	VP-Head	--	--	539
 #539	--	Clause-Comp	--	--	540
 #540	--	VP-Head	--	--	541
-#541	--	VP-Head	--	--	542
-#542	--	Clause-ExtraposedSubj	--	--	543
-#543	--	VP-Head	--	--	544
-#544	--	Clause-Head	--	--	545
-#545	--	Clause-Comp	--	--	546
-#546	--	PP-Mod	--	--	547
-#547	--	Nom-Head	--	--	548
-#548	--	Nom-Head	--	--	549
-#549	--	NP-Obj	--	--	550
-#550	--	VP-Head	--	--	551
-#551	--	Clause	--	--	0
-#EOS 21
-#BOS 22
-so	--	Adv-Head	--	--	500
-basically	--	Adv-Head	--	--	501
-it	--	Npro-Head	--	--	502
-turns	--	V-Head	--	--	505
-out	--	P-Head	--	--	504
-that	--	Sdr-Marker	--	--	576
-the	--	D-Head	--	--	506
-Oakland	--	N-Head	--	--	507
-progressive	--	Adj-Head	--	--	508
-political	--	Adj-Head	--	--	509
-machine	--	N-Head	--	--	510
-was	--	Vaux-Head	--	--	574
-funded	--	V-Head	--	--	572
-with	--	P-Head	--	--	571
-straw	--	N-Head	--	--	514
-donations	--	N-Head	--	--	515
-from	--	P-Head	--	--	568
-a	--	D-Head	--	--	516
-bar	--	N.y-Head	--	--	566
-that	--	Sdr-Marker	--	--	565
-_.	--	GAP.y-Subj	--	--	564
-was	--	Vaux-Head	--	--	563
-a	--	D-Head	--	--	517
-front	--	N-Head	--	--	561
-for	--	P-Head	--	--	560
-a	--	D-Head	--	--	518
-brothel	--	N-Head	--	--	519
-/	--	Coordinator-Marker	--	--	522
-drug	--	N-Head	--	--	520
-emporium	--	N-Head	--	--	521
-that	--	Sdr-Marker	--	--	557
-_.	--	GAP.x-Subj	--	--	556
-was	--	Vaux-Head	--	--	555
-owned	--	V-Head	--	--	553
-by	--	P-Head	--	--	552
-the	--	D-Head	--	--	524
-same	--	Adj-Head	--	--	525
-family	--	N.z-Head	--	--	549
-that	--	Sdr-Marker	--	--	548
-the	--	D-Head	--	--	526
-city	--	N-Head	--	--	527
-violated	--	V-Head	--	--	536
-its	--	Npro-Head	--	--	529
-own	--	Adj-Head	--	--	531
-bidding	--	N-Head	--	--	532
-laws	--	N-Head	--	--	533
-to	--	Sdr-Marker	--	--	544
-give	--	V-Head	--	--	543
-_.	--	GAP.z-Obj_ind	--	--	543
-a	--	D-Head	--	--	537
-massive	--	Adj-Head	--	--	538
-recycling	--	N-Head	--	--	539
-contract	--	N-Head	--	--	540
-#500	--	AdvP-Supplement	--	--	578
-#501	--	AdvP-Supplement	--	--	578
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Subj	--	--	578
-#504	--	PP-Comp	--	--	505
-#505	--	VP-Head	--	--	577
-#506	--	DP-Det	--	--	513
-#507	--	Nom-Mod	--	--	512
-#508	--	AdjP-Mod	--	--	511
-#509	--	AdjP-Mod	--	--	510
-#510	--	Nom-Head	--	--	511
-#511	--	Nom-Head	--	--	512
-#512	--	Nom-Head	--	--	513
-#513	--	NP-Subj	--	--	575
-#514	--	Nom-Mod	--	--	515
-#515	--	Nom-Head	--	--	569
-#516	--	DP-Det	--	--	567
-#517	--	DP-Det	--	--	562
-#518	--	DP-Det	--	--	559
-#519	--	Nom-Coordinate	--	--	523
-#520	--	Nom-Mod	--	--	521
-#521	--	Nom-Head	--	--	522
-#522	--	Nom-Coordinate	--	--	523
-#523	--	Coordination.x-Head	--	--	558
-#524	--	DP-Det	--	--	551
-#525	--	AdjP-Mod	--	--	550
-#526	--	DP-Det	--	--	528
-#527	--	Nom-Head	--	--	528
-#528	--	NP-Subj	--	--	547
-#529	--	Nom-Head	--	--	530
-#530	--	NP-Det	--	--	535
-#531	--	AdjP-Mod	--	--	534
-#532	--	Nom-Mod	--	--	533
-#533	--	Nom-Head	--	--	534
-#534	--	Nom-Head	--	--	535
-#535	--	NP-Obj	--	--	536
-#536	--	VP-Head	--	--	546
-#537	--	DP-Det	--	--	542
-#538	--	AdjP-Mod	--	--	541
-#539	--	Nom-Mod	--	--	540
-#540	--	Nom-Head	--	--	541
-#541	--	Nom-Head	--	--	542
-#542	--	NP-Obj_dir	--	--	543
-#543	--	VP-Head	--	--	544
-#544	--	VP-Head	--	--	545
-#545	--	Clause-Mod	--	--	546
+#541	--	Clause-Comp	--	--	542
+#542	--	PP-Comp	--	--	543
+#543	--	Nom-Head	--	--	544
+#544	--	NP-Obj	--	--	545
+#545	--	PP-Mod	--	--	546
 #546	--	VP-Head	--	--	547
 #547	--	Clauserel-Head	--	--	548
 #548	--	Clauserel-Mod	--	--	549
 #549	--	Nom-Head	--	--	550
-#550	--	Nom-Head	--	--	551
-#551	--	NP-Obj	--	--	552
-#552	--	PP-Comp	--	--	553
-#553	--	VP-Head	--	--	554
-#554	--	Clause-Comp	--	--	555
-#555	--	VP-Head	--	--	556
-#556	--	Clauserel-Head	--	--	557
-#557	--	Clauserel-Mod	--	--	558
-#558	--	Nom-Head	--	--	559
-#559	--	NP-Obj	--	--	560
-#560	--	PP-Comp	--	--	561
-#561	--	Nom-Head	--	--	562
-#562	--	NP-PredComp	--	--	563
-#563	--	VP-Head	--	--	564
-#564	--	Clauserel-Head	--	--	565
-#565	--	Clauserel-Mod	--	--	566
-#566	--	Nom-Head	--	--	567
-#567	--	NP-Obj	--	--	568
-#568	--	PP-Mod	--	--	569
-#569	--	Nom-Head	--	--	570
-#570	--	NP-Obj	--	--	571
-#571	--	PP-Mod	--	--	572
-#572	--	VP-Head	--	--	573
-#573	--	Clause-Comp	--	--	574
-#574	--	VP-Head	--	--	575
-#575	--	Clause-Head	--	--	576
-#576	--	Clause-ExtraposedSubj	--	--	577
-#577	--	VP-Head	--	--	578
-#578	--	Clause	--	--	0
-#EOS 22
-#BOS 23
-an	--	D-Head	--	--	500
-anti-poaching	--	Adj-Head	--	--	501
-ranger	--	N-Head	--	--	502
-sitting	--	V-Head	--	--	504
-with	--	P-Head	--	--	503
-_.	--	GAP.x-Obj	--	--	503
-and	--	Coordinator-Marker	--	--	506
-comforting	--	V-Head	--	--	505
-_.	--	GAP.x-Obj	--	--	505
-one	--	D-Head	--	--	508
-of	--	P-Head	--	--	518
-the	--	D-Head	--	--	509
-young	--	Adj-Head	--	--	510
-gorillas	--	N-Head	--	--	511
-he	--	Npro-Head	--	--	512
-protects	--	V-Head	--	--	514
-_.	--	GAP.y-Obj	--	--	514
-after	--	P-Head	--	--	528
-its	--	Npro-Head	--	--	522
-mother	--	N-Head	--	--	524
-died	--	V-Head	--	--	526
-#500	--	DP-Det	--	--	532
-#501	--	AdjP-Mod	--	--	502
-#502	--	Nom-Head	--	--	531
-#503	--	PP-Comp	--	--	504
-#504	--	VP-Coordinate	--	--	507
-#505	--	VP-Head	--	--	506
-#506	--	VP-Coordinate	--	--	507
-#507	--	Coordination-Head	--	--	521
-#508	--	DP-DetHead	--	--	519
-#509	--	DP-Det	--	--	517
-#510	--	AdjP-Mod	--	--	511
-#511	--	Nom.y-Head	--	--	516
-#512	--	Nom-Head	--	--	513
-#513	--	NP-Det	--	--	515
-#514	--	VP-Head	--	--	515
-#515	--	Clauserel-Mod	--	--	516
-#516	--	Nom-Head	--	--	517
-#517	--	NP-Obj	--	--	518
-#518	--	PP-Comp	--	--	519
-#519	--	Nom-Head	--	--	520
-#520	--	NP.x-Postnucleus	--	--	521
-#521	--	Coordination-Head	--	--	529
-#522	--	Nom-Head	--	--	523
-#523	--	NP-Det	--	--	525
-#524	--	Nom-Head	--	--	525
-#525	--	NP-Subj	--	--	527
-#526	--	VP-Head	--	--	527
-#527	--	Clause-Comp	--	--	528
-#528	--	PP-Mod	--	--	529
-#529	--	VP-Head	--	--	530
-#530	--	Clause-Mod	--	--	531
-#531	--	Nom-Head	--	--	532
-#532	--	NP	--	--	0
-#EOS 23
-#BOS 24
-I	--	Npro-Head	--	--	500
-find	--	V-Head	--	--	517
-it	--	Npro-Head	--	--	502
-emblematic	--	Adj-Head	--	--	516
-of	--	P-Head	--	--	515
-just	--	Adv-Head	--	--	504
-how	--	Adv-Head	--	--	505
-unserious	--	Adj-Head	--	--	506
-@SenSchumer	--	N-Flat	--	--	507
-'s	--	N-Flat	--	--	507
-convening	--	N-Head	--	--	510
-is	--	Vaux-Head	--	--	512
-_.	--	GAP.x-PredComp	--	--	512
-that	--	Sdr-Marker	--	--	544
-the	--	D-Head	--	--	518
-NPR	--	N-Head	--	--	519
-coverage	--	N-Head	--	--	523
-of	--	P-Head	--	--	522
-it	--	Npro-Head	--	--	520
-this	--	D-Head	--	--	524
-morning	--	N-Head	--	--	525
-talked	--	V-Head	--	--	542
-about	--	P-Head	--	--	541
-the	--	D-Head	--	--	530
-suspended	--	Adj-Head	--	--	531
-Musk	--	N-Head	--	--	532
-v	--	Coordinator-Marker	--	--	534
-Zuck	--	N-Head	--	--	533
-cage	--	N-Head	--	--	536
-match	--	N-Head	--	--	537
-.	--	.	--	--	537
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	546
-#502	--	Nom-Head	--	--	503
-#503	--	NP-Obj	--	--	517
-#504	--	AdvP-Mod	--	--	505
-#505	--	AdvP-Mod	--	--	506
-#506	--	AdjP.x-Prenucleus	--	--	514
-#507	--	N-Head	--	--	508
-#508	--	Nom-Head	--	--	509
-#509	--	NP-Det	--	--	511
-#510	--	Nom-Head	--	--	511
-#511	--	NP-Subj	--	--	513
-#512	--	VP-Head	--	--	513
-#513	--	Clause-Head	--	--	514
-#514	--	Clause-Comp	--	--	515
-#515	--	PP-Comp	--	--	516
-#516	--	AdjP-PredComp	--	--	517
-#517	--	VP-Head	--	--	545
-#518	--	DP-Det	--	--	529
-#519	--	Nom-Mod	--	--	528
-#520	--	Nom-Head	--	--	521
-#521	--	NP-Obj	--	--	522
-#522	--	PP-Comp	--	--	523
-#523	--	Nom-Head	--	--	527
-#524	--	DP-Det	--	--	526
-#525	--	Nom-Head	--	--	526
-#526	--	NP-Mod	--	--	527
-#527	--	Nom-Head	--	--	528
-#528	--	Nom-Head	--	--	529
-#529	--	NP-Subj	--	--	543
-#530	--	DP-Det	--	--	540
-#531	--	AdjP-Mod	--	--	539
-#532	--	Nom-Coordinate	--	--	535
-#533	--	Nom-Head	--	--	534
-#534	--	Nom-Coordinate	--	--	535
-#535	--	Coordination-Mod	--	--	538
-#536	--	Nom-Mod	--	--	537
-#537	--	Nom-Head	--	--	538
-#538	--	Nom-Head	--	--	539
-#539	--	Nom-Head	--	--	540
-#540	--	NP-Obj	--	--	541
-#541	--	PP-Comp	--	--	542
-#542	--	VP-Head	--	--	543
-#543	--	Clause-Head	--	--	544
-#544	--	Clause-ExtraposedObj	--	--	545
-#545	--	VP-Head	--	--	546
-#546	--	Clause	--	--	0
-#EOS 24
-#BOS 25
-the	--	D-Head	--	--	500
-discussion	--	N-Head	--	--	501
-centered	--	V-Head	--	--	531
-on	--	P-Head	--	--	530
-which	--	D-Head	--	--	503
-courses	--	N-Head	--	--	504
-the	--	D-Head	--	--	506
-student	--	N-Head	--	--	507
-should	--	Vaux-Head	--	--	527
-be	--	Vaux-Head	--	--	525
-allowed	--	V-Head	--	--	523
-to	--	Sdr-Marker	--	--	521
-leave	--	V-Head	--	--	512
-the	--	D-Head	--	--	509
-program	--	N-Head	--	--	510
-without	--	P-Head	--	--	519
-ever	--	Adv-Head	--	--	513
-having	--	Vaux-Head	--	--	516
-taken	--	V-Head	--	--	514
-.	--	.	--	--	514
-_.	--	GAP.x-Obj	--	--	514
+#550	--	NP-Obj	--	--	551
+#551	--	PP-Comp	--	--	552
+#552	--	VP-Head	--	--	553
+#553	--	Clause-Comp	--	--	554
+#554	--	VP-Head	--	--	555
+#555	--	Clause	--	--	0
+#EOS 9
+#BOS 10
+this	--	D-Head	--	--	500
+subsection	--	N-Head	--	--	501
+does	--	Vaux-Head	--	--	504
+not	--	Adv-Head	--	--	503
+prevent	--	V-Head	--	--	531
+the	--	D-Head	--	--	505
+payment	--	N-Head	--	--	510
+of	--	P-Head	--	--	509
+reasonable	--	Adj-Head	--	--	506
+compensation	--	N-Head	--	--	507
+to	--	P-Head	--	--	514
+an	--	D-Head	--	--	511
+officer	--	N-Head	--	--	512
+in	--	P-Head	--	--	528
+an	--	D-Head	--	--	516
+amount	--	N-Head	--	--	526
+approved	--	V-Head	--	--	524
+by	--	P-Head	--	--	523
+the	--	D-Head	--	--	517
+board	--	N-Head	--	--	521
+of	--	P-Head	--	--	520
+directors	--	N-Head	--	--	518
+.	--	.	--	--	518
 #500	--	DP-Det	--	--	502
 #501	--	Nom-Head	--	--	502
-#502	--	NP-Subj	--	--	532
-#503	--	DP-Det	--	--	505
-#504	--	Nom-Head	--	--	505
-#505	--	NP.x-Prenucleus	--	--	529
-#506	--	DP-Det	--	--	508
+#502	--	NP-Subj	--	--	534
+#503	--	AdvP-Mod	--	--	504
+#504	--	VP-Head	--	--	533
+#505	--	DP-Det	--	--	530
+#506	--	AdjP-Mod	--	--	507
 #507	--	Nom-Head	--	--	508
-#508	--	NP-Subj	--	--	528
-#509	--	DP-Det	--	--	511
-#510	--	Nom-Head	--	--	511
-#511	--	NP-Obj	--	--	512
-#512	--	VP-Head	--	--	520
-#513	--	AdvP-Mod	--	--	517
-#514	--	VP-Head	--	--	515
-#515	--	Clause-Comp	--	--	516
+#508	--	NP-Obj	--	--	509
+#509	--	PP-Comp	--	--	510
+#510	--	Nom-Head	--	--	515
+#511	--	DP-Det	--	--	513
+#512	--	Nom-Head	--	--	513
+#513	--	NP-Obj	--	--	514
+#514	--	PP-Comp	--	--	515
+#515	--	Nom-Head	--	--	529
+#516	--	DP-Det	--	--	527
+#517	--	DP-Det	--	--	522
+#518	--	Nom-Head	--	--	519
+#519	--	NP-Obj	--	--	520
+#520	--	PP-Comp	--	--	521
+#521	--	Nom-Head	--	--	522
+#522	--	NP-Obj	--	--	523
+#523	--	PP-Comp	--	--	524
+#524	--	VP-Head	--	--	525
+#525	--	Clause-Mod	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	528
+#528	--	PP-Mod	--	--	529
+#529	--	Nom-Head	--	--	530
+#530	--	NP-Obj	--	--	531
+#531	--	VP-Head	--	--	532
+#532	--	Clause-Comp	--	--	533
+#533	--	VP-Head	--	--	534
+#534	--	Clause	--	--	0
+#EOS 10
+#BOS 11
+the	--	D-Head	--	--	500
+court	--	N-Head	--	--	501
+,	--	,	--	--	501
+or	--	Coordinator-Marker	--	--	511
+at	--	P-Head	--	--	506
+its	--	Npro-Head	--	--	502
+direction	--	N-Head	--	--	504
+the	--	D-Head	--	--	507
+voting	--	V-Head	--	--	508
+referee	--	N-Head	--	--	509
+,	--	,	--	--	509
+shall	--	Vaux-Head	--	--	539
+issue	--	V-Head	--	--	522
+_.	--	GAP.y-Obj	--	--	522
+to	--	P-Head	--	--	521
+each	--	D-Head	--	--	513
+applicant	--	N-Head	--	--	519
+so	--	Adv-Head	--	--	514
+declared	--	V-Head	--	--	516
+qualified	--	Adj-Head	--	--	515
+a	--	D-Head	--	--	523
+certificate	--	N-Head	--	--	536
+identifying	--	V-Head	--	--	534
+the	--	D-Head	--	--	524
+holder	--	N-Head	--	--	526
+thereof	--	P-Head	--	--	525
+as	--	P-Head	--	--	533
+a	--	D-Head	--	--	528
+person	--	N-Head	--	--	531
+so	--	Adv-Head	--	--	529
+qualified	--	Adj-Head	--	--	530
+.	--	.	--	--	530
+#500	--	DP-Det	--	--	512
+#501	--	Nom-Head	--	--	512
+#502	--	Nom-Head	--	--	503
+#503	--	NP-Det	--	--	505
+#504	--	Nom-Head	--	--	505
+#505	--	NP-Obj	--	--	506
+#506	--	PP-Supplement	--	--	511
+#507	--	DP-Det	--	--	510
+#508	--	VP-Mod	--	--	509
+#509	--	Nom-Head	--	--	510
+#510	--	NP-Head	--	--	511
+#511	--	NP-Supplement	--	--	512
+#512	--	NP-Subj	--	--	540
+#513	--	DP-Det	--	--	520
+#514	--	AdvP-Mod	--	--	517
+#515	--	AdjP-Comp	--	--	516
 #516	--	VP-Head	--	--	517
 #517	--	VP-Head	--	--	518
-#518	--	Clause-Comp	--	--	519
-#519	--	PP-Mod	--	--	520
-#520	--	VP-Head	--	--	521
-#521	--	VP-Head	--	--	522
-#522	--	Clause-Comp	--	--	523
-#523	--	VP-Head	--	--	524
-#524	--	Clause-Comp	--	--	525
-#525	--	VP-Head	--	--	526
-#526	--	Clause-Comp	--	--	527
-#527	--	VP-Head	--	--	528
-#528	--	Clause-Head	--	--	529
-#529	--	Clause-Comp	--	--	530
-#530	--	PP-Comp	--	--	531
-#531	--	VP-Head	--	--	532
-#532	--	Clause	--	--	0
-#EOS 25
-#BOS 26
-his	--	Npro-Head	--	--	500
-bed	--	N-Head	--	--	502
-,	--	,	--	--	502
-which	--	Npro-Head	--	--	503
-_.	--	GAP.y-Subj	--	--	516
-had	--	Vaux-Head	--	--	515
-been	--	Vaux-Head	--	--	513
-swinging	--	V-Head	--	--	506
-wildly	--	Adv-Head	--	--	505
-from	--	P-Head	--	--	510
-a	--	D-Head	--	--	507
-rope	--	N-Head	--	--	508
-,	--	,	--	--	508
-entered	--	V-Head	--	--	531
-the	--	D-Head	--	--	519
-apartment	--	N-Head	--	--	529
-two	--	D-Head	--	--	520
-floors	--	N-Head	--	--	521
-below	--	P-Head	--	--	527
-his	--	Npro-Head	--	--	523
-through	--	P-Head	--	--	549
-what	--	Npro-Head	--	--	532
-_.	--	GAP.x-Subj	--	--	545
-had	--	Vaux-Head	--	--	544
-until	--	P-Head	--	--	537
-seconds	--	N-Head	--	--	534
-earlier	--	Adv-Head	--	--	536
-been	--	Vaux-Head	--	--	541
-a	--	D-Head	--	--	538
-window	--	N-Head	--	--	539
-.	--	.	--	--	539
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Det	--	--	518
-#502	--	Nom-Head	--	--	518
+#518	--	Clause-Mod	--	--	519
+#519	--	Nom-Head	--	--	520
+#520	--	NP-Obj	--	--	521
+#521	--	PP-Comp	--	--	522
+#522	--	VP-Head	--	--	538
+#523	--	DP-Det	--	--	537
+#524	--	DP-Det	--	--	527
+#525	--	PP-Mod	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	534
+#528	--	DP-Det	--	--	532
+#529	--	AdvP-Comp	--	--	530
+#530	--	AdjP-Mod	--	--	531
+#531	--	Nom-Head	--	--	532
+#532	--	NP-PredComp	--	--	533
+#533	--	PP-Comp	--	--	534
+#534	--	VP-Head	--	--	535
+#535	--	Clause-Mod	--	--	536
+#536	--	Nom-Head	--	--	537
+#537	--	NP.y-Postnucleus	--	--	538
+#538	--	Clause-Comp	--	--	539
+#539	--	VP-Head	--	--	540
+#540	--	Clause	--	--	0
+#EOS 11
+#BOS 12
+any	--	D-Head	--	--	500
+vacancy	--	N-Head	--	--	511
+occurring	--	V-Head	--	--	509
+in	--	P-Head	--	--	508
+the	--	D-Head	--	--	501
+membership	--	N-Head	--	--	506
+of	--	P-Head	--	--	505
+the	--	D-Head	--	--	502
+Commission	--	N-Head	--	--	503
+shall	--	Vaux-Head	--	--	533
+be	--	Vaux-Head	--	--	531
+filled	--	V-Head	--	--	529
+in	--	P-Head	--	--	528
+the	--	D-Head	--	--	513
+same	--	Adj-Head	--	--	514
+manner	--	N-Head	--	--	515
+as	--	P-Head	--	--	525
+in	--	P-Head	--	--	524
+the	--	D-Head	--	--	516
+case	--	N-Head	--	--	522
+of	--	P-Head	--	--	521
+the	--	D-Head	--	--	517
+original	--	Adj-Head	--	--	518
+appointment	--	N-Head	--	--	519
+.	--	.	--	--	519
+#500	--	DP-Det	--	--	512
+#501	--	DP-Det	--	--	507
+#502	--	DP-Det	--	--	504
 #503	--	Nom-Head	--	--	504
-#504	--	NP.y-Prenucleus	--	--	517
-#505	--	AdvP-Mod	--	--	506
-#506	--	VP-Head	--	--	511
-#507	--	DP-Det	--	--	509
+#504	--	NP-Obj	--	--	505
+#505	--	PP-Comp	--	--	506
+#506	--	Nom-Head	--	--	507
+#507	--	NP-Obj	--	--	508
+#508	--	PP-Comp	--	--	509
+#509	--	VP-Head	--	--	510
+#510	--	Clause-Mod	--	--	511
+#511	--	Nom-Head	--	--	512
+#512	--	NP-Subj	--	--	534
+#513	--	DP-Det	--	--	527
+#514	--	AdjP-Mod	--	--	515
+#515	--	Nom-Head	--	--	526
+#516	--	DP-Det	--	--	523
+#517	--	DP-Det	--	--	520
+#518	--	AdjP-Mod	--	--	519
+#519	--	Nom-Head	--	--	520
+#520	--	NP-Obj	--	--	521
+#521	--	PP-Comp	--	--	522
+#522	--	Nom-Head	--	--	523
+#523	--	NP-Obj	--	--	524
+#524	--	PP-Comp	--	--	525
+#525	--	PP-Comp_ind	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	528
+#528	--	PP-Mod	--	--	529
+#529	--	VP-Head	--	--	530
+#530	--	Clause-Comp	--	--	531
+#531	--	VP-Head	--	--	532
+#532	--	Clause-Comp	--	--	533
+#533	--	VP-Head	--	--	534
+#534	--	Clause	--	--	0
+#EOS 12
+#BOS 13
+the	--	D-Head	--	--	500
+Public	--	Adj-Head	--	--	501
+Roads	--	N-Head	--	--	502
+Administration	--	N-Head	--	--	503
+is	--	Vaux-Head	--	--	541
+primarily	--	Adv-Head	--	--	505
+engaged	--	Adj-Head	--	--	539
+in	--	P-Head	--	--	538
+planning	--	V-Head	--	--	506
+and	--	Coordinator-Marker	--	--	508
+financing	--	V-Head	--	--	507
+the	--	D-Head	--	--	510
+development	--	N-Head	--	--	534
+of	--	P-Head	--	--	533
+the	--	D-Head	--	--	511
+highways	--	N-Head	--	--	531
+which	--	Npro-Head	--	--	512
+_.	--	GAP.x-Subj	--	--	529
+provide	--	V-Head	--	--	528
+the	--	D-Head	--	--	514
+essential	--	Adj-Head	--	--	515
+facilities	--	N-Head	--	--	525
+for	--	P-Head	--	--	524
+motor	--	Adj-Head	--	--	516
+transportation	--	N-Head	--	--	517
+throughout	--	P-Head	--	--	521
+the	--	D-Head	--	--	518
+country	--	N-Head	--	--	519
+.	--	.	--	--	519
+#500	--	DP-Det	--	--	504
+#501	--	AdjP-Mod	--	--	502
+#502	--	Nom-Mod	--	--	503
+#503	--	Nom-Head	--	--	504
+#504	--	NP-Subj	--	--	542
+#505	--	AdvP-Mod	--	--	540
+#506	--	VP-Coordinate	--	--	509
+#507	--	VP-Head	--	--	508
+#508	--	VP-Coordinate	--	--	509
+#509	--	Coordination-Head	--	--	536
+#510	--	DP-Det	--	--	535
+#511	--	DP-Det	--	--	532
+#512	--	Nom-Head	--	--	513
+#513	--	NP.x-Prenucleus	--	--	530
+#514	--	DP-Det	--	--	527
+#515	--	AdjP-Mod	--	--	526
+#516	--	AdjP-Mod	--	--	517
+#517	--	Nom-Head	--	--	522
+#518	--	DP-Det	--	--	520
+#519	--	Nom-Head	--	--	520
+#520	--	NP-Obj	--	--	521
+#521	--	PP-Mod	--	--	522
+#522	--	Nom-Head	--	--	523
+#523	--	NP-Obj	--	--	524
+#524	--	PP-Comp	--	--	525
+#525	--	Nom-Head	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	528
+#528	--	VP-Head	--	--	529
+#529	--	Clauserel-Head	--	--	530
+#530	--	Clauserel-Mod	--	--	531
+#531	--	Nom-Head	--	--	532
+#532	--	NP-Obj	--	--	533
+#533	--	PP-Comp	--	--	534
+#534	--	Nom-Head	--	--	535
+#535	--	NP-Obj	--	--	536
+#536	--	VP-Head	--	--	537
+#537	--	Clause-Comp	--	--	538
+#538	--	PP-Comp	--	--	539
+#539	--	AdjP-Head	--	--	540
+#540	--	AdjP-PredComp	--	--	541
+#541	--	VP-Head	--	--	542
+#542	--	Clause	--	--	0
+#EOS 13
+#BOS 14
+the	--	D-Head	--	--	500
+authority	--	N-Head	--	--	511
+of	--	P-Head	--	--	510
+the	--	D-Head	--	--	501
+Directing	--	Adj-Head	--	--	502
+Officer	--	N-Head	--	--	503
+of	--	P-Head	--	--	507
+the	--	D-Head	--	--	504
+NBIC	--	N-Head	--	--	505
+under	--	P-Head	--	--	515
+this	--	D-Head	--	--	512
+section	--	N-Head	--	--	513
+shall	--	Vaux-Head	--	--	519
+not	--	Adv-Head	--	--	518
+affect	--	V-Head	--	--	564
+any	--	D-Head	--	--	520
+authority	--	N-Head	--	--	521
+or	--	Coordinator-Marker	--	--	523
+responsibility	--	N-Head	--	--	522
+of	--	P-Head	--	--	539
+any	--	D-Head	--	--	525
+other	--	Adj-Head	--	--	526
+department	--	N-Head	--	--	527
+or	--	Coordinator-Marker	--	--	529
+agency	--	N-Head	--	--	528
+of	--	P-Head	--	--	535
+the	--	D-Head	--	--	531
+Federal	--	Adj-Head	--	--	532
+Government	--	N-Head	--	--	533
+with	--	P-Head	--	--	561
+respect	--	N-Head	--	--	559
+to	--	P-Head	--	--	558
+biosurveillance	--	N-Head	--	--	541
+activities	--	N-Head	--	--	543
+under	--	P-Head	--	--	556
+any	--	D-Head	--	--	544
+program	--	N-Head	--	--	554
+administered	--	V-Head	--	--	552
+by	--	P-Head	--	--	551
+that	--	D-Head	--	--	545
+department	--	N-Head	--	--	546
+or	--	Coordinator-Marker	--	--	548
+agency	--	N-Head	--	--	547
+.	--	.	--	--	547
+#500	--	DP-Det	--	--	517
+#501	--	DP-Det	--	--	509
+#502	--	AdjP-Mod	--	--	503
+#503	--	Nom-Head	--	--	508
+#504	--	DP-Det	--	--	506
+#505	--	Nom-Head	--	--	506
+#506	--	NP-Obj	--	--	507
+#507	--	PP-Comp	--	--	508
+#508	--	Nom-Head	--	--	509
+#509	--	NP-Obj	--	--	510
+#510	--	PP-Comp	--	--	511
+#511	--	Nom-Head	--	--	516
+#512	--	DP-Det	--	--	514
+#513	--	Nom-Head	--	--	514
+#514	--	NP-Obj	--	--	515
+#515	--	PP-Comp	--	--	516
+#516	--	Nom-Head	--	--	517
+#517	--	NP-Subj	--	--	567
+#518	--	AdvP-Mod	--	--	519
+#519	--	VP-Head	--	--	566
+#520	--	DP-Det	--	--	563
+#521	--	Nom-Coordinate	--	--	524
+#522	--	Nom-Head	--	--	523
+#523	--	Nom-Coordinate	--	--	524
+#524	--	Coordination-Head	--	--	540
+#525	--	DP-Det	--	--	538
+#526	--	AdjP-Mod	--	--	537
+#527	--	Nom-Coordinate	--	--	530
+#528	--	Nom-Head	--	--	529
+#529	--	Nom-Coordinate	--	--	530
+#530	--	Coordination-Head	--	--	536
+#531	--	DP-Det	--	--	534
+#532	--	AdjP-Mod	--	--	533
+#533	--	Nom-Head	--	--	534
+#534	--	NP-Obj	--	--	535
+#535	--	PP-Comp	--	--	536
+#536	--	Nom-Head	--	--	537
+#537	--	Nom-Head	--	--	538
+#538	--	NP-Obj	--	--	539
+#539	--	PP-Comp	--	--	540
+#540	--	Nom-Head	--	--	562
+#541	--	Nom-Head	--	--	542
+#542	--	NP-Mod	--	--	543
+#543	--	Nom-Head	--	--	557
+#544	--	DP-Det	--	--	555
+#545	--	DP-Det	--	--	550
+#546	--	Nom-Coordinate	--	--	549
+#547	--	Nom-Head	--	--	548
+#548	--	Nom-Coordinate	--	--	549
+#549	--	Coordination-Head	--	--	550
+#550	--	NP-Obj	--	--	551
+#551	--	PP-Comp	--	--	552
+#552	--	VP-Head	--	--	553
+#553	--	Clause-Mod	--	--	554
+#554	--	Nom-Head	--	--	555
+#555	--	NP-Obj	--	--	556
+#556	--	PP-Mod	--	--	557
+#557	--	NP-Obj	--	--	558
+#558	--	PP-Comp	--	--	559
+#559	--	Nom-Head	--	--	560
+#560	--	NP-Obj	--	--	561
+#561	--	PP-Mod	--	--	562
+#562	--	Nom-Head	--	--	563
+#563	--	NP-Obj	--	--	564
+#564	--	VP-Head	--	--	565
+#565	--	Clause-Comp	--	--	566
+#566	--	VP-Head	--	--	567
+#567	--	Clause	--	--	0
+#EOS 14
+#BOS 15
+any	--	D-Head	--	--	500
+alien	--	N-Head	--	--	516
+whose	--	Npro-Head	--	--	501
+permanent	--	Adj-Head	--	--	503
+resident	--	N-Head	--	--	504
+status	--	N-Head	--	--	505
+_.	--	GAP.x-Subj	--	--	514
+is	--	Vaux-Head	--	--	513
+terminated	--	V-Head	--	--	511
+under	--	P-Head	--	--	510
+paragraph	--	N-Head	--	--	507
+(	--	(	--	--	508
+1	--	N-Head	--	--	508
+)	--	)	--	--	508
+may	--	Vaux-Head	--	--	538
+request	--	V-Head	--	--	536
+a	--	D-Head	--	--	518
+review	--	N-Head	--	--	523
+of	--	P-Head	--	--	522
+such	--	D-Head	--	--	519
+determination	--	N-Head	--	--	520
+in	--	P-Head	--	--	533
+a	--	D-Head	--	--	524
+proceeding	--	N-Head	--	--	531
+to	--	Sdr-Marker	--	--	529
+remove	--	V-Head	--	--	528
+the	--	D-Head	--	--	525
+alien	--	N-Head	--	--	526
+.	--	.	--	--	526
+#500	--	DP-Det	--	--	517
+#501	--	Nom-Head	--	--	502
+#502	--	NP-Det	--	--	506
+#503	--	AdjP-Mod	--	--	504
+#504	--	Nom-Mod	--	--	505
+#505	--	Nom-Head	--	--	506
+#506	--	NP.x-Prenucleus	--	--	515
+#507	--	Nom-Mod	--	--	508
 #508	--	Nom-Head	--	--	509
 #509	--	NP-Obj	--	--	510
 #510	--	PP-Mod	--	--	511
 #511	--	VP-Head	--	--	512
 #512	--	Clause-Comp	--	--	513
 #513	--	VP-Head	--	--	514
-#514	--	Clause-Comp	--	--	515
-#515	--	VP-Head	--	--	516
-#516	--	Clauserel-Head	--	--	517
-#517	--	Clauserel-Supplement	--	--	518
-#518	--	NP-Subj	--	--	551
-#519	--	DP-Det	--	--	530
-#520	--	DP-Det	--	--	522
-#521	--	Nom-Head	--	--	522
-#522	--	NP-Mod	--	--	528
-#523	--	Nom-Head	--	--	524
-#524	--	NP-DetHead	--	--	525
-#525	--	Nom-Head	--	--	526
-#526	--	NP-Obj	--	--	527
-#527	--	PP-Head	--	--	528
-#528	--	PP-Mod	--	--	529
-#529	--	Nom-Head	--	--	530
-#530	--	NP-Obj	--	--	531
-#531	--	VP-Head	--	--	550
-#532	--	Nom-Head	--	--	533
-#533	--	NP.x-HeadPrenucleus	--	--	546
-#534	--	Nom-Head	--	--	535
-#535	--	NP-Mod	--	--	536
-#536	--	AdvP-Comp	--	--	537
-#537	--	PP-Mod	--	--	542
-#538	--	DP-Det	--	--	540
-#539	--	Nom-Head	--	--	540
-#540	--	NP-PredComp	--	--	541
-#541	--	VP-Head	--	--	542
-#542	--	VP-Head	--	--	543
-#543	--	Clause-Comp	--	--	544
-#544	--	VP-Head	--	--	545
-#545	--	Clauserel-Head	--	--	546
-#546	--	Clauserel-Mod	--	--	547
-#547	--	Nom-Head	--	--	548
-#548	--	NP-Obj	--	--	549
-#549	--	PP-Mod	--	--	550
-#550	--	VP-Head	--	--	551
-#551	--	Clause	--	--	0
-#EOS 26
-#BOS 27
-I	--	Npro-Head	--	--	500
-was	--	Vaux-Head	--	--	511
-on	--	P-Head	--	--	510
-a	--	D-Head	--	--	502
-team	--	N-Head	--	--	508
-called	--	V-Head	--	--	506
-the	--	D-Head	--	--	503
-“	--	*	--	--	503
-Indians	--	N-Head	--	--	504
-,	--	,	--	--	504
-”	--	*	--	--	504
-although	--	Adv-Head	--	--	512
-I	--	Npro-Head	--	--	513
-was	--	Vaux-Head	--	--	519
-puny	--	Adj-Head	--	--	518
-of	--	P-Head	--	--	517
-chest	--	N-Head	--	--	515
-,	--	,	--	--	515
-so	--	Coordinator-Marker	--	--	568
-if	--	P-Head	--	--	531
-you	--	Npro-Head	--	--	520
-saw	--	V-Head	--	--	529
-me	--	Npro-Head	--	--	522
-in	--	P-Head	--	--	528
-my	--	Npro-Head	--	--	524
-uniform	--	N-Head	--	--	526
-you	--	Npro-Head	--	--	532
-’d	--	Vaux-Head	--	--	565
-have	--	Vaux-Head	--	--	563
-thought	--	V-Head	--	--	545
-my	--	Npro-Head	--	--	534
-team	--	N-Head	--	--	536
-was	--	Vaux-Head	--	--	543
-called	--	V-Head	--	--	541
-the	--	D-Head	--	--	538
-“	--	*	--	--	538
-NDIAN	--	N-Head	--	--	539
-,	--	,	--	--	539
-”	--	*	--	--	539
-because	--	P-Head	--	--	560
-the	--	D-Head	--	--	546
-end	--	N-Head	--	--	547
-letters	--	N-Head	--	--	548
-got	--	V-Head	--	--	558
-wrinkled	--	V-Head	--	--	556
-up	--	P-Head	--	--	550
-in	--	P-Head	--	--	555
-my	--	Npro-Head	--	--	551
-armpits	--	N-Head	--	--	553
-.	--	.	--	--	553
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	571
-#502	--	DP-Det	--	--	509
-#503	--	DP-Det	--	--	505
-#504	--	Nom-Head	--	--	505
-#505	--	NP-PredComp	--	--	506
-#506	--	VP-Head	--	--	507
-#507	--	Clause-Mod	--	--	508
-#508	--	Nom-Head	--	--	509
-#509	--	NP-Obj	--	--	510
-#510	--	PP-Comp	--	--	511
-#511	--	VP-Head	--	--	571
-#512	--	AdvP-Mod	--	--	570
-#513	--	Nom-Head	--	--	514
-#514	--	NP-Subj	--	--	569
-#515	--	Nom-Head	--	--	516
-#516	--	NP-Obj	--	--	517
-#517	--	PP-Comp	--	--	518
-#518	--	AdjP-PredComp	--	--	519
-#519	--	VP-Head	--	--	569
+#514	--	Clauserel-Head	--	--	515
+#515	--	Clauserel-Mod	--	--	516
+#516	--	Nom-Head	--	--	517
+#517	--	NP-Subj	--	--	539
+#518	--	DP-Det	--	--	535
+#519	--	DP-Det	--	--	521
 #520	--	Nom-Head	--	--	521
-#521	--	NP-Subj	--	--	530
-#522	--	Nom-Head	--	--	523
-#523	--	NP-Obj	--	--	529
-#524	--	Nom-Head	--	--	525
-#525	--	NP-Det	--	--	527
+#521	--	NP-Obj	--	--	522
+#522	--	PP-Comp	--	--	523
+#523	--	Nom-Head	--	--	534
+#524	--	DP-Det	--	--	532
+#525	--	DP-Det	--	--	527
 #526	--	Nom-Head	--	--	527
 #527	--	NP-Obj	--	--	528
-#528	--	PP-Comp	--	--	529
+#528	--	VP-Head	--	--	529
 #529	--	VP-Head	--	--	530
 #530	--	Clause-Comp	--	--	531
-#531	--	PP-Mod	--	--	567
-#532	--	Nom-Head	--	--	533
-#533	--	NP-Subj	--	--	566
-#534	--	Nom-Head	--	--	535
-#535	--	NP-Det	--	--	537
-#536	--	Nom-Head	--	--	537
-#537	--	NP-Subj	--	--	544
-#538	--	DP-Det	--	--	540
-#539	--	Nom-Head	--	--	540
-#540	--	NP-PredComp	--	--	541
-#541	--	VP-Head	--	--	542
-#542	--	Clause-Comp	--	--	543
-#543	--	VP-Head	--	--	544
-#544	--	Clause-Comp	--	--	545
-#545	--	VP-Head	--	--	561
-#546	--	DP-Det	--	--	549
-#547	--	Nom-Mod	--	--	548
-#548	--	Nom-Head	--	--	549
-#549	--	NP-Subj	--	--	559
-#550	--	PP-Comp	--	--	556
-#551	--	Nom-Head	--	--	552
-#552	--	NP-Det	--	--	554
-#553	--	Nom-Head	--	--	554
-#554	--	NP-Obj	--	--	555
-#555	--	PP-Comp	--	--	556
-#556	--	VP-Head	--	--	557
-#557	--	Clause-PredComp	--	--	558
-#558	--	VP-Head	--	--	559
-#559	--	Clause-Comp	--	--	560
-#560	--	PP-Mod	--	--	561
-#561	--	VP-Head	--	--	562
-#562	--	Clause-Comp	--	--	563
-#563	--	VP-Head	--	--	564
-#564	--	Clause-Comp	--	--	565
-#565	--	VP-Head	--	--	566
-#566	--	Clause-Head	--	--	567
-#567	--	Clause-Head	--	--	568
-#568	--	Clause-Supplement	--	--	569
-#569	--	Clause-Head	--	--	570
-#570	--	Clause-Supplement	--	--	571
-#571	--	Clause	--	--	0
-#EOS 27
-#BOS 28
-Sections	--	N-Head	--	--	500
-1	--	N-Head	--	--	501
-,	--	,	--	--	501
-3	--	N-Head	--	--	502
-,	--	,	--	--	502
-and	--	Coordinator-Marker	--	--	504
-4	--	N-Head	--	--	503
-of	--	P-Head	--	--	510
-this	--	D-Head	--	--	507
-Act	--	N-Head	--	--	508
-related	--	V-Head	--	--	546
-to	--	P-Head	--	--	545
-consolidation	--	N-Head	--	--	516
-of	--	P-Head	--	--	515
-claims	--	N-Head	--	--	513
-permitted	--	V-Head	--	--	517
-and	--	Coordinator-Marker	--	--	536
-the	--	D-Head	--	--	521
-limit	--	N-Head	--	--	525
-of	--	P-Head	--	--	524
-acreage	--	N-Head	--	--	522
-,	--	,	--	--	522
-prohibition	--	N-Head	--	--	531
-against	--	P-Head	--	--	530
-unlawful	--	Adj-Head	--	--	527
-trusts	--	N-Head	--	--	528
-,	--	,	--	--	528
-etc.	--	Coordinator-MarkerHead	--	--	533
-,	--	,	--	--	533
-and	--	Coordinator-Marker	--	--	542
-contents	--	N-Head	--	--	540
-of	--	P-Head	--	--	539
-patents	--	N-Head	--	--	537
-,	--	,	--	--	537
-respectively	--	Adv-Head	--	--	543
-,	--	,	--	--	543
-and	--	Coordinator-Marker	--	--	556
-are	--	Vaux-Head	--	--	548
-not	--	Adv-Head	--	--	547
-classified	--	V-Head	--	--	553
-to	--	P-Head	--	--	552
-the	--	D-Head	--	--	549
-Code	--	N-Head	--	--	550
-.	--	.	--	--	550
-#500	--	Nom-Mod	--	--	506
-#501	--	Nom-Coordinate	--	--	505
-#502	--	Nom-Coordinate	--	--	505
-#503	--	Nom-Head	--	--	504
-#504	--	Nom-Coordinate	--	--	505
-#505	--	Coordination-Head	--	--	506
-#506	--	Nom-Head	--	--	511
-#507	--	DP-Det	--	--	509
-#508	--	Nom-Head	--	--	509
-#509	--	NP-Obj	--	--	510
-#510	--	PP-Comp	--	--	511
-#511	--	Nom-Head	--	--	512
-#512	--	NP-Subj	--	--	558
-#513	--	Nom-Head	--	--	514
-#514	--	NP-Obj	--	--	515
-#515	--	PP-Comp	--	--	516
-#516	--	Nom-Head	--	--	519
-#517	--	VP-Head	--	--	518
-#518	--	Clause-Mod	--	--	519
-#519	--	Nom-Head	--	--	520
-#520	--	NP-Coordinate	--	--	544
-#521	--	DP-Det	--	--	526
-#522	--	Nom-Head	--	--	523
-#523	--	NP-Obj	--	--	524
-#524	--	PP-Comp	--	--	525
-#525	--	Nom-Head	--	--	526
-#526	--	NP-Coordinate	--	--	535
-#527	--	AdjP-Mod	--	--	528
-#528	--	Nom-Head	--	--	529
-#529	--	NP-Obj	--	--	530
-#530	--	PP-Comp	--	--	531
 #531	--	Nom-Head	--	--	532
-#532	--	NP-Coordinate	--	--	535
-#533	--	Nom-Head	--	--	534
-#534	--	NP-Coordinate	--	--	535
-#535	--	Coordination-Head	--	--	536
-#536	--	Coordination-Coordinate	--	--	544
+#532	--	NP-Obj	--	--	533
+#533	--	PP-Mod	--	--	534
+#534	--	Nom-Head	--	--	535
+#535	--	NP-Obj	--	--	536
+#536	--	VP-Head	--	--	537
+#537	--	Clause-Comp	--	--	538
+#538	--	VP-Head	--	--	539
+#539	--	Clause	--	--	0
+#EOS 15
+#BOS 16
+for	--	P-Head	--	--	506
+purposes	--	N-Head	--	--	504
+of	--	P-Head	--	--	503
+this	--	D-Head	--	--	500
+subsection	--	N-Head	--	--	501
+,	--	,	--	--	501
+if	--	P-Head	--	--	544
+,	--	,	--	--	544
+in	--	P-Head	--	--	514
+the	--	D-Head	--	--	507
+judgment	--	N-Head	--	--	512
+of	--	P-Head	--	--	511
+the	--	D-Head	--	--	508
+Administrator	--	N-Head	--	--	509
+,	--	,	--	--	509
+it	--	N-Head	--	--	515
+is	--	Vaux-Head	--	--	518
+not	--	Adv-Head	--	--	517
+feasible	--	Adj-Head	--	--	541
+to	--	Sdr-Marker	--	--	539
+prescribe	--	V-Head	--	--	519
+or	--	Coordinator-Marker	--	--	521
+enforce	--	V-Head	--	--	520
+a	--	D-Head	--	--	523
+numerical	--	Adj-Head	--	--	524
+limitation	--	N-Head	--	--	535
+for	--	P-Head	--	--	534
+a	--	D-Head	--	--	525
+pollutant	--	N-Head	--	--	532
+identified	--	V-Head	--	--	530
+under	--	P-Head	--	--	529
+paragraph	--	N-Head	--	--	526
+(	--	(	--	--	527
+2	--	N-Head	--	--	527
+)	--	)	--	--	527
+,	--	,	--	--	527
+the	--	D-Head	--	--	545
+Administrator	--	N-Head	--	--	546
+may	--	Vaux-Head	--	--	549
+instead	--	Adv-Head	--	--	548
+promulgate	--	V-Head	--	--	603
+a	--	D-Head	--	--	550
+design	--	N-Head	--	--	551
+,	--	,	--	--	551
+equipment	--	N-Head	--	--	552
+,	--	,	--	--	552
+management	--	N-Head	--	--	553
+practice	--	N-Head	--	--	554
+,	--	,	--	--	554
+or	--	Coordinator-Marker	--	--	556
+operational	--	Adj-Head	--	--	555
+standard	--	N-Head	--	--	558
+,	--	,	--	--	558
+or	--	Coordinator-Marker	--	--	563
+combination	--	N-Head	--	--	561
+thereof	--	Adv-Head	--	--	560
+,	--	,	--	--	560
+which	--	Npro-Head	--	--	565
+in	--	P-Head	--	--	572
+the	--	D-Head	--	--	567
+Administrator’s	--	N-Head	--	--	568
+judgment	--	N-Head	--	--	570
+_.	--	GAP.x-Subj	--	--	599
+is	--	V-Head	--	--	598
+adequate	--	Adj-Head	--	--	597
+to	--	Sdr-Marker	--	--	595
+protect	--	V-Head	--	--	594
+public	--	Adj-Head	--	--	573
+health	--	N-Head	--	--	574
+and	--	Coordinator-Marker	--	--	579
+the	--	D-Head	--	--	576
+environment	--	N-Head	--	--	577
+from	--	P-Head	--	--	593
+any	--	D-Head	--	--	581
+reasonably	--	Adv-Head	--	--	582
+anticipated	--	V-Head	--	--	583
+adverse	--	Adj-Head	--	--	584
+effects	--	N-Head	--	--	585
+of	--	P-Head	--	--	589
+such	--	D-Head	--	--	586
+pollutant	--	N-Head	--	--	587
+.	--	.	--	--	587
+#500	--	DP-Det	--	--	502
+#501	--	Nom-Head	--	--	502
+#502	--	NP-Obj	--	--	503
+#503	--	PP-Comp	--	--	504
+#504	--	Nom-Head	--	--	505
+#505	--	NP-Obj	--	--	506
+#506	--	PP-Supplement	--	--	607
+#507	--	DP-Det	--	--	513
+#508	--	DP-Det	--	--	510
+#509	--	Nom-Head	--	--	510
+#510	--	NP-Obj	--	--	511
+#511	--	PP-Comp	--	--	512
+#512	--	Nom-Head	--	--	513
+#513	--	NP-Obj	--	--	514
+#514	--	PP-Supplement	--	--	544
+#515	--	Nom-Head	--	--	516
+#516	--	NP-Subj	--	--	543
+#517	--	AdvP-Mod	--	--	518
+#518	--	VP-Head	--	--	542
+#519	--	VP-Coordinate	--	--	522
+#520	--	VP-Head	--	--	521
+#521	--	VP-Coordinate	--	--	522
+#522	--	Coordination-Head	--	--	538
+#523	--	DP-Det	--	--	537
+#524	--	AdjP-Mod	--	--	536
+#525	--	DP-Det	--	--	533
+#526	--	Nom-Mod	--	--	527
+#527	--	Nom-Head	--	--	528
+#528	--	NP-Obj	--	--	529
+#529	--	PP-Mod	--	--	530
+#530	--	VP-Head	--	--	531
+#531	--	Clause-Mod	--	--	532
+#532	--	Nom-Head	--	--	533
+#533	--	NP-Obj	--	--	534
+#534	--	PP-Comp	--	--	535
+#535	--	Nom-Head	--	--	536
+#536	--	Nom-Head	--	--	537
+#537	--	NP-Obj	--	--	538
+#538	--	VP-Head	--	--	539
+#539	--	VP-Head	--	--	540
+#540	--	Clause-Comp	--	--	541
+#541	--	AdjP-PredComp	--	--	542
+#542	--	VP-Head	--	--	543
+#543	--	Clause-Comp	--	--	544
+#544	--	PP-Mod	--	--	607
+#545	--	DP-Det	--	--	547
+#546	--	Nom-Head	--	--	547
+#547	--	NP-Subj	--	--	606
+#548	--	AdvP-Mod	--	--	549
+#549	--	VP-Head	--	--	605
+#550	--	DP-Det	--	--	602
+#551	--	Nom-Coordinate	--	--	557
+#552	--	Nom-Coordinate	--	--	557
+#553	--	Nom-Mod	--	--	554
+#554	--	Nom-Coordinate	--	--	557
+#555	--	AdjP-Head	--	--	556
+#556	--	AdjP-Coordinate	--	--	557
+#557	--	Coordination-Mod	--	--	559
+#558	--	Nom-Head	--	--	559
+#559	--	NP-Coordinate	--	--	564
+#560	--	AdvP-Mod	--	--	561
+#561	--	Nom-Head	--	--	562
+#562	--	NP-Head	--	--	563
+#563	--	NP-Coordinate	--	--	564
+#564	--	Coordination-Head	--	--	601
+#565	--	Nom-Head	--	--	566
+#566	--	NP.x-Prenucleus	--	--	600
+#567	--	DP-Det	--	--	569
+#568	--	Nom-Head	--	--	569
+#569	--	NP-Det	--	--	571
+#570	--	Nom-Head	--	--	571
+#571	--	NP-Obj	--	--	572
+#572	--	PP-Supplement	--	--	600
+#573	--	AdjP-Mod	--	--	574
+#574	--	Nom-Head	--	--	575
+#575	--	NP-Coordinate	--	--	580
+#576	--	DP-Det	--	--	578
+#577	--	Nom-Head	--	--	578
+#578	--	NP-Head	--	--	579
+#579	--	NP-Coordinate	--	--	580
+#580	--	Coordination-Obj	--	--	594
+#581	--	DP-Det	--	--	592
+#582	--	AdvP-Mod	--	--	583
+#583	--	VP-Mod	--	--	591
+#584	--	AdjP-Mod	--	--	585
+#585	--	Nom-Head	--	--	590
+#586	--	DP-Det	--	--	588
+#587	--	Nom-Head	--	--	588
+#588	--	NP-Obj	--	--	589
+#589	--	PP-Comp	--	--	590
+#590	--	Nom-Head	--	--	591
+#591	--	Nom-Head	--	--	592
+#592	--	NP-Obj	--	--	593
+#593	--	PP-Comp	--	--	594
+#594	--	VP-Head	--	--	595
+#595	--	VP-Head	--	--	596
+#596	--	Clause-Comp	--	--	597
+#597	--	AdjP-PredComp	--	--	598
+#598	--	VP-Head	--	--	599
+#599	--	Clauserel-Head	--	--	600
+#600	--	Clauserel-Mod	--	--	601
+#601	--	Nom-Head	--	--	602
+#602	--	NP-Obj	--	--	603
+#603	--	VP-Head	--	--	604
+#604	--	Clause-Comp	--	--	605
+#605	--	VP-Head	--	--	606
+#606	--	Clause-Head	--	--	607
+#607	--	Clause	--	--	0
+#EOS 16
+#BOS 17
+if	--	P-Head	--	--	530
+the	--	D-Head	--	--	500
+United	--	Adj-Head	--	--	501
+States	--	N-Head	--	--	502
+district	--	N-Head	--	--	503
+court	--	N-Head	--	--	504
+pursuant	--	P-Head	--	--	512
+to	--	P-Head	--	--	511
+subsection	--	N-Head	--	--	508
+(	--	(	--	--	509
+f	--	N-Head	--	--	509
+)	--	)	--	--	509
+determines	--	V-Head	--	--	528
+that	--	Sdr-Marker	--	--	527
+the	--	D-Head	--	--	513
+surveillance	--	N-Head	--	--	514
+was	--	Vaux-Head	--	--	517
+not	--	Adv-Head	--	--	516
+lawfully	--	Adv-Head	--	--	518
+authorized	--	V-Head	--	--	519
+or	--	Coordinator-Marker	--	--	521
+conducted	--	V-Head	--	--	520
+,	--	,	--	--	520
+it	--	Npro-Head	--	--	531
+shall	--	Vaux-Head	--	--	585
+,	--	,	--	--	585
+in	--	P-Head	--	--	542
+accordance	--	N-Head	--	--	540
+with	--	P-Head	--	--	539
+the	--	D-Head	--	--	533
+requirements	--	N-Head	--	--	537
+of	--	P-Head	--	--	536
+law	--	N-Head	--	--	534
+,	--	,	--	--	534
+suppress	--	V-Head	--	--	569
+the	--	D-Head	--	--	543
+evidence	--	N-Head	--	--	567
+which	--	Npro-Head	--	--	544
+_.	--	GAP.x-Subj	--	--	565
+was	--	Vaux-Head	--	--	564
+unlawfully	--	Adv-Head	--	--	546
+obtained	--	V-Head	--	--	547
+or	--	Coordinator-Marker	--	--	549
+derived	--	V-Head	--	--	548
+from	--	P-Head	--	--	560
+electronic	--	Adj-Head	--	--	551
+surveillance	--	N-Head	--	--	557
+of	--	P-Head	--	--	556
+the	--	D-Head	--	--	552
+aggrieved	--	Adj-Head	--	--	553
+person	--	N-Head	--	--	554
+or	--	Coordinator-Marker	--	--	583
+otherwise	--	Adv-Head	--	--	571
+grant	--	V-Head	--	--	580
+the	--	D-Head	--	--	572
+motion	--	N-Head	--	--	578
+of	--	P-Head	--	--	577
+the	--	D-Head	--	--	573
+aggrieved	--	Adj-Head	--	--	574
+person	--	N-Head	--	--	575
+.	--	.	--	--	575
+#500	--	DP-Det	--	--	507
+#501	--	AdjP-Mod	--	--	502
+#502	--	Nom-Mod	--	--	505
+#503	--	Nom-Mod	--	--	504
+#504	--	Nom-Head	--	--	505
+#505	--	Nom-Head	--	--	506
+#506	--	Nom-Head	--	--	507
+#507	--	NP-Subj	--	--	529
+#508	--	Nom-Mod	--	--	509
+#509	--	Nom-Head	--	--	510
+#510	--	NP-Obj	--	--	511
+#511	--	PP-Comp	--	--	512
+#512	--	PP-Supplement	--	--	529
+#513	--	DP-Det	--	--	515
+#514	--	Nom-Head	--	--	515
+#515	--	NP-Subj	--	--	526
+#516	--	AdvP-Mod	--	--	517
+#517	--	VP-Head	--	--	525
+#518	--	AdvP-Mod	--	--	523
+#519	--	VP-Coordinate	--	--	522
+#520	--	VP-Head	--	--	521
+#521	--	VP-Coordinate	--	--	522
+#522	--	Coordination-Head	--	--	523
+#523	--	VP-Head	--	--	524
+#524	--	Clause-Comp	--	--	525
+#525	--	VP-Head	--	--	526
+#526	--	Clause-Head	--	--	527
+#527	--	Clause-Comp	--	--	528
+#528	--	VP-Head	--	--	529
+#529	--	Clause-Comp	--	--	530
+#530	--	PP-Mod	--	--	587
+#531	--	Nom-Head	--	--	532
+#532	--	NP-Subj	--	--	586
+#533	--	DP-Det	--	--	538
+#534	--	Nom-Head	--	--	535
+#535	--	NP-Obj	--	--	536
+#536	--	PP-Comp	--	--	537
 #537	--	Nom-Head	--	--	538
 #538	--	NP-Obj	--	--	539
 #539	--	PP-Comp	--	--	540
 #540	--	Nom-Head	--	--	541
-#541	--	NP-Head	--	--	542
-#542	--	NP-Coordinate	--	--	544
-#543	--	AdvP-Supplement	--	--	544
-#544	--	Coordination-Obj	--	--	545
-#545	--	PP-Comp	--	--	546
-#546	--	VP-Coordinate	--	--	557
-#547	--	AdvP-Mod	--	--	548
-#548	--	VP-Head	--	--	555
-#549	--	DP-Det	--	--	551
-#550	--	Nom-Head	--	--	551
-#551	--	NP-Obj	--	--	552
-#552	--	PP-Comp	--	--	553
-#553	--	VP-Head	--	--	554
-#554	--	Clause-PredComp	--	--	555
-#555	--	VP-Head	--	--	556
-#556	--	VP-Coordinate	--	--	557
-#557	--	Coordination-Head	--	--	558
-#558	--	Clause	--	--	0
-#EOS 28
-#BOS 29
+#541	--	NP-Obj	--	--	542
+#542	--	PP-Supplement	--	--	585
+#543	--	DP-Det	--	--	568
+#544	--	Nom-Head	--	--	545
+#545	--	NP.x-Prenucleus	--	--	566
+#546	--	AdvP-Mod	--	--	562
+#547	--	VP-Coordinate	--	--	550
+#548	--	VP-Head	--	--	549
+#549	--	VP-Coordinate	--	--	550
+#550	--	Coordination-Head	--	--	561
+#551	--	AdjP-Mod	--	--	558
+#552	--	DP-Det	--	--	555
+#553	--	AdjP-Mod	--	--	554
+#554	--	Nom-Head	--	--	555
+#555	--	NP-Obj	--	--	556
+#556	--	PP-Comp	--	--	557
+#557	--	Nom-Head	--	--	558
+#558	--	Nom-Head	--	--	559
+#559	--	NP-Obj	--	--	560
+#560	--	PP-Comp	--	--	561
+#561	--	VP-Head	--	--	562
+#562	--	VP-Head	--	--	563
+#563	--	Clause-Comp	--	--	564
+#564	--	VP-Head	--	--	565
+#565	--	Clauserel-Head	--	--	566
+#566	--	Clauserel-Mod	--	--	567
+#567	--	Nom-Head	--	--	568
+#568	--	NP-Obj	--	--	569
+#569	--	VP-Head	--	--	570
+#570	--	Clause-Coordinate	--	--	584
+#571	--	AdvP-Mod	--	--	581
+#572	--	DP-Det	--	--	579
+#573	--	DP-Det	--	--	576
+#574	--	AdjP-Mod	--	--	575
+#575	--	Nom-Head	--	--	576
+#576	--	NP-Obj	--	--	577
+#577	--	PP-Comp	--	--	578
+#578	--	Nom-Head	--	--	579
+#579	--	NP-Obj	--	--	580
+#580	--	VP-Head	--	--	581
+#581	--	VP-Head	--	--	582
+#582	--	Clause-Head	--	--	583
+#583	--	Clause-Coordinate	--	--	584
+#584	--	Coordination-Comp	--	--	585
+#585	--	VP-Head	--	--	586
+#586	--	Clause-Head	--	--	587
+#587	--	Clause	--	--	0
+#EOS 17
+#BOS 18
+funds	--	N-Head	--	--	507
+obligated	--	V-Head	--	--	505
+for	--	P-Head	--	--	504
+any	--	D-Head	--	--	500
+program	--	N-Head	--	--	501
+year	--	N-Head	--	--	502
+may	--	Vaux-Head	--	--	533
+be	--	Vaux-Head	--	--	531
+expended	--	V-Head	--	--	513
+by	--	P-Head	--	--	512
+the	--	D-Head	--	--	509
+State	--	N-Head	--	--	510
+during	--	P-Head	--	--	528
+that	--	D-Head	--	--	514
+program	--	N-Head	--	--	515
+year	--	N-Head	--	--	516
+and	--	Coordinator-Marker	--	--	526
+the	--	D-Head	--	--	518
+two	--	D-Head	--	--	519
+succeeding	--	Adj-Head	--	--	520
+program	--	N-Head	--	--	521
+years	--	N-Head	--	--	522
+and	--	Coordinator-Marker	--	--	566
+no	--	D-Head	--	--	535
+amount	--	N-Head	--	--	536
+shall	--	Vaux-Head	--	--	564
+be	--	Vaux-Head	--	--	562
+deobligated	--	V-Head	--	--	560
+on	--	P-Head	--	--	559
+account	--	N-Head	--	--	557
+of	--	P-Head	--	--	556
+a	--	D-Head	--	--	538
+rate	--	N-Head	--	--	542
+of	--	P-Head	--	--	541
+expenditure	--	N-Head	--	--	539
+which	--	Npro-Head	--	--	543
+_.	--	GAP.x-Subj	--	--	552
+is	--	Vaux-Head	--	--	551
+consistent	--	Adj-Head	--	--	550
+with	--	P-Head	--	--	549
+the	--	D-Head	--	--	545
+program	--	N-Head	--	--	546
+plan	--	N-Head	--	--	547
+.	--	.	--	--	547
+#500	--	DP-Det	--	--	503
+#501	--	Nom-Mod	--	--	502
+#502	--	Nom-Head	--	--	503
+#503	--	NP-Obj	--	--	504
+#504	--	PP-Comp	--	--	505
+#505	--	VP-Head	--	--	506
+#506	--	Clause-Mod	--	--	507
+#507	--	Nom-Head	--	--	508
+#508	--	NP-Subj	--	--	534
+#509	--	DP-Det	--	--	511
+#510	--	Nom-Head	--	--	511
+#511	--	NP-Obj	--	--	512
+#512	--	PP-Comp	--	--	513
+#513	--	VP-Head	--	--	529
+#514	--	DP-Det	--	--	517
+#515	--	Nom-Mod	--	--	516
+#516	--	Nom-Head	--	--	517
+#517	--	NP-Coordinate	--	--	527
+#518	--	DP-Det	--	--	525
+#519	--	DP-Mod	--	--	524
+#520	--	AdjP-Mod	--	--	523
+#521	--	Nom-Mod	--	--	522
+#522	--	Nom-Head	--	--	523
+#523	--	Nom-Head	--	--	524
+#524	--	Nom-Head	--	--	525
+#525	--	NP-Head	--	--	526
+#526	--	NP-Coordinate	--	--	527
+#527	--	Coordination-Obj	--	--	528
+#528	--	PP-Mod	--	--	529
+#529	--	VP-Head	--	--	530
+#530	--	Clause-Comp	--	--	531
+#531	--	VP-Head	--	--	532
+#532	--	Clause-Comp	--	--	533
+#533	--	VP-Head	--	--	534
+#534	--	Clause-Coordinate	--	--	567
+#535	--	DP-Det	--	--	537
+#536	--	Nom-Head	--	--	537
+#537	--	NP-Subj	--	--	565
+#538	--	DP-Det	--	--	555
+#539	--	Nom-Head	--	--	540
+#540	--	NP-Obj	--	--	541
+#541	--	PP-Comp	--	--	542
+#542	--	Nom-Head	--	--	554
+#543	--	Nom-Head	--	--	544
+#544	--	NP.x-Prenucleus	--	--	553
+#545	--	DP-Det	--	--	548
+#546	--	Nom-Mod	--	--	547
+#547	--	Nom-Head	--	--	548
+#548	--	NP-Obj	--	--	549
+#549	--	PP-Comp	--	--	550
+#550	--	AdjP-PredComp	--	--	551
+#551	--	VP-Head	--	--	552
+#552	--	Clause-Head	--	--	553
+#553	--	Clause-Mod	--	--	554
+#554	--	Nom-Head	--	--	555
+#555	--	NP-Obj	--	--	556
+#556	--	PP-Comp	--	--	557
+#557	--	Nom-Head	--	--	558
+#558	--	NP-Obj	--	--	559
+#559	--	PP-Mod	--	--	560
+#560	--	VP-Head	--	--	561
+#561	--	Clause-Comp	--	--	562
+#562	--	VP-Head	--	--	563
+#563	--	Clause-Comp	--	--	564
+#564	--	VP-Head	--	--	565
+#565	--	Clause-Head	--	--	566
+#566	--	Clause-Coordinate	--	--	567
+#567	--	Coordination	--	--	0
+#EOS 18
+#BOS 19
+for	--	P-Head	--	--	523
+the	--	D-Head	--	--	500
+purpose	--	N-Head	--	--	521
+of	--	P-Head	--	--	520
+evaluating	--	V-Head	--	--	501
+and	--	Coordinator-Marker	--	--	503
+reviewing	--	V-Head	--	--	502
+programs	--	N-Head	--	--	516
+established	--	V-Head	--	--	505
+or	--	Coordinator-Marker	--	--	508
+provided	--	V-Head	--	--	507
+for	--	P-Head	--	--	506
+by	--	P-Head	--	--	513
+this	--	D-Head	--	--	510
+chapter	--	N-Head	--	--	511
+,	--	,	--	--	511
+the	--	D-Head	--	--	524
+Comptroller	--	N-Head	--	--	526
+General	--	Adj-Head	--	--	525
+shall	--	Vaux-Head	--	--	575
+have	--	V-Head	--	--	573
+access	--	N-Head	--	--	529
+to	--	P-Head	--	--	528
+_.	--	GAP.y-Obj	--	--	528
+and	--	Coordinator-Marker	--	--	537
+the	--	D-Head	--	--	531
+right	--	N-Head	--	--	535
+to	--	Sdr-Marker	--	--	533
+copy	--	V-Head	--	--	532
+_.	--	GAP.y-Obj	--	--	532
+any	--	D-Head	--	--	539
+books	--	N-Head	--	--	540
+,	--	,	--	--	540
+accounts	--	N-Head	--	--	541
+,	--	,	--	--	541
+records	--	N-Head	--	--	542
+,	--	,	--	--	542
+correspondence	--	N-Head	--	--	543
+,	--	,	--	--	543
+or	--	Coordinator-Marker	--	--	546
+other	--	Adj-Head	--	--	544
+documents	--	N-Head	--	--	545
+pertinent	--	Adj-Head	--	--	552
+to	--	P-Head	--	--	551
+such	--	D-Head	--	--	548
+programs	--	N-Head	--	--	549
+that	--	Sdr-Marker	--	--	569
+_.	--	GAP.x-Subj	--	--	568
+are	--	Vaux-Head	--	--	567
+in	--	P-Head	--	--	566
+the	--	D-Head	--	--	554
+possession	--	N-Head	--	--	555
+,	--	,	--	--	555
+custody	--	N-Head	--	--	556
+,	--	,	--	--	556
+or	--	Coordinator-Marker	--	--	558
+control	--	N-Head	--	--	557
+of	--	P-Head	--	--	563
+the	--	D-Head	--	--	560
+State	--	N-Head	--	--	561
+.	--	.	--	--	561
+#500	--	DP-Det	--	--	522
+#501	--	VP-Coordinate	--	--	504
+#502	--	VP-Head	--	--	503
+#503	--	VP-Coordinate	--	--	504
+#504	--	Coordination-Head	--	--	518
+#505	--	VP-Coordinate	--	--	509
+#506	--	PPstrand-Comp	--	--	507
+#507	--	VP-Head	--	--	508
+#508	--	VP-Coordinate	--	--	509
+#509	--	Coordination-Head	--	--	514
+#510	--	DP-Det	--	--	512
+#511	--	Nom-Head	--	--	512
+#512	--	NP-Obj	--	--	513
+#513	--	PP-Comp	--	--	514
+#514	--	VP-Head	--	--	515
+#515	--	Clause-Mod	--	--	516
+#516	--	Nom-Head	--	--	517
+#517	--	NP-Obj	--	--	518
+#518	--	VP-Head	--	--	519
+#519	--	Clause-Comp	--	--	520
+#520	--	PP-Comp	--	--	521
+#521	--	Nom-Head	--	--	522
+#522	--	NP-Obj	--	--	523
+#523	--	PP-Mod	--	--	577
+#524	--	DP-Det	--	--	527
+#525	--	AdjP-Mod	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Subj	--	--	576
+#528	--	PP-Comp	--	--	529
+#529	--	Nom-Head	--	--	530
+#530	--	NP-Coordinate	--	--	538
+#531	--	DP-Det	--	--	536
+#532	--	VP-Head	--	--	533
+#533	--	VP-Head	--	--	534
+#534	--	Clause-Comp	--	--	535
+#535	--	Nom-Head	--	--	536
+#536	--	NP-Head	--	--	537
+#537	--	NP-Coordinate	--	--	538
+#538	--	Coordination-Head	--	--	572
+#539	--	DP-Det	--	--	571
+#540	--	Nom-Coordinate	--	--	547
+#541	--	Nom-Coordinate	--	--	547
+#542	--	Nom-Coordinate	--	--	547
+#543	--	Nom-Coordinate	--	--	547
+#544	--	AdjP-Mod	--	--	545
+#545	--	Nom-Head	--	--	546
+#546	--	Nom-Coordinate	--	--	547
+#547	--	Coordination-Head	--	--	553
+#548	--	DP-Det	--	--	550
+#549	--	Nom-Head	--	--	550
+#550	--	NP-Obj	--	--	551
+#551	--	PP-Comp	--	--	552
+#552	--	AdjP-Mod	--	--	553
+#553	--	Nom.x-Head	--	--	570
+#554	--	DP-Det	--	--	565
+#555	--	Nom-Coordinate	--	--	559
+#556	--	Nom-Coordinate	--	--	559
+#557	--	Nom-Head	--	--	558
+#558	--	Nom-Coordinate	--	--	559
+#559	--	Coordination-Head	--	--	564
+#560	--	DP-Det	--	--	562
+#561	--	Nom-Head	--	--	562
+#562	--	NP-Obj	--	--	563
+#563	--	PP-Comp	--	--	564
+#564	--	Nom-Head	--	--	565
+#565	--	NP-Obj	--	--	566
+#566	--	PP-PredComp	--	--	567
+#567	--	VP-Head	--	--	568
+#568	--	Clauserel-Head	--	--	569
+#569	--	Clauserel-Mod	--	--	570
+#570	--	Nom-Head	--	--	571
+#571	--	NP.y-Postnucleus	--	--	572
+#572	--	Coordination-Obj	--	--	573
+#573	--	VP-Head	--	--	574
+#574	--	Clause-Comp	--	--	575
+#575	--	VP-Head	--	--	576
+#576	--	Clause-Head	--	--	577
+#577	--	Clause	--	--	0
+#EOS 19
+#BOS 20
+beginning	--	V-Head	--	--	507
+with	--	P-Head	--	--	506
+the	--	D-Head	--	--	500
+1995	--	N-Head	--	--	501
+crop	--	N-Head	--	--	502
+year	--	N-Head	--	--	503
+,	--	,	--	--	503
+the	--	D-Head	--	--	509
+Corporation	--	N-Head	--	--	510
+shall	--	Vaux-Head	--	--	541
+offer	--	V-Head	--	--	515
+_.	--	GAP.y-Obj	--	--	515
+to	--	P-Head	--	--	514
+producers	--	N-Head	--	--	512
+additional	--	Adj-Head	--	--	516
+prevented	--	Adj-Head	--	--	517
+planting	--	N-Head	--	--	518
+coverage	--	N-Head	--	--	519
+that	--	Sdr-Marker	--	--	536
+_.	--	GAP.x-Subj	--	--	535
+insures	--	V-Head	--	--	526
+producers	--	N-Head	--	--	521
+against	--	P-Head	--	--	525
+losses	--	N-Head	--	--	523
+in	--	P-Head	--	--	533
+accordance	--	N-Head	--	--	531
+with	--	P-Head	--	--	530
+this	--	D-Head	--	--	527
+paragraph	--	N-Head	--	--	528
+.	--	.	--	--	528
+#500	--	DP-Det	--	--	505
+#501	--	Nom-Mod	--	--	504
+#502	--	Nom-Mod	--	--	503
+#503	--	Nom-Head	--	--	504
+#504	--	Nom-Head	--	--	505
+#505	--	NP-Obj	--	--	506
+#506	--	PP-Comp	--	--	507
+#507	--	VP-Head	--	--	508
+#508	--	Clause-Supplement	--	--	542
+#509	--	DP-Det	--	--	511
+#510	--	Nom-Head	--	--	511
+#511	--	NP-Subj	--	--	542
+#512	--	Nom-Head	--	--	513
+#513	--	NP-Obj	--	--	514
+#514	--	PP-Comp	--	--	515
+#515	--	VP-Head	--	--	539
+#516	--	AdjP-Mod	--	--	520
+#517	--	AdjP-Mod	--	--	518
+#518	--	Nom-Mod	--	--	519
+#519	--	Nom-Head	--	--	520
+#520	--	Nom.x-Head	--	--	537
+#521	--	Nom-Head	--	--	522
+#522	--	NP-Obj	--	--	526
+#523	--	Nom-Head	--	--	524
+#524	--	NP-Obj	--	--	525
+#525	--	PP-Comp	--	--	526
+#526	--	VP-Head	--	--	534
+#527	--	DP-Det	--	--	529
+#528	--	Nom-Head	--	--	529
+#529	--	NP-Obj	--	--	530
+#530	--	PP-Comp	--	--	531
+#531	--	Nom-Head	--	--	532
+#532	--	NP-Obj	--	--	533
+#533	--	PP-Mod	--	--	534
+#534	--	VP-Head	--	--	535
+#535	--	Clauserel-Head	--	--	536
+#536	--	Clauserel-Mod	--	--	537
+#537	--	Nom-Head	--	--	538
+#538	--	NP.y-Postnucleus	--	--	539
+#539	--	VP-Head	--	--	540
+#540	--	Clause-Comp	--	--	541
+#541	--	VP-Head	--	--	542
+#542	--	Clause	--	--	0
+#EOS 20
+#BOS 21
+where	--	P-Head	--	--	501
+appropriate	--	Adj-Head	--	--	500
+,	--	,	--	--	500
+the	--	D-Head	--	--	502
+Secretary	--	N-Head	--	--	503
+shall	--	Vaux-Head	--	--	531
+award	--	V-Head	--	--	511
+grants	--	N-Head	--	--	509
+under	--	P-Head	--	--	508
+this	--	D-Head	--	--	505
+section	--	N-Head	--	--	506
+in	--	P-Head	--	--	528
+consultation	--	N-Head	--	--	526
+with	--	P-Head	--	--	525
+the	--	D-Head	--	--	512
+Attorney	--	N-Head	--	--	514
+General	--	Adj-Head	--	--	513
+and	--	Coordinator-Marker	--	--	523
+the	--	D-Head	--	--	516
+Secretary	--	N-Head	--	--	521
+of	--	P-Head	--	--	520
+Homeland	--	N-Head	--	--	517
+Security	--	N-Head	--	--	518
+.	--	.	--	--	518
+#500	--	AdjP-Comp	--	--	501
+#501	--	PP-Supplement	--	--	532
+#502	--	DP-Det	--	--	504
+#503	--	Nom-Head	--	--	504
+#504	--	NP-Subj	--	--	532
+#505	--	DP-Det	--	--	507
+#506	--	Nom-Head	--	--	507
+#507	--	NP-Obj	--	--	508
+#508	--	PP-Mod	--	--	509
+#509	--	Nom-Head	--	--	510
+#510	--	NP-Obj	--	--	511
+#511	--	VP-Head	--	--	529
+#512	--	DP-Det	--	--	515
+#513	--	AdjP-Mod	--	--	514
+#514	--	Nom-Head	--	--	515
+#515	--	NP-Coordinate	--	--	524
+#516	--	DP-Det	--	--	522
+#517	--	Nom-Mod	--	--	518
+#518	--	Nom-Head	--	--	519
+#519	--	NP-Obj	--	--	520
+#520	--	PP-Comp	--	--	521
+#521	--	Nom-Head	--	--	522
+#522	--	NP-Head	--	--	523
+#523	--	NP-Coordinate	--	--	524
+#524	--	Coordination-Obj	--	--	525
+#525	--	PP-Comp	--	--	526
+#526	--	Nom-Head	--	--	527
+#527	--	NP-Obj	--	--	528
+#528	--	PP-Mod	--	--	529
+#529	--	VP-Head	--	--	530
+#530	--	Clause-Comp	--	--	531
+#531	--	VP-Head	--	--	532
+#532	--	Clause	--	--	0
+#EOS 21
+#BOS 22
 Rule	--	N-Head	--	--	500
 2002(a)	--	N-Head	--	--	501
 and	--	Coordinator-Marker	--	--	506
@@ -2563,393 +2141,8 @@ Code	--	N-Head	--	--	546
 #572	--	VP-Head	--	--	573
 #573	--	VP-Head	--	--	574
 #574	--	Clause	--	--	0
-#EOS 29
-#BOS 30
-the	--	D-Head	--	--	500
-Administrator	--	N-Head	--	--	501
-and	--	Coordinator-Marker	--	--	523
-the	--	D-Head	--	--	503
-Secretary	--	N-Head	--	--	521
-of	--	P-Head	--	--	520
-the	--	D-Head	--	--	504
-department	--	N-Head	--	--	518
-in	--	P-Head	--	--	507
-which	--	Npro-Head	--	--	505
-the	--	D-Head	--	--	508
-Coast	--	N-Head	--	--	509
-Guard	--	N-Head	--	--	510
-is	--	Vaux-Head	--	--	515
-operating	--	V-Head	--	--	513
-_.	--	GAP.x-Mod	--	--	513
-may	--	Vaux-Head	--	--	556
-issue	--	V-Head	--	--	527
-regulations	--	N-Head	--	--	525
-jointly	--	Adv-Head	--	--	528
-or	--	Coordinator-Marker	--	--	530
-severally	--	Adv-Head	--	--	529
-as	--	P-Head	--	--	553
-may	--	Vaux-Head	--	--	551
-be	--	Vaux-Head	--	--	549
-necessary	--	Adj-Head	--	--	532
-and	--	Coordinator-Marker	--	--	534
-appropriate	--	Adj-Head	--	--	533
-to	--	Sdr-Marker	--	--	546
-carry	--	V-Head	--	--	545
-out	--	P-Head	--	--	536
-their	--	Npro-Head	--	--	537
-duties	--	N-Head	--	--	543
-under	--	P-Head	--	--	542
-this	--	D-Head	--	--	539
-section	--	N-Head	--	--	540
-.	--	.	--	--	540
-#500	--	DP-Det	--	--	502
-#501	--	Nom-Head	--	--	502
-#502	--	NP-Coordinate	--	--	524
-#503	--	DP-Det	--	--	522
-#504	--	DP-Det	--	--	519
-#505	--	Nom-Head	--	--	506
-#506	--	NP-Obj	--	--	507
-#507	--	PP.x-Prenucleus	--	--	517
-#508	--	DP-Det	--	--	512
-#509	--	Nom-Mod	--	--	510
-#510	--	Nom-Head	--	--	511
-#511	--	NP-Head	--	--	512
-#512	--	NP-Subj	--	--	516
-#513	--	VP-Head	--	--	514
-#514	--	Clause-Comp	--	--	515
-#515	--	VP-Head	--	--	516
-#516	--	Clauserel-Head	--	--	517
-#517	--	Clauserel-Mod	--	--	518
-#518	--	Nom-Head	--	--	519
-#519	--	NP-Obj	--	--	520
-#520	--	PP-Comp	--	--	521
-#521	--	Nom-Head	--	--	522
-#522	--	NP-Head	--	--	523
-#523	--	NP-Coordinate	--	--	524
-#524	--	Coordination-Subj	--	--	557
-#525	--	Nom-Head	--	--	526
-#526	--	NP-Obj	--	--	527
-#527	--	VP-Head	--	--	554
-#528	--	AdvP-Coordinate	--	--	531
-#529	--	AdvP-Head	--	--	530
-#530	--	AdvP-Coordinate	--	--	531
-#531	--	Coordination-Mod	--	--	554
-#532	--	AdjP-Coordinate	--	--	535
-#533	--	AdjP-Head	--	--	534
-#534	--	AdjP-Coordinate	--	--	535
-#535	--	Coordination-Head	--	--	548
-#536	--	PP-Particle	--	--	545
-#537	--	Nom-Head	--	--	538
-#538	--	NP-Det	--	--	544
-#539	--	DP-Det	--	--	541
-#540	--	Nom-Head	--	--	541
-#541	--	NP-Obj	--	--	542
-#542	--	PP-Mod	--	--	543
-#543	--	Nom-Head	--	--	544
-#544	--	NP-Obj	--	--	545
-#545	--	VP-Head	--	--	546
-#546	--	VP-Head	--	--	547
-#547	--	Clause-Comp	--	--	548
-#548	--	AdjP-PredComp	--	--	549
-#549	--	VP-Head	--	--	550
-#550	--	Clause-Comp	--	--	551
-#551	--	VP-Head	--	--	552
-#552	--	Clause-Comp	--	--	553
-#553	--	PP-Supplement	--	--	554
-#554	--	VP-Head	--	--	555
-#555	--	Clause-Comp	--	--	556
-#556	--	VP-Head	--	--	557
-#557	--	Clause	--	--	0
-#EOS 30
-#BOS 31
-only	--	Adv-Head	--	--	500
-if	--	P-Head	--	--	508
-all	--	D-Head	--	--	501
-these	--	D-Head	--	--	502
-measures	--	N-Head	--	--	503
-failed	--	V-Head	--	--	506
-would	--	Vaux.y-Prenucleus	--	--	530
-I	--	Npro-Head	--	--	510
-_.	--	GAP.y-Head	--	--	528
-proceed	--	V-Head	--	--	525
-to	--	P-Head	--	--	524
-the	--	D-Head	--	--	512
-final	--	Adj-Head	--	--	513
-step	--	N-Head	--	--	514
-,	--	,	--	--	514
-total	--	Adj-Head	--	--	515
-vaporization	--	N-Head	--	--	520
-of	--	P-Head	--	--	519
-the	--	D-Head	--	--	516
-car	--	N-Head	--	--	517
-_.	--	GAP.x-Mod	--	--	526
-(	--	(	--	--	544
-unless	--	P-Head	--	--	544
-of	--	P-Head	--	--	533
-course	--	N-Head	--	--	531
-there	--	Npro-Head	--	--	534
-was	--	Vaux-Head	--	--	542
-a	--	D-Head	--	--	536
-BABY	--	N-Head	--	--	537
-ON	--	P-Head	--	--	541
-BOARD	--	N-Head	--	--	539
-!	--	.	--	--	539
-)	--	)	--	--	539
-.	--	.	--	--	539
-#500	--	AdvP-Mod	--	--	509
-#501	--	DP-Mod	--	--	505
-#502	--	DP-Det	--	--	504
-#503	--	Nom-Head	--	--	504
-#504	--	NP-Head	--	--	505
-#505	--	NP-Subj	--	--	507
-#506	--	VP-Head	--	--	507
-#507	--	Clause-Comp	--	--	508
-#508	--	PP-Head	--	--	509
-#509	--	PP.x-Prenucleus	--	--	545
-#510	--	Nom-Head	--	--	511
-#511	--	NP-Subj	--	--	529
-#512	--	DP-Det	--	--	523
-#513	--	AdjP-Mod	--	--	514
-#514	--	Nom-Head	--	--	523
-#515	--	AdjP-Mod	--	--	521
-#516	--	DP-Det	--	--	518
-#517	--	Nom-Head	--	--	518
-#518	--	NP-Obj	--	--	519
-#519	--	PP-Comp	--	--	520
-#520	--	Nom-Head	--	--	521
-#521	--	Nom-Head	--	--	522
-#522	--	NP-Supplement	--	--	523
-#523	--	NP-Obj	--	--	524
-#524	--	PP-Comp	--	--	525
-#525	--	VP-Head	--	--	526
-#526	--	VP-Head	--	--	527
-#527	--	Clause-Comp	--	--	528
-#528	--	VP-Head	--	--	529
-#529	--	Clause-Head	--	--	530
-#530	--	Clause-Head	--	--	545
-#531	--	Nom-Head	--	--	532
-#532	--	NP-Obj	--	--	533
-#533	--	PP-Supplement	--	--	544
-#534	--	Nom-Head	--	--	535
-#535	--	NP-Subj	--	--	543
-#536	--	DP-Det	--	--	538
-#537	--	Nom-Head	--	--	538
-#538	--	NP-DisplacedSubj	--	--	542
-#539	--	Nom-Head	--	--	540
-#540	--	NP-Obj	--	--	541
-#541	--	PP-Comp	--	--	542
-#542	--	VP-Head	--	--	543
-#543	--	Clause-Comp	--	--	544
-#544	--	PP-Supplement	--	--	545
-#545	--	Clause	--	--	0
-#EOS 31
-#BOS 32
-in	--	P-Head	--	--	522
-addition	--	N-Head	--	--	520
-to	--	P-Head	--	--	519
-operating	--	V-Head	--	--	502
-homes	--	N-Head	--	--	500
-in	--	P-Head	--	--	516
-what	--	Npro-Head	--	--	503
-_.	--	GAP.x-Subj	--	--	512
-would	--	Vaux-Head	--	--	511
-become	--	V-Head	--	--	509
-the	--	D-Head	--	--	505
-Occupied	--	V-Head	--	--	506
-Zone	--	N-Head	--	--	507
-,	--	,	--	--	507
-from	--	P-Head	--	--	525
-1939	--	N-Head	--	--	523
-to	--	P-Head	--	--	528
-1943	--	N-Head	--	--	526
-fourteen	--	D-Head	--	--	530
-OSE	--	N-Head	--	--	531
-homes	--	N-Head	--	--	533
-were	--	V-Head	--	--	537
-created	--	V-Head	--	--	535
-and	--	Coordinator-Marker	--	--	542
-formed	--	V-Head	--	--	541
-a	--	D-Head	--	--	538
-network	--	N-Head	--	--	539
-in	--	P-Head	--	--	557
-what	--	Npro-Head	--	--	544
-_.	--	GAP.y-Subj	--	--	553
-would	--	Vaux-Head	--	--	552
-become	--	V-Head	--	--	550
-Vichy	--	N-Head	--	--	546
-France	--	N-Head	--	--	548
-.	--	.	--	--	548
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Obj	--	--	502
-#502	--	VP-Head	--	--	517
-#503	--	Nom-Head	--	--	504
-#504	--	NP.x-HeadPrenucleus	--	--	513
-#505	--	DP-Det	--	--	508
-#506	--	VP-Mod	--	--	507
-#507	--	Nom-Head	--	--	508
-#508	--	NP-PredComp	--	--	509
-#509	--	VP-Head	--	--	510
-#510	--	Clause-Comp	--	--	511
-#511	--	VP-Head	--	--	512
-#512	--	Clauserel-Head	--	--	513
-#513	--	Clauserel-Mod	--	--	514
-#514	--	Nom-Head	--	--	515
-#515	--	NP-Obj	--	--	516
-#516	--	PP-Mod	--	--	517
-#517	--	VP-Head	--	--	518
-#518	--	Clause-Comp	--	--	519
-#519	--	PP-Comp	--	--	520
-#520	--	Nom-Head	--	--	521
-#521	--	NP-Obj	--	--	522
-#522	--	PP-Supplement	--	--	560
-#523	--	Nom-Head	--	--	524
-#524	--	NP-Obj	--	--	525
-#525	--	PP-Head	--	--	529
-#526	--	Nom-Head	--	--	527
-#527	--	NP-Obj	--	--	528
-#528	--	PP-Comp	--	--	529
-#529	--	PP-Mod	--	--	560
-#530	--	DP-Det	--	--	534
-#531	--	Nom-Head	--	--	532
-#532	--	NP-Mod	--	--	533
-#533	--	Nom-Head	--	--	534
-#534	--	NP-Subj	--	--	559
-#535	--	VP-Head	--	--	536
-#536	--	Clause-Comp	--	--	537
-#537	--	VP-Coordinate	--	--	543
-#538	--	DP-Det	--	--	540
-#539	--	Nom-Head	--	--	540
-#540	--	NP-Obj	--	--	541
-#541	--	VP-Head	--	--	542
-#542	--	VP-Coordinate	--	--	543
-#543	--	Coordination-Head	--	--	558
-#544	--	Nom-Head	--	--	545
-#545	--	NP.y-HeadPrenucleus	--	--	554
-#546	--	Nom-Head	--	--	547
-#547	--	NP-Mod	--	--	548
-#548	--	Nom-Head	--	--	549
-#549	--	NP-PredComp	--	--	550
-#550	--	VP-Head	--	--	551
-#551	--	Clause-Comp	--	--	552
-#552	--	VP-Head	--	--	553
-#553	--	Clauserel-Head	--	--	554
-#554	--	Clauserel-Mod	--	--	555
-#555	--	Nom-Head	--	--	556
-#556	--	NP-Obj	--	--	557
-#557	--	PP-Mod	--	--	558
-#558	--	VP-Head	--	--	559
-#559	--	Clause-Head	--	--	560
-#560	--	Clause	--	--	0
-#EOS 32
-#BOS 33
-I	--	Npro-Head	--	--	500
-like	--	V-Head	--	--	507
-from	--	P-Head	--	--	506
-the	--	D-Head	--	--	502
-waist	--	N-Head	--	--	503
-up	--	P-Head	--	--	505
-.	--	.	--	--	505
-#500	--	Nom-Head	--	--	501
-#501	--	NP-Subj	--	--	508
-#502	--	DP-Det	--	--	504
-#503	--	Nom-Head	--	--	504
-#504	--	NP-Obj	--	--	506
-#505	--	PP-Comp	--	--	506
-#506	--	PP-Comp	--	--	507
-#507	--	VP-Head	--	--	508
-#508	--	Clause	--	--	0
-#EOS 33
-#BOS 34
-what	--	D-Head	--	--	500
-color	--	N-Head	--	--	501
-socks	--	N-Head	--	--	503
-are	--	Vaux.y-Prenucleus	--	--	514
-you	--	Npro-Head	--	--	505
-_.	--	GAP.y-Head	--	--	512
-planning	--	V-Head	--	--	510
-to	--	Sdr-Marker	--	--	508
-wear	--	V-Head	--	--	507
-?	--	.	--	--	507
-_.	--	GAP.x-Obj	--	--	507
-#500	--	DP-Det	--	--	502
-#501	--	Nom-Head	--	--	502
-#502	--	NP-Det	--	--	504
-#503	--	Nom-Head	--	--	504
-#504	--	NP.x-Prenucleus	--	--	515
-#505	--	Nom-Head	--	--	506
-#506	--	NP-Subj	--	--	513
-#507	--	VP-Head	--	--	508
-#508	--	VP-Head	--	--	509
-#509	--	Clause-Comp	--	--	510
-#510	--	VP-Head	--	--	511
-#511	--	Clause-Comp	--	--	512
-#512	--	VP-Head	--	--	513
-#513	--	Clause-Head	--	--	514
-#514	--	Clause-Head	--	--	515
-#515	--	Clause	--	--	0
-#EOS 34
-#BOS 35
-after	--	P-Head	--	--	503
-bird	--	N-Head	--	--	500
-strikes	--	N-Head	--	--	501
-judge	--	N-Head	--	--	524
-who	--	Npro-Head	--	--	504
-_.	--	GAP.x-Subj	--	--	522
-ordered	--	V-Head	--	--	521
-Olive	--	N-Head	--	--	506
-Garden	--	N-Head	--	--	507
-path	--	N-Head	--	--	508
-sentence	--	N-Head	--	--	509
-in	--	P-Head	--	--	516
-case	--	N-Head	--	--	514
-of	--	P-Head	--	--	513
-green	--	Adj-Head	--	--	510
-walkways	--	N-Head	--	--	511
-vacated	--	V-Head	--	--	519
-overturned	--	V-Head	--	--	526
-but	--	Coordinator-Marker	--	--	532
-rights	--	V-Head	--	--	527
-and	--	Coordinator-Marker	--	--	530
-lands	--	V-Head	--	--	529
-safely	--	Adv-Head	--	--	528
-#500	--	Nom-Mod	--	--	501
-#501	--	Nom-Head	--	--	502
-#502	--	NP-Obj	--	--	503
-#503	--	PP-Mod	--	--	535
-#504	--	Nom-Head	--	--	505
-#505	--	NP.x-Prenucleus	--	--	523
-#506	--	Nom-Mod	--	--	507
-#507	--	Nom-Mod	--	--	508
-#508	--	Nom-Mod	--	--	509
-#509	--	Nom-Head	--	--	517
-#510	--	AdjP-Mod	--	--	511
-#511	--	Nom-Head	--	--	512
-#512	--	NP-Obj	--	--	513
-#513	--	PP-Mod	--	--	514
-#514	--	Nom-Head	--	--	515
-#515	--	NP-Obj	--	--	516
-#516	--	PP-Mod	--	--	517
-#517	--	Nom-Head	--	--	518
-#518	--	NP-Obj	--	--	521
-#519	--	VP-Head	--	--	520
-#520	--	Clause-PredComp	--	--	521
-#521	--	VP-Head	--	--	522
-#522	--	Clauserel-Head	--	--	523
-#523	--	Clauserel-Mod	--	--	524
-#524	--	Nom-Head	--	--	525
-#525	--	NP-Subj	--	--	534
-#526	--	VP-Coordinate	--	--	533
-#527	--	VP-Coordinate	--	--	531
-#528	--	AdvP-Mod	--	--	529
-#529	--	VP-Head	--	--	530
-#530	--	VP-Coordinate	--	--	531
-#531	--	Coordination-Head	--	--	532
-#532	--	Coordination-Coordinate	--	--	533
-#533	--	Coordination-Head	--	--	534
-#534	--	Clause-Head	--	--	535
-#535	--	Clause	--	--	0
-#EOS 35
-#BOS 36
+#EOS 22
+#BOS 23
 the	--	D-Head	--	--	500
 #futureoflinguistics	--	N-Head	--	--	501
 is	--	Vaux-Head	--	--	512
@@ -2978,8 +2171,8 @@ world	--	N-Head	--	--	507
 #511	--	Coordination-PredComp	--	--	512
 #512	--	VP-Head	--	--	513
 #513	--	Clause	--	--	0
-#EOS 36
-#BOS 37
+#EOS 23
+#BOS 24
 here	--	P-Head	--	--	500
 _.	--	GAP.b-Subj	--	--	502
 's	--	Vaux-Head	--	--	501
@@ -3046,8 +2239,8 @@ _.	--	GAP.z-Mod	--	--	525
 #536	--	NP.b-Postnucleus	--	--	537
 #537	--	Clause-Head	--	--	538
 #538	--	Clause	--	--	0
-#EOS 37
-#BOS 38
+#EOS 24
+#BOS 25
 true	--	Adj-Head	--	--	500
 narcissism	--	N-Head	--	--	501
 is	--	Vaux-Head	--	--	518
@@ -3080,8 +2273,8 @@ language	--	N-Head	--	--	512
 #517	--	Clause-PredComp	--	--	518
 #518	--	VP-Head	--	--	519
 #519	--	Clause	--	--	0
-#EOS 38
-#BOS 39
+#EOS 25
+#BOS 26
 is	--	Vaux.x-Prenucleus	--	--	516
 that	--	D-Head	--	--	500
 _.	--	GAP.x-Head	--	--	514
@@ -3108,8 +2301,8 @@ WH-movement	--	N-Head	--	--	507
 #514	--	VP-Head	--	--	515
 #515	--	Clause-Head	--	--	516
 #516	--	Clause	--	--	0
-#EOS 39
-#BOS 40
+#EOS 26
+#BOS 27
 it	--	Npro-Head	--	--	500
 isn't	--	Vaux-Head	--	--	510
 that	--	Sdr-Marker	--	--	509
@@ -3166,8 +2359,8 @@ _.	--	GAP.x-Obj	--	--	522
 #531	--	VP-Head	--	--	532
 #532	--	Clause-Coordinate	--	--	533
 #533	--	Coordination	--	--	0
-#EOS 40
-#BOS 41
+#EOS 27
+#BOS 28
 language	--	N-Head	--	--	500
 ideology	--	N-Head	--	--	501
 is	--	Vaux-Head	--	--	510
@@ -3189,8 +2382,8 @@ drug	--	N-Head	--	--	505
 #509	--	NP-PredComp	--	--	510
 #510	--	VP-Head	--	--	511
 #511	--	Clause	--	--	0
-#EOS 41
-#BOS 42
+#EOS 28
+#BOS 29
 anybody	--	D-Head	--	--	500
 want	--	V-Head	--	--	507
 some	--	D-Head	--	--	503
@@ -3206,8 +2399,8 @@ chicken	--	N-Head	--	--	505
 #506	--	NP-Obj	--	--	507
 #507	--	VP-Head	--	--	508
 #508	--	Clause	--	--	0
-#EOS 42
-#BOS 43
+#EOS 29
+#BOS 30
 I	--	Npro-Head	--	--	500
 think	--	V-Head	--	--	516
 seeing	--	V-Head	--	--	508
@@ -3236,8 +2429,8 @@ interesting	--	Adj-Head	--	--	511
 #515	--	Clause-Comp	--	--	516
 #516	--	VP-Head	--	--	517
 #517	--	Clause	--	--	0
-#EOS 43
-#BOS 44
+#EOS 30
+#BOS 31
 is	--	Vaux.x-Prenucleus	--	--	514
 that	--	D-Head	--	--	500
 _.	--	GAP.x-Head	--	--	510
@@ -3262,8 +2455,8 @@ winter	--	N-Head	--	--	512
 #512	--	Nom-Head	--	--	513
 #513	--	NP-Vocative	--	--	514
 #514	--	Clause	--	--	0
-#EOS 44
-#BOS 45
+#EOS 31
+#BOS 32
 have	--	V-Head	--	--	506
 a	--	D-Head	--	--	500
 happier	--	Adj-Head	--	--	501
@@ -3277,8 +2470,8 @@ year	--	N-Head	--	--	503
 #505	--	NP-Obj	--	--	506
 #506	--	VP-Head	--	--	507
 #507	--	Clause	--	--	0
-#EOS 45
-#BOS 46
+#EOS 32
+#BOS 33
 Delta	--	N-Head	--	--	500
 has	--	Vaux-Head	--	--	527
 banned	--	V-Head	--	--	525
@@ -3326,8 +2519,8 @@ mask	--	N-Head	--	--	512
 #526	--	Clause-Comp	--	--	527
 #527	--	VP-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 46
-#BOS 47
+#EOS 33
+#BOS 34
 why	--	Adv-Head	--	--	500
 is	--	Vaux.j-Prenucleus	--	--	513
 there	--	Npro-Head	--	--	501
@@ -3353,8 +2546,8 @@ _.	--	GAP.i-Mod	--	--	511
 #512	--	Clause-Head	--	--	513
 #513	--	Clause-Head	--	--	514
 #514	--	Clause	--	--	0
-#EOS 47
-#BOS 48
+#EOS 34
+#BOS 35
 the	--	D-Head	--	--	500
 arrival	--	N-Head	--	--	502
 recently	--	Adv-Head	--	--	501
@@ -3372,8 +2565,8 @@ year	--	N-Head	--	--	505
 #507	--	PP-Comp	--	--	508
 #508	--	Nom-Head	--	--	509
 #509	--	NP	--	--	0
-#EOS 48
-#BOS 49
+#EOS 35
+#BOS 36
 now	--	P-Head	--	--	500
 outside	--	P-Head	--	--	506
 in	--	P-Head	--	--	505
@@ -3411,8 +2604,8 @@ lunch	--	N-Head	--	--	514
 #518	--	NP-Obj_dir	--	--	519
 #519	--	VP-Head	--	--	520
 #520	--	Clause	--	--	0
-#EOS 49
-#BOS 50
+#EOS 36
+#BOS 37
 why	--	Adv-Head	--	--	500
 do	--	Vaux.y-Prenucleus	--	--	533
 they	--	Npro-Head	--	--	501
@@ -3473,8 +2666,8 @@ _.	--	GAP.i-Mod	--	--	529
 #532	--	Clause-Head	--	--	533
 #533	--	Clause-Head	--	--	534
 #534	--	Clause	--	--	0
-#EOS 50
-#BOS 51
+#EOS 37
+#BOS 38
 if	--	P-Head	--	--	521
 your	--	Npro-Head	--	--	500
 usage	--	N-Head	--	--	502
@@ -3532,8 +2725,8 @@ pedantry	--	N-Head	--	--	526
 #528	--	VP-Head	--	--	529
 #529	--	Clause-Head	--	--	530
 #530	--	Clause	--	--	0
-#EOS 51
-#BOS 52
+#EOS 38
+#BOS 39
 you	--	Npro-Head	--	--	500
 may	--	Vaux-Head	--	--	517
 have	--	Vaux-Head	--	--	515
@@ -3565,8 +2758,8 @@ smarter	--	Adj-Head	--	--	509
 #516	--	Clause-Comp	--	--	517
 #517	--	VP-Head	--	--	518
 #518	--	Clause	--	--	0
-#EOS 52
-#BOS 53
+#EOS 39
+#BOS 40
 Japanese	--	Adj-Head	--	--	500
 farmers	--	N-Head	--	--	501
 who	--	Npro-Head	--	--	502
@@ -3599,8 +2792,8 @@ murals	--	N-Head	--	--	510
 #517	--	Clauserel-Mod	--	--	518
 #518	--	Nom-Head	--	--	519
 #519	--	NP	--	--	0
-#EOS 53
-#BOS 54
+#EOS 40
+#BOS 41
 woman	--	N-Head	--	--	514
 ruled	--	V-Head	--	--	501
 dead	--	Adj-Head	--	--	500
@@ -3626,8 +2819,8 @@ alive	--	Adj-Head	--	--	503
 #512	--	VP-Head	--	--	513
 #513	--	Clause-Mod	--	--	514
 #514	--	Nom	--	--	0
-#EOS 54
-#BOS 55
+#EOS 41
+#BOS 42
 a	--	D-Head	--	--	500
 language	--	N-Head	--	--	501
 is	--	Vaux-Head	--	--	511
@@ -3651,8 +2844,8 @@ course	--	N-Head	--	--	506
 #510	--	NP-PredComp	--	--	511
 #511	--	VP-Head	--	--	512
 #512	--	Clause	--	--	0
-#EOS 55
-#BOS 56
+#EOS 42
+#BOS 43
 so	--	Coordinator-Marker	--	--	524
 that	--	D-Head	--	--	500
 's	--	Vaux-Head	--	--	522
@@ -3693,8 +2886,8 @@ true	--	Adj-Head	--	--	508
 #522	--	VP-Head	--	--	523
 #523	--	Clause-Head	--	--	524
 #524	--	Clause	--	--	0
-#EOS 56
-#BOS 57
+#EOS 43
+#BOS 44
 this	--	D-Head	--	--	500
 has	--	Vaux-Head	--	--	516
 been	--	Vaux-Head	--	--	514
@@ -3724,8 +2917,8 @@ syntactician	--	N-Head	--	--	509
 #515	--	Clause-Comp	--	--	516
 #516	--	VP-Head	--	--	517
 #517	--	Clause	--	--	0
-#EOS 57
-#BOS 58
+#EOS 44
+#BOS 45
 getting	--	V-Head	--	--	503
 a	--	D-Head	--	--	500
 PhD	--	N-Head	--	--	501
@@ -3754,8 +2947,8 @@ mine	--	N-Head	--	--	508
 #514	--	Clause-Comp	--	--	515
 #515	--	VP-Head	--	--	516
 #516	--	Clause	--	--	0
-#EOS 58
-#BOS 59
+#EOS 45
+#BOS 46
 how	--	Adv-Head	--	--	500
 well	--	Adv-Head	--	--	501
 does	--	Vaux.y-Prenucleus	--	--	519
@@ -3793,8 +2986,8 @@ _.	--	GAP.x-Mod	--	--	515
 #518	--	Clause-Head	--	--	519
 #519	--	Clause-Head	--	--	520
 #520	--	Clause	--	--	0
-#EOS 59
-#BOS 60
+#EOS 46
+#BOS 47
 this	--	D-Head	--	--	500
 must	--	Vaux-Head	--	--	527
 now	--	P-Head	--	--	503
@@ -3844,8 +3037,8 @@ _.	--	GAP.x-Mod	--	--	520
 #526	--	Clause-Comp	--	--	527
 #527	--	VP-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 60
-#BOS 61
+#EOS 47
+#BOS 48
 many	--	D-Head	--	--	500
 more	--	D-Head	--	--	501
 people	--	N-Head	--	--	502
@@ -3865,8 +3058,8 @@ courses	--	N-Head	--	--	505
 #508	--	Clause-Comp	--	--	509
 #509	--	VP-Head	--	--	510
 #510	--	Clause	--	--	0
-#EOS 61
-#BOS 62
+#EOS 48
+#BOS 49
 all	--	D-Head	--	--	500
 my	--	Npro-Head	--	--	501
 tree	--	N-Head	--	--	503
@@ -3885,8 +3078,8 @@ descriptions	--	N-Head	--	--	507
 #508	--	NP-Obj	--	--	509
 #509	--	VP-Head	--	--	510
 #510	--	Clause	--	--	0
-#EOS 62
-#BOS 63
+#EOS 49
+#BOS 50
 all	--	D-Head	--	--	500
 your	--	Npro-Head	--	--	501
 base	--	N-Head	--	--	503
@@ -3907,8 +3100,8 @@ us	--	Npro-Head	--	--	506
 #510	--	Clause-Comp	--	--	511
 #511	--	VP-Head	--	--	512
 #512	--	Clause	--	--	0
-#EOS 63
-#BOS 64
+#EOS 50
+#BOS 51
 one	--	Npro-Head	--	--	500
 can	--	Vaux-Head	--	--	520
 never	--	Adv-Head	--	--	502
@@ -3947,8 +3140,8 @@ _.	--	GAP.x-Mod	--	--	515
 #519	--	Clause-Comp	--	--	520
 #520	--	VP-Head	--	--	521
 #521	--	Clause	--	--	0
-#EOS 64
-#BOS 65
+#EOS 51
+#BOS 52
 the	--	D-Head	--	--	500
 preface	--	N-Head	--	--	501
 was	--	Vaux-Head	--	--	508
@@ -3966,8 +3159,8 @@ Sue	--	N-Head	--	--	503
 #507	--	Clause-Comp	--	--	508
 #508	--	VP-Head	--	--	509
 #509	--	Clause	--	--	0
-#EOS 65
-#BOS 66
+#EOS 52
+#BOS 53
 many_a	--	D-Head	--	--	500
 horse	--	N-Head	--	--	507
 raced	--	V-Head	--	--	505
@@ -3990,8 +3183,8 @@ fall	--	V-Head	--	--	509
 #510	--	Clause-Comp	--	--	511
 #511	--	VP-Head	--	--	512
 #512	--	Clause	--	--	0
-#EOS 66
-#BOS 67
+#EOS 53
+#BOS 54
 kinda	--	Adv-Head	--	--	500
 want	--	V-Head	--	--	522
 to	--	Sdr-Marker	--	--	520
@@ -4032,8 +3225,8 @@ sledding	--	V-Head	--	--	515
 #521	--	Clause-Comp	--	--	522
 #522	--	VP-Head	--	--	523
 #523	--	Clause	--	--	0
-#EOS 67
-#BOS 68
+#EOS 54
+#BOS 55
 I	--	Npro-Head	--	--	500
 didn't	--	Vaux-Head	--	--	522
 realize	--	V-Head	--	--	520
@@ -4073,8 +3266,8 @@ _.	--	GAP.x-PredComp	--	--	517
 #521	--	Clause-Comp	--	--	522
 #522	--	VP-Head	--	--	523
 #523	--	Clause	--	--	0
-#EOS 68
-#BOS 69
+#EOS 55
+#BOS 56
 even	--	Adv-Head	--	--	500
 happier	--	Adj-Head	--	--	508
 than	--	P-Head	--	--	507
@@ -4092,8 +3285,8 @@ shit	--	N-Head	--	--	502
 #507	--	PP-Comp	--	--	508
 #508	--	AdjP-Head	--	--	509
 #509	--	AdjP	--	--	0
-#EOS 69
-#BOS 70
+#EOS 56
+#BOS 57
 help	--	V-Head	--	--	506
 me	--	Npro-Head	--	--	500
 prepare	--	V-Head	--	--	504
@@ -4106,8 +3299,8 @@ lunch	--	N-Head	--	--	502
 #505	--	Clause-Comp	--	--	506
 #506	--	VP-Head	--	--	507
 #507	--	Clause	--	--	0
-#EOS 70
-#BOS 71
+#EOS 57
+#BOS 58
 I	--	Npro-Head	--	--	500
 bet	--	V-Head	--	--	528
 this	--	D-Head	--	--	502
@@ -4156,8 +3349,8 @@ later	--	Adv-Head	--	--	515
 #527	--	Clause-Comp	--	--	528
 #528	--	VP-Head	--	--	529
 #529	--	Clause	--	--	0
-#EOS 71
-#BOS 72
+#EOS 58
+#BOS 59
 my	--	Npro-Head	--	--	500
 favorite	--	Adj-Head	--	--	502
 playwright	--	N-Head	--	--	503
@@ -4215,8 +3408,8 @@ spring	--	N-Head	--	--	518
 #532	--	NP-PredComp	--	--	533
 #533	--	VP-Head	--	--	534
 #534	--	Clause	--	--	0
-#EOS 72
-#BOS 73
+#EOS 59
+#BOS 60
 we	--	Npro-Head	--	--	500
 must	--	Vaux-Head	--	--	507
 open	--	V-Head	--	--	505
@@ -4273,8 +3466,8 @@ through	--	P-Head	--	--	520
 #532	--	Clause-Head	--	--	533
 #533	--	Clause-Coordinate	--	--	534
 #534	--	Coordination	--	--	0
-#EOS 73
-#BOS 74
+#EOS 60
+#BOS 61
 what	--	Adj-Head	--	--	500
 a	--	D-Head	--	--	501
 remarkable	--	Adj-Head	--	--	502
@@ -4293,8 +3486,8 @@ _.	--	GAP.x-Obj	--	--	504
 #507	--	Nom-Head	--	--	508
 #508	--	NP-Head	--	--	509
 #509	--	NP	--	--	0
-#EOS 74
-#BOS 75
+#EOS 61
+#BOS 62
 should	--	Vaux-Head	--	--	501
 probably	--	Adv-Head	--	--	500
 read	--	V-Head	--	--	512
@@ -4319,8 +3512,8 @@ less	--	Adv-Head	--	--	508
 #513	--	Clause-Comp	--	--	514
 #514	--	VP-Head	--	--	515
 #515	--	Clause	--	--	0
-#EOS 75
-#BOS 76
+#EOS 62
+#BOS 63
 updating	--	V-Head	--	--	508
 an	--	D-Head	--	--	500
 app	--	N-Head	--	--	506
@@ -4366,8 +3559,8 @@ yet	--	Adv-Head	--	--	518
 #525	--	Clause-Head	--	--	526
 #526	--	Clause-Coordinate	--	--	527
 #527	--	Coordination	--	--	0
-#EOS 76
-#BOS 77
+#EOS 63
+#BOS 64
 go	--	V-Head	--	--	505
 hang	--	V-Head	--	--	503
 a	--	D-Head	--	--	500
@@ -4395,8 +3588,8 @@ hog	--	N-Head	--	--	511
 #513	--	VP-Head	--	--	514
 #514	--	Clause-Coordinate	--	--	515
 #515	--	Coordination	--	--	0
-#EOS 77
-#BOS 78
+#EOS 64
+#BOS 65
 it	--	Npro-Head	--	--	500
 's	--	Vaux-Head	--	--	503
 alright	--	Adj-Head	--	--	502
@@ -4420,8 +3613,8 @@ white	--	Adj-Head	--	--	506
 #511	--	Clause-ExtraposedSubj	--	--	512
 #512	--	VP-Head	--	--	513
 #513	--	Clause	--	--	0
-#EOS 78
-#BOS 79
+#EOS 65
+#BOS 66
 may	--	Vaux.i-Prenucleus	--	--	512
 you	--	Npro-Head	--	--	500
 _.	--	GAP.i-Head	--	--	510
@@ -4444,8 +3637,8 @@ year	--	N-Head	--	--	505
 #510	--	VP-Head	--	--	511
 #511	--	Clause-Head	--	--	512
 #512	--	Clause	--	--	0
-#EOS 79
-#BOS 80
+#EOS 66
+#BOS 67
 it	--	Npro-Head	--	--	500
 blows	--	V-Head	--	--	506
 my	--	Npro-Head	--	--	502
@@ -4549,8 +3742,8 @@ _.	--	GAP.y-Mod	--	--	540
 #561	--	Clause-ExtraposedSubj	--	--	562
 #562	--	VP-Head	--	--	563
 #563	--	Clause	--	--	0
-#EOS 80
-#BOS 81
+#EOS 67
+#BOS 68
 every	--	D-Head	--	--	500
 New	--	N-Flat	--	--	501
 Yorker	--	N-Flat	--	--	501
@@ -4589,8 +3782,8 @@ horse	--	N-Head	--	--	517
 #519	--	Coordination-Comp	--	--	520
 #520	--	VP-Head	--	--	521
 #521	--	Clause	--	--	0
-#EOS 81
-#BOS 82
+#EOS 68
+#BOS 69
 was	--	Vaux.x-Prenucleus	--	--	546
 discovering	--	V-Head	--	--	525
 that	--	Sdr-Marker	--	--	524
@@ -4666,8 +3859,8 @@ R	--	N-Head	--	--	533
 #544	--	VP-Head	--	--	545
 #545	--	Clause-Head	--	--	546
 #546	--	Clause	--	--	0
-#EOS 82
-#BOS 83
+#EOS 69
+#BOS 70
 I	--	Npro-Head	--	--	500
 dreamt	--	V-Head	--	--	508
 I	--	Npro-Head	--	--	502
@@ -4696,8 +3889,8 @@ me	--	Npro-Head	--	--	512
 #515	--	Clause-Head	--	--	516
 #516	--	Clause-Coordinate	--	--	517
 #517	--	Coordination	--	--	0
-#EOS 83
-#BOS 84
+#EOS 70
+#BOS 71
 I	--	Npro-Head	--	--	500
 'm	--	Vaux-Head	--	--	511
 legit	--	Adv-Head	--	--	502
@@ -4720,8 +3913,8 @@ now	--	P-Head	--	--	507
 #511	--	VP-Head	--	--	513
 #512	--	IntP-Supplement	--	--	513
 #513	--	Clause	--	--	0
-#EOS 84
-#BOS 85
+#EOS 71
+#BOS 72
 I	--	Npro-Head	--	--	500
 feel	--	V-Head	--	--	516
 good	--	Adj-Head	--	--	515
@@ -4751,8 +3944,8 @@ good	--	Adj-Head	--	--	509
 #515	--	AdjP-PredComp	--	--	516
 #516	--	VP-Head	--	--	517
 #517	--	Clause	--	--	0
-#EOS 85
-#BOS 86
+#EOS 72
+#BOS 73
 so	--	Int-Head	--	--	500
 I	--	Npro-Head	--	--	501
 just	--	Adv-Head	--	--	503
@@ -4801,8 +3994,8 @@ post-Moderna	--	Adj-Head	--	--	522
 #527	--	Clause-Head	--	--	528
 #528	--	Clause-Coordinate	--	--	529
 #529	--	Coordination	--	--	0
-#EOS 86
-#BOS 87
+#EOS 73
+#BOS 74
 a	--	D-Head	--	--	500
 third	--	Adj-Head	--	--	501
 wave	--	N-Head	--	--	502
@@ -4873,8 +4066,8 @@ it	--	Npro-Head	--	--	523
 #539	--	VP-Head	--	--	540
 #540	--	Clause-Coordinate	--	--	541
 #541	--	Coordination	--	--	0
-#EOS 87
-#BOS 88
+#EOS 74
+#BOS 75
 studio	--	N-Head	--	--	500
 decides	--	V-Head	--	--	520
 this	--	D-Head	--	--	502
@@ -4912,8 +4105,8 @@ _.	--	GAP.y-Mod	--	--	512
 #519	--	Clause-Comp	--	--	520
 #520	--	VP-Head	--	--	521
 #521	--	Clause	--	--	0
-#EOS 88
-#BOS 89
+#EOS 75
+#BOS 76
 I	--	Npro-Head	--	--	500
 just	--	Adv-Head	--	--	502
 need	--	V-Head	--	--	509
@@ -4934,8 +4127,8 @@ votes	--	N-Head	--	--	504
 #509	--	VP-Head	--	--	510
 #510	--	VP-Head	--	--	511
 #511	--	Clause	--	--	0
-#EOS 89
-#BOS 90
+#EOS 76
+#BOS 77
 I	--	Npro-Head	--	--	500
 'm	--	Vaux-Head	--	--	510
 muting	--	V-Head	--	--	502
@@ -4993,8 +4186,8 @@ ghost	--	N-Head	--	--	526
 #533	--	Clause-Head	--	--	534
 #534	--	Clause-Coordinate	--	--	535
 #535	--	Coordination	--	--	0
-#EOS 90
-#BOS 91
+#EOS 77
+#BOS 78
 it	--	Npro-Head	--	--	500
 's	--	Vaux-Head	--	--	529
 giving	--	V-Head	--	--	527
@@ -5048,8 +4241,8 @@ _.	--	GAP.z-Obj	--	--	522
 #528	--	Clause-Comp	--	--	529
 #529	--	VP-Head	--	--	530
 #530	--	Clause	--	--	0
-#EOS 91
-#BOS 92
+#EOS 78
+#BOS 79
 the	--	D-Head	--	--	500
 discourse	--	N-Head	--	--	504
 on	--	P-Head	--	--	503
@@ -5094,8 +4287,8 @@ pronouns	--	N-Head	--	--	520
 #524	--	Clause-Comp	--	--	525
 #525	--	PP-Supplement	--	--	526
 #526	--	Clause	--	--	0
-#EOS 92
-#BOS 93
+#EOS 79
+#BOS 80
 the	--	D-Head	--	--	500
 artist	--	N-Head	--	--	507
 formerly	--	Adv-Head	--	--	501
@@ -5111,8 +4304,8 @@ LUCA	--	N-Head	--	--	502
 #506	--	Clause-Mod	--	--	507
 #507	--	Nom-Head	--	--	508
 #508	--	NP	--	--	0
-#EOS 93
-#BOS 94
+#EOS 80
+#BOS 81
 I	--	Npro-Head	--	--	500
 mean	--	V-Head	--	--	514
 yeah	--	Int-Head	--	--	502
@@ -5156,8 +4349,8 @@ word	--	N-Head	--	--	519
 #522	--	Clause-Head	--	--	523
 #523	--	Clause-Coordinate	--	--	524
 #524	--	Coordination	--	--	0
-#EOS 94
-#BOS 95
+#EOS 81
+#BOS 82
 that	--	D-Head	--	--	500
 is	--	Vaux-Head	--	--	534
 such	--	Adj-Head	--	--	503
@@ -5217,8 +4410,8 @@ reasonable	--	Adj-Head	--	--	514
 #533	--	NP-PredComp	--	--	534
 #534	--	VP-Head	--	--	535
 #535	--	Clause	--	--	0
-#EOS 95
-#BOS 96
+#EOS 82
+#BOS 83
 an	--	D-Head	--	--	500
 abstract	--	Adj-Head	--	--	501
 syntax	--	N-Head	--	--	502
@@ -5274,8 +4467,8 @@ nature	--	N-Head	--	--	520
 #530	--	PP-Mod	--	--	531
 #531	--	VP-Head	--	--	532
 #532	--	Clause	--	--	0
-#EOS 96
-#BOS 97
+#EOS 83
+#BOS 84
 no	--	D-Head	--	--	500
 society	--	N-Head	--	--	501
 can	--	Vaux-Head	--	--	511
@@ -5333,8 +4526,8 @@ miserable	--	Adj-Head	--	--	526
 #530	--	Clauserel-Head	--	--	531
 #531	--	Clauserel-Supplement	--	--	532
 #532	--	Clause	--	--	0
-#EOS 97
-#BOS 98
+#EOS 84
+#BOS 85
 evidence	--	N-Head	--	--	516
 for	--	P-Head	--	--	515
 convergent	--	Adj-Head	--	--	500
@@ -5364,8 +4557,8 @@ speech	--	N-Head	--	--	508
 #515	--	PP-Comp	--	--	516
 #516	--	Nom-Head	--	--	517
 #517	--	NP	--	--	0
-#EOS 98
-#BOS 99
+#EOS 85
+#BOS 86
 we	--	Npro-Head	--	--	500
 're	--	Vaux-Head	--	--	505
 all	--	D-Head	--	--	502
@@ -5396,8 +4589,8 @@ discrimination	--	N-Head	--	--	511
 #516	--	PP-Mod	--	--	517
 #517	--	VP-Head	--	--	518
 #518	--	Clause	--	--	0
-#EOS 99
-#BOS 100
+#EOS 86
+#BOS 87
 as	--	P-Head	--	--	520
 one	--	D-Head	--	--	500
 of	--	P-Head	--	--	517
@@ -5459,8 +4652,8 @@ _.	--	GAP.y-Obj	--	--	528
 #534	--	Clause-Comp	--	--	535
 #535	--	VP-Head	--	--	536
 #536	--	Clause	--	--	0
-#EOS 100
-#BOS 101
+#EOS 87
+#BOS 88
 at	--	P-Head	--	--	510
 3:15	--	N-Head	--	--	501
 am	--	P-Head	--	--	500
@@ -5507,8 +4700,8 @@ room	--	N-Head	--	--	521
 #524	--	VP-Head	--	--	525
 #525	--	Clause-Head	--	--	526
 #526	--	Clause	--	--	0
-#EOS 101
-#BOS 102
+#EOS 88
+#BOS 89
 maybe	--	Adv-Head	--	--	500
 I	--	Npro-Head	--	--	501
 'm	--	Vaux-Head	--	--	510
@@ -5560,8 +4753,8 @@ _.	--	GAP.x-Mod	--	--	523
 #526	--	Clause-Head	--	--	527
 #527	--	Clause-Coordinate	--	--	528
 #528	--	Coordination	--	--	0
-#EOS 102
-#BOS 103
+#EOS 89
+#BOS 90
 Bangs	--	N-Head	--	--	500
 said	--	V-Head	--	--	533
 these	--	D-Head	--	--	502
@@ -5620,8 +4813,8 @@ died	--	V-Head	--	--	526
 #532	--	Coordination-Comp	--	--	533
 #533	--	VP-Head	--	--	534
 #534	--	Clause	--	--	0
-#EOS 103
-#BOS 104
+#EOS 90
+#BOS 91
 spongy	--	Adj-Head	--	--	500
 and	--	Coordinator-Marker	--	--	502
 sweet	--	Adj-Head	--	--	501
@@ -5651,8 +4844,8 @@ dogs	--	N-Head	--	--	511
 #511	--	Nom-Head	--	--	512
 #512	--	NP-Coordinate	--	--	513
 #513	--	Coordination	--	--	0
-#EOS 104
-#BOS 105
+#EOS 91
+#BOS 92
 about	--	P-Head	--	--	503
 30	--	D-Head	--	--	500
 seconds	--	N-Head	--	--	504
@@ -5701,8 +4894,8 @@ time	--	N-Head	--	--	522
 #527	--	VP-Head	--	--	528
 #528	--	Clause-Head	--	--	529
 #529	--	Clause	--	--	0
-#EOS 105
-#BOS 106
+#EOS 92
+#BOS 93
 here	--	P-Head	--	--	500
 _.	--	GAP.y-Subj	--	--	502
 are	--	Vaux-Head	--	--	501
@@ -5779,8 +4972,8 @@ information	--	N-Head	--	--	539
 #541	--	PP-Head	--	--	542
 #542	--	PP-Supplement	--	--	543
 #543	--	Clause	--	--	0
-#EOS 106
-#BOS 107
+#EOS 93
+#BOS 94
 but	--	Coordinator-Marker	--	--	539
 I	--	Npro-Head	--	--	500
 also	--	Adv-Head	--	--	502
@@ -5848,8 +5041,8 @@ k	--	N-Head	--	--	527
 #537	--	VP-Head	--	--	538
 #538	--	Clause-Head	--	--	539
 #539	--	Clause	--	--	0
-#EOS 107
-#BOS 108
+#EOS 94
+#BOS 95
 I	--	Npro-Head	--	--	500
 'm	--	Vaux-Head	--	--	521
 hoping	--	V-Head	--	--	519
@@ -5924,8 +5117,8 @@ longer	--	Adv-Head	--	--	537
 #542	--	Clause-Comp	--	--	543
 #543	--	PP-Supplement	--	--	544
 #544	--	Clause	--	--	0
-#EOS 108
-#BOS 109
+#EOS 95
+#BOS 96
 if	--	P-Head	--	--	525
 I	--	Npro-Head	--	--	500
 had	--	V-Head	--	--	517
@@ -6004,8 +5197,8 @@ again	--	Adv-Head	--	--	541
 #545	--	PP-Head	--	--	546
 #546	--	PP-Mod	--	--	547
 #547	--	Clause	--	--	0
-#EOS 109
-#BOS 110
+#EOS 96
+#BOS 97
 it	--	Npro-Head	--	--	500
 is	--	Vaux-Head	--	--	503
 not	--	Adv-Head	--	--	502
@@ -6055,8 +5248,8 @@ Iraq	--	N-Head	--	--	515
 #527	--	Clause-ExtraposedSubj	--	--	528
 #528	--	VP-Head	--	--	529
 #529	--	Clause	--	--	0
-#EOS 110
-#BOS 111
+#EOS 97
+#BOS 98
 we	--	Npro-Head	--	--	500
 would	--	Vaux-Head	--	--	522
 still	--	Adv-Head	--	--	502
@@ -6097,8 +5290,8 @@ agreement	--	N-Head	--	--	508
 #521	--	Clause-Comp	--	--	522
 #522	--	VP-Head	--	--	523
 #523	--	Clause	--	--	0
-#EOS 111
-#BOS 112
+#EOS 98
+#BOS 99
 went	--	V-Head	--	--	501
 there	--	P-Head	--	--	500
 yesterday	--	Npro-Head	--	--	502
@@ -6165,8 +5358,8 @@ back	--	N-Head	--	--	529
 #538	--	Clause-Coordinate	--	--	539
 #539	--	Coordination-Supplement	--	--	540
 #540	--	Clause	--	--	0
-#EOS 112
-#BOS 113
+#EOS 99
+#BOS 100
 I	--	Npro-Head	--	--	500
 found	--	V-Head	--	--	527
 my	--	Npro-Head	--	--	502
@@ -6214,8 +5407,8 @@ composed	--	V-Head	--	--	519
 #526	--	Coordination-Obj+PredComp/Comp	--	--	527
 #527	--	VP-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 113
-#BOS 114
+#EOS 100
+#BOS 101
 not	--	Adv-Head	--	--	500
 that	--	Sdr-Marker	--	--	513
 there	--	Npro-Head	--	--	501
@@ -6278,8 +5471,8 @@ area	--	N-Head	--	--	524
 #534	--	Clause-Comp	--	--	535
 #535	--	PP-Supplement	--	--	536
 #536	--	Clause	--	--	0
-#EOS 114
-#BOS 115
+#EOS 101
+#BOS 102
 ,	--	,	--	--	524
 do	--	Vaux.x-Prenucleus	--	--	524
 you	--	Npro-Head	--	--	500
@@ -6322,8 +5515,8 @@ call	--	N-Head	--	--	514
 #522	--	VP-Head	--	--	523
 #523	--	Clause-Head	--	--	524
 #524	--	Clause	--	--	0
-#EOS 115
-#BOS 116
+#EOS 102
+#BOS 103
 HCC's	--	N-Head	--	--	500
 new	--	Adj-Head	--	--	502
 nine	--	N-Head	--	--	503
@@ -6375,8 +5568,8 @@ course	--	N-Head	--	--	521
 #527	--	Clause-Head	--	--	528
 #528	--	Clause-Coordinate	--	--	529
 #529	--	Coordination	--	--	0
-#EOS 116
-#BOS 117
+#EOS 103
+#BOS 104
 Susan	--	N-Flat	--	--	500
 Scott	--	N-Flat	--	--	500
 would	--	Vaux-Head	--	--	531
@@ -6431,8 +5624,8 @@ and	--	Coordinator-Marker	--	--	518
 #530	--	Clause-Comp	--	--	531
 #531	--	VP-Head	--	--	532
 #532	--	Clause	--	--	0
-#EOS 117
-#BOS 118
+#EOS 104
+#BOS 105
 you	--	Npro-Head	--	--	500
 should	--	Vaux-Head	--	--	509
 give	--	V-Head	--	--	507
@@ -6500,8 +5693,8 @@ sitting	--	N-Head	--	--	529
 #538	--	VP-Head	--	--	539
 #539	--	Clause-Supplement	--	--	540
 #540	--	Clause	--	--	0
-#EOS 118
-#BOS 119
+#EOS 105
+#BOS 106
 the	--	D-Head	--	--	500
 bill	--	N-Head	--	--	501
 reduces	--	V-Head	--	--	511
@@ -6566,8 +5759,8 @@ FY05	--	N-Head	--	--	527
 #536	--	PP-Comp	--	--	537
 #537	--	PP-Mod	--	--	538
 #538	--	Clause	--	--	0
-#EOS 119
-#BOS 120
+#EOS 106
+#BOS 107
 Scorpio	--	N-Head	--	--	500
 ,	--	,	--	--	500
 you	--	Npro-Head	--	--	502
@@ -6630,8 +5823,8 @@ transformation	--	N-Head	--	--	528
 #533	--	PP-Head	--	--	534
 #534	--	PP-Supplement	--	--	535
 #535	--	Clause	--	--	0
-#EOS 120
-#BOS 121
+#EOS 107
+#BOS 108
 the	--	D-Head	--	--	500
 corporate	--	Adj-Head	--	--	501
 requirement	--	N-Head	--	--	526
@@ -6681,8 +5874,8 @@ issues	--	N-Head	--	--	518
 #526	--	Nom-Head	--	--	527
 #527	--	Nom-Head	--	--	528
 #528	--	NP	--	--	0
-#EOS 121
-#BOS 122
+#EOS 108
+#BOS 109
 I	--	Npro-Head	--	--	500
 found	--	V-Head	--	--	507
 this	--	D-Head	--	--	502
@@ -6746,8 +5939,8 @@ it	--	Npro-Head	--	--	526
 #536	--	Clause-Coordinate	--	--	537
 #537	--	Coordination-Coordinate	--	--	538
 #538	--	Coordination	--	--	0
-#EOS 122
-#BOS 123
+#EOS 109
+#BOS 110
 he	--	Npro-Head	--	--	500
 could	--	Vaux-Head	--	--	522
 also	--	Adv-Head	--	--	502
@@ -6789,8 +5982,8 @@ things	--	N-Head	--	--	512
 #521	--	Clause-Comp	--	--	522
 #522	--	VP-Head	--	--	523
 #523	--	Clause	--	--	0
-#EOS 123
-#BOS 124
+#EOS 110
+#BOS 111
 we	--	Npro-Head	--	--	500
 also	--	Adv-Head	--	--	502
 own	--	V-Head	--	--	521
@@ -6832,8 +6025,8 @@ thing	--	N-Head	--	--	508
 #521	--	VP-Head	--	--	522
 #522	--	VP-Head	--	--	523
 #523	--	Clause	--	--	0
-#EOS 124
-#BOS 125
+#EOS 111
+#BOS 112
 if	--	P-Head	--	--	508
 that	--	D-Head	--	--	500
 is	--	Vaux-Head	--	--	506
@@ -6869,8 +6062,8 @@ him	--	Npro-Head	--	--	512
 #519	--	VP-Head	--	--	520
 #520	--	Clause-Head	--	--	521
 #521	--	Clause	--	--	0
-#EOS 125
-#BOS 126
+#EOS 112
+#BOS 113
 she	--	Npro-Head	--	--	500
 guided	--	V-Head	--	--	525
 me	--	Npro-Head	--	--	502
@@ -6918,8 +6111,8 @@ abuse	--	N-Head	--	--	514
 #524	--	PP-Comp	--	--	525
 #525	--	VP-Head	--	--	526
 #526	--	Clause	--	--	0
-#EOS 126
-#BOS 127
+#EOS 113
+#BOS 114
 we	--	Npro-Head	--	--	500
 recognize	--	V-Head	--	--	527
 that	--	Sdr-Marker	--	--	526
@@ -6973,8 +6166,8 @@ marriages	--	N-Head	--	--	517
 #526	--	Clause-Comp	--	--	527
 #527	--	VP-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 127
-#BOS 128
+#EOS 114
+#BOS 115
 basically	--	Adv-Head	--	--	500
 Nook	--	N-Head	--	--	501
 Tablet	--	N-Head	--	--	502
@@ -7021,8 +6214,8 @@ microphone	--	N-Head	--	--	519
 #524	--	Coordination-Obj	--	--	525
 #525	--	VP-Head	--	--	526
 #526	--	Clause	--	--	0
-#EOS 128
-#BOS 129
+#EOS 115
+#BOS 116
 Damascus	--	N-Head	--	--	500
 has	--	Vaux-Head	--	--	532
 been	--	Vaux-Head	--	--	530
@@ -7079,8 +6272,8 @@ capabilities	--	N-Head	--	--	517
 #531	--	Clause-Comp	--	--	532
 #532	--	VP-Head	--	--	533
 #533	--	Clause	--	--	0
-#EOS 129
-#BOS 130
+#EOS 116
+#BOS 117
 leaving	--	V-Head	--	--	503
 nails	--	N-Head	--	--	500
 out	--	P-Head	--	--	502
@@ -7119,8 +6312,8 @@ later	--	Adv-Head	--	--	514
 #520	--	Clause-Comp	--	--	521
 #521	--	PP-Mod	--	--	522
 #522	--	VP	--	--	0
-#EOS 130
-#BOS 131
+#EOS 117
+#BOS 118
 (	--	(	--	--	500
 two	--	D-Head	--	--	500
 people	--	N-Head	--	--	505
@@ -7173,8 +6366,8 @@ alone	--	Adv-Head	--	--	523
 #528	--	Clause-Head	--	--	529
 #529	--	Clause-Coordinate	--	--	530
 #530	--	Coordination	--	--	0
-#EOS 131
-#BOS 132
+#EOS 118
+#BOS 119
 on	--	P-Head	--	--	514
 a	--	D-Head	--	--	500
 recent	--	Adj-Head	--	--	501
@@ -7230,8 +6423,8 @@ competition	--	N-Head	--	--	526
 #530	--	VP-Head	--	--	531
 #531	--	Clause-Head	--	--	532
 #532	--	Clause	--	--	0
-#EOS 132
-#BOS 133
+#EOS 119
+#BOS 120
 I	--	Npro-Head	--	--	500
 've	--	Vaux-Head	--	--	515
 been	--	Vaux-Head	--	--	513
@@ -7284,8 +6477,8 @@ best	--	Adj-Head	--	--	523
 #529	--	Clause-Head	--	--	530
 #530	--	Clause-Coordinate	--	--	531
 #531	--	Coordination	--	--	0
-#EOS 133
-#BOS 134
+#EOS 120
+#BOS 121
 this	--	D-Head	--	--	500
 weekend	--	N-Head	--	--	501
 I	--	Npro-Head	--	--	503
@@ -7322,8 +6515,8 @@ business	--	N-Head	--	--	515
 #519	--	VP-Head	--	--	520
 #520	--	Clause-Head	--	--	521
 #521	--	Clause	--	--	0
-#EOS 134
-#BOS 135
+#EOS 121
+#BOS 122
 53	--	D-Head	--	--	500
 -	--	HYPH	--	--	500
 number	--	N-Head	--	--	510
@@ -7388,8 +6581,8 @@ _.	--	GAP.x-Mod	--	--	533
 #536	--	Nom-Head	--	--	537
 #537	--	NP-Supplement	--	--	538
 #538	--	NP	--	--	0
-#EOS 135
-#BOS 136
+#EOS 122
+#BOS 123
 so	--	Coordinator-Marker	--	--	539
 yes	--	Adv-Head	--	--	500
 ,	--	,	--	--	500
@@ -7457,8 +6650,8 @@ help	--	N-Head	--	--	534
 #537	--	VP-Head	--	--	538
 #538	--	Clause-Supplement	--	--	539
 #539	--	Clause	--	--	0
-#EOS 136
-#BOS 137
+#EOS 123
+#BOS 124
 the	--	D-Head	--	--	500
 AR	--	N-Head	--	--	501
 /	--	Coordinator-Marker	--	--	503
@@ -7522,8 +6715,8 @@ Q1	--	N-Head	--	--	524
 #535	--	PP-Mod	--	--	536
 #536	--	VP-Head	--	--	537
 #537	--	Clause	--	--	0
-#EOS 137
-#BOS 138
+#EOS 124
+#BOS 125
 requests	--	N-Head	--	--	504
 like	--	P-Head	--	--	503
 that	--	D-Head	--	--	500
@@ -7582,8 +6775,8 @@ and	--	Coordinator-Marker	--	--	525
 #531	--	NP.y-Postnucleus	--	--	532
 #532	--	Clause-Head	--	--	533
 #533	--	Clause	--	--	0
-#EOS 138
-#BOS 139
+#EOS 125
+#BOS 126
 American	--	Adj-Head	--	--	500
 citizens	--	N-Head	--	--	501
 have	--	Vaux-Head	--	--	503
@@ -7647,8 +6840,8 @@ battlefield	--	N-Head	--	--	530
 #536	--	Clause.x-Postnucleus	--	--	537
 #537	--	VP-Head	--	--	538
 #538	--	Clause	--	--	0
-#EOS 139
-#BOS 140
+#EOS 126
+#BOS 127
 I	--	Npro-Head	--	--	500
 'm	--	Vaux-Head	--	--	503
 not	--	Adv-Head	--	--	502
@@ -7690,8 +6883,8 @@ maybe	--	Adv-Head	--	--	517
 #521	--	PP-Head	--	--	522
 #522	--	PP-Supplement	--	--	523
 #523	--	Clause	--	--	0
-#EOS 140
-#BOS 141
+#EOS 127
+#BOS 128
 this	--	D-Head	--	--	500
 place	--	N-Head	--	--	501
 is	--	Vaux-Head	--	--	511
@@ -7749,8 +6942,8 @@ people	--	N-Head	--	--	523
 #531	--	Clause-Head	--	--	532
 #532	--	Clause-Coordinate	--	--	533
 #533	--	Coordination	--	--	0
-#EOS 141
-#BOS 142
+#EOS 128
+#BOS 129
 billing	--	N-Head	--	--	500
 takes	--	V-Head	--	--	505
 15	--	D-Head	--	--	502
@@ -7781,8 +6974,8 @@ training	--	N-Head	--	--	513
 #516	--	Clause-Head	--	--	517
 #517	--	Clause-Coordinate	--	--	518
 #518	--	Coordination	--	--	0
-#EOS 142
-#BOS 143
+#EOS 129
+#BOS 130
 how	--	Adv-Head	--	--	500
 fast	--	Adj-Head	--	--	501
 do	--	Vaux.y-Prenucleus	--	--	514
@@ -7810,8 +7003,8 @@ _.	--	GAP.x-Mod	--	--	510
 #513	--	Clause-Head	--	--	514
 #514	--	Clause-Head	--	--	515
 #515	--	Clause	--	--	0
-#EOS 143
-#BOS 144
+#EOS 130
+#BOS 131
 plus	--	Coordinator-Marker	--	--	534
 the	--	D-Head	--	--	500
 drinks	--	N-Head	--	--	501
@@ -7871,8 +7064,8 @@ water	--	N-Head	--	--	521
 #532	--	VP-Head	--	--	533
 #533	--	Clause-Supplement	--	--	534
 #534	--	Clause	--	--	0
-#EOS 144
-#BOS 145
+#EOS 131
+#BOS 132
 clearly	--	Adv-Head	--	--	500
 ,	--	,	--	--	500
 the	--	D-Head	--	--	501
@@ -7926,8 +7119,8 @@ panel	--	N-Head	--	--	516
 #528	--	Clause-Comp	--	--	529
 #529	--	VP-Head	--	--	530
 #530	--	Clause	--	--	0
-#EOS 145
-#BOS 146
+#EOS 132
+#BOS 133
 sometimes	--	Adv-Head	--	--	500
 it	--	Npro-Head	--	--	501
 is	--	Vaux-Head	--	--	504
@@ -7998,8 +7191,8 @@ money	--	N-Head	--	--	528
 #541	--	VP-Head	--	--	542
 #542	--	Clause-Head	--	--	543
 #543	--	Clause	--	--	0
-#EOS 146
-#BOS 147
+#EOS 133
+#BOS 134
 Khalid	--	N-Flat	--	--	500
 Mohammed	--	N-Flat	--	--	500
 then	--	P-Head	--	--	503
@@ -8055,8 +7248,8 @@ plans	--	N-Head	--	--	520
 #530	--	VP-Head	--	--	531
 #531	--	VP-Head	--	--	532
 #532	--	Clause	--	--	0
-#EOS 147
-#BOS 148
+#EOS 134
+#BOS 135
 I	--	Npro-Head	--	--	500
 think	--	V-Head	--	--	522
 that	--	Sdr-Marker	--	--	521
@@ -8096,8 +7289,8 @@ males	--	N-Head	--	--	514
 #521	--	Clause-Comp	--	--	522
 #522	--	VP-Head	--	--	523
 #523	--	Clause	--	--	0
-#EOS 148
-#BOS 149
+#EOS 135
+#BOS 136
 5	--	D-Head	--	--	500
 -	--	HYPH	--	--	500
 estimated	--	V-Head	--	--	502
@@ -8146,8 +7339,8 @@ planes	--	N-Head	--	--	516
 #525	--	Nom-Head	--	--	526
 #526	--	NP-Supplement	--	--	527
 #527	--	NP	--	--	0
-#EOS 149
-#BOS 150
+#EOS 136
+#BOS 137
 we	--	Npro-Head	--	--	500
 've	--	Vaux-Head	--	--	529
 had	--	V-Head	--	--	527
@@ -8197,8 +7390,8 @@ Florida	--	N-Head	--	--	517
 #528	--	Clause-Comp	--	--	529
 #529	--	VP-Head	--	--	530
 #530	--	Clause	--	--	0
-#EOS 150
-#BOS 151
+#EOS 137
+#BOS 138
 but	--	Coordinator-Marker	--	--	535
 there	--	Npro-Head	--	--	500
 are	--	Vaux-Head	--	--	533
@@ -8259,8 +7452,8 @@ making	--	N-Head	--	--	523
 #533	--	VP-Head	--	--	534
 #534	--	Clause-Head	--	--	535
 #535	--	Clause	--	--	0
-#EOS 151
-#BOS 152
+#EOS 138
+#BOS 139
 that	--	D-Head	--	--	500
 rejection	--	N-Head	--	--	501
 got	--	V-Head	--	--	536
@@ -8324,8 +7517,8 @@ _.	--	GAP.x-Mod	--	--	530
 #535	--	PP-Comp	--	--	536
 #536	--	VP-Head	--	--	537
 #537	--	Clause	--	--	0
-#EOS 152
-#BOS 153
+#EOS 139
+#BOS 140
 will	--	Vaux.x-Prenucleus	--	--	535
 we	--	Npro-Head	--	--	500
 _.	--	GAP.x-Head	--	--	533
@@ -8385,8 +7578,8 @@ disregard	--	N-Head	--	--	521
 #533	--	Clause-Head	--	--	534
 #534	--	Clause-Head	--	--	535
 #535	--	Clause	--	--	0
-#EOS 153
-#BOS 154
+#EOS 140
+#BOS 141
 I	--	Npro-Head	--	--	500
 have	--	Vaux-Head	--	--	503
 never	--	Adv-Head	--	--	502
@@ -8425,8 +7618,8 @@ help	--	V-Head	--	--	521
 #521	--	VP-Head	--	--	522
 #522	--	Clause-Supplement	--	--	523
 #523	--	Clause	--	--	0
-#EOS 154
-#BOS 155
+#EOS 141
+#BOS 142
 Dr.	--	N-Head	--	--	500
 Obina	--	N-Head	--	--	501
 told	--	V-Head	--	--	530
@@ -8478,8 +7671,8 @@ Monday	--	N-Head	--	--	522
 #529	--	Coordination-Comp	--	--	530
 #530	--	VP-Head	--	--	531
 #531	--	Clause	--	--	0
-#EOS 155
-#BOS 156
+#EOS 142
+#BOS 143
 but	--	Coordinator-Marker	--	--	520
 other	--	Adj-Head	--	--	500
 people	--	N-Head	--	--	501
@@ -8559,8 +7752,8 @@ him	--	Npro-Head	--	--	534
 #545	--	Clause-Head	--	--	546
 #546	--	Clause-Coordinate	--	--	547
 #547	--	Coordination	--	--	0
-#EOS 156
-#BOS 157
+#EOS 143
+#BOS 144
 per	--	P-Head	--	--	508
 our	--	Npro-Head	--	--	500
 conversation	--	N-Head	--	--	506
@@ -8621,8 +7814,8 @@ above	--	P-Head	--	--	524
 #533	--	Coordination.x-Postnucleus	--	--	534
 #534	--	Clause-Head	--	--	535
 #535	--	Clause	--	--	0
-#EOS 157
-#BOS 158
+#EOS 144
+#BOS 145
 Cranmore	--	N-Head	--	--	500
 Dental	--	Adj-Head	--	--	501
 and	--	Coordinator-Marker	--	--	503
@@ -8660,8 +7853,8 @@ enough	--	D-Head	--	--	516
 #519	--	VP-Head	--	--	520
 #520	--	Clause-Supplement	--	--	521
 #521	--	NP	--	--	0
-#EOS 158
-#BOS 159
+#EOS 145
+#BOS 146
 this	--	D-Head	--	--	500
 person	--	N-Head	--	--	501
 is	--	Vaux-Head	--	--	504
@@ -8735,8 +7928,8 @@ identity	--	N-Head	--	--	531
 #543	--	VP-Head	--	--	544
 #544	--	Clause-Supplement	--	--	545
 #545	--	Clause	--	--	0
-#EOS 159
-#BOS 160
+#EOS 146
+#BOS 147
 they	--	Npro-Head	--	--	500
 were	--	Vaux-Head	--	--	503
 accommodating	--	Adj-Head	--	--	502
@@ -8784,8 +7977,8 @@ surgery	--	N-Head	--	--	517
 #526	--	VP-Coordinate	--	--	527
 #527	--	Coordination-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 160
-#BOS 161
+#EOS 147
+#BOS 148
 Mike	--	N-Flat	--	--	500
 Day	--	N-Flat	--	--	500
 ,	--	,	--	--	500
@@ -8822,8 +8015,8 @@ behalf	--	N-Head	--	--	514
 #518	--	Clause-Comp	--	--	519
 #519	--	VP-Head	--	--	520
 #520	--	Clause	--	--	0
-#EOS 161
-#BOS 162
+#EOS 148
+#BOS 149
 I	--	Npro-Head	--	--	500
 have	--	Vaux-Head	--	--	517
 used	--	V-Head	--	--	509
@@ -8880,8 +8073,8 @@ dogs	--	N-Head	--	--	527
 #533	--	Clause-Head	--	--	534
 #534	--	Clause-Coordinate	--	--	535
 #535	--	Coordination	--	--	0
-#EOS 162
-#BOS 163
+#EOS 149
+#BOS 150
 as	--	P-Head	--	--	504
 we	--	Npro-Head	--	--	500
 discussed	--	V-Head	--	--	502
@@ -8930,8 +8123,8 @@ issue	--	N-Head	--	--	519
 #526	--	NP-PredComp	--	--	527
 #527	--	VP-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 163
-#BOS 164
+#EOS 150
+#BOS 151
 2	--	N-Head	--	--	500
 )	--	)	--	--	500
 the	--	D-Head	--	--	502
@@ -8979,8 +8172,8 @@ argumentative	--	Adj-Head	--	--	516
 #524	--	VP-Coordinate	--	--	525
 #525	--	Coordination-Head	--	--	526
 #526	--	Clause	--	--	0
-#EOS 164
-#BOS 165
+#EOS 151
+#BOS 152
 also	--	Adv-Head	--	--	500
 ,	--	,	--	--	500
 Sinh	--	N-Head	--	--	501
@@ -9017,8 +8210,8 @@ reputable	--	Adj-Head	--	--	515
 #517	--	VP-Coordinate	--	--	518
 #518	--	Coordination-Head	--	--	519
 #519	--	Clause	--	--	0
-#EOS 165
-#BOS 166
+#EOS 152
+#BOS 153
 (	--	(	--	--	500
 I	--	Npro-Head	--	--	500
 know	--	V-Head	--	--	520
@@ -9058,8 +8251,8 @@ eat	--	V-Head	--	--	515
 #519	--	Clause-Comp	--	--	520
 #520	--	VP-Head	--	--	521
 #521	--	Clause	--	--	0
-#EOS 166
-#BOS 167
+#EOS 153
+#BOS 154
 I	--	Npro-Head	--	--	500
 'll	--	Vaux-Head	--	--	528
 send	--	V-Head	--	--	515
@@ -9109,8 +8302,8 @@ it	--	Npro-Head	--	--	520
 #527	--	Clause-Comp	--	--	528
 #528	--	VP-Head	--	--	529
 #529	--	Clause	--	--	0
-#EOS 167
-#BOS 168
+#EOS 154
+#BOS 155
 I	--	Npro-Head	--	--	500
 figured	--	V-Head	--	--	509
 it	--	Npro-Head	--	--	502
@@ -9149,8 +8342,8 @@ in	--	P-Head	--	--	515
 #520	--	Clause-Head	--	--	521
 #521	--	Clause-Coordinate	--	--	522
 #522	--	Coordination	--	--	0
-#EOS 168
-#BOS 169
+#EOS 155
+#BOS 156
 I	--	Npro-Head	--	--	500
 don't	--	Vaux-Head	--	--	520
 think	--	V-Head	--	--	518
@@ -9203,8 +8396,8 @@ grain	--	N-Head	--	--	525
 #530	--	Clause-Comp	--	--	531
 #531	--	PP-Mod	--	--	532
 #532	--	Clause	--	--	0
-#EOS 169
-#BOS 170
+#EOS 156
+#BOS 157
 what	--	Npro-Head	--	--	500
 we	--	Npro-Head	--	--	502
 are	--	Vaux-Head	--	--	509
@@ -9262,8 +8455,8 @@ place	--	N-Head	--	--	524
 #532	--	Clause-Comp	--	--	533
 #533	--	VP-Head	--	--	534
 #534	--	Clause	--	--	0
-#EOS 170
-#BOS 171
+#EOS 157
+#BOS 158
 they	--	Npro-Head	--	--	500
 will	--	Vaux-Head	--	--	504
 move	--	V-Head	--	--	502
@@ -9328,8 +8521,8 @@ costs	--	N-Head	--	--	525
 #536	--	VP-Head	--	--	537
 #537	--	Clause-Supplement	--	--	538
 #538	--	Clause	--	--	0
-#EOS 171
-#BOS 172
+#EOS 158
+#BOS 159
 if	--	P-Head	--	--	518
 you	--	Npro-Head	--	--	500
 have	--	V-Head	--	--	505
@@ -9393,8 +8586,8 @@ at	--	P-Head	--	--	532
 #536	--	VP-Head	--	--	537
 #537	--	VP-Head	--	--	538
 #538	--	Clause	--	--	0
-#EOS 172
-#BOS 173
+#EOS 159
+#BOS 160
 this	--	D-Head	--	--	500
 can	--	Vaux-Head	--	--	504
 also	--	Adv-Head	--	--	503
@@ -9428,8 +8621,8 @@ influence	--	N-Head	--	--	511
 #515	--	Clause-Comp	--	--	516
 #516	--	VP-Head	--	--	517
 #517	--	Clause	--	--	0
-#EOS 173
-#BOS 174
+#EOS 160
+#BOS 161
 not	--	Adv-Head	--	--	500
 only	--	Adv-Head	--	--	501
 did	--	Vaux.x-Prenucleus	--	--	521
@@ -9485,8 +8678,8 @@ moving	--	V-Head	--	--	529
 #531	--	VP-Head	--	--	532
 #532	--	Clause-Coordinate	--	--	533
 #533	--	Coordination	--	--	0
-#EOS 174
-#BOS 175
+#EOS 161
+#BOS 162
 this	--	D-Head	--	--	500
 is	--	Vaux-Head	--	--	504
 really	--	Adv-Head	--	--	503
@@ -9549,8 +8742,8 @@ hoax	--	N-Head	--	--	528
 #536	--	VP-Coordinate	--	--	537
 #537	--	Coordination-Head	--	--	538
 #538	--	Clause	--	--	0
-#EOS 175
-#BOS 176
+#EOS 162
+#BOS 163
 Nigel	--	N-Head	--	--	504
 from	--	P-Head	--	--	503
 Nidd	--	N-Head	--	--	500
@@ -9618,8 +8811,8 @@ applications	--	N-Head	--	--	530
 #536	--	NP-Obj	--	--	537
 #537	--	PP-Supplement	--	--	538
 #538	--	Clause	--	--	0
-#EOS 176
-#BOS 177
+#EOS 163
+#BOS 164
 he	--	Npro-Head	--	--	500
 was	--	Vaux-Head	--	--	513
 incredibly	--	Adv-Head	--	--	502
@@ -9672,8 +8865,8 @@ _.	--	GAP.y-Obj	--	--	517
 #527	--	VP-Head	--	--	528
 #528	--	Clause-Supplement	--	--	529
 #529	--	Clause	--	--	0
-#EOS 177
-#BOS 178
+#EOS 164
+#BOS 165
 they	--	Npro-Head	--	--	500
 are	--	Vaux-Head	--	--	512
 preparing	--	V-Head	--	--	510
@@ -9730,8 +8923,8 @@ day	--	N-Head	--	--	526
 #532	--	Clause-Head	--	--	533
 #533	--	Clause-Coordinate	--	--	534
 #534	--	Coordination	--	--	0
-#EOS 178
-#BOS 179
+#EOS 165
+#BOS 166
 the	--	D-Head	--	--	500
 most	--	Adv-Head	--	--	501
 fundamental	--	Adj-Head	--	--	502
@@ -9803,8 +8996,8 @@ beings	--	N-Head	--	--	528
 #538	--	NP-PredComp	--	--	539
 #539	--	VP-Head	--	--	540
 #540	--	Clause	--	--	0
-#EOS 179
-#BOS 180
+#EOS 166
+#BOS 167
 if	--	P-Head	--	--	505
 ever	--	Adv-Head	--	--	500
 in	--	P-Head	--	--	503
@@ -9850,8 +9043,8 @@ _.	--	GAP.x-Mod	--	--	518
 #523	--	VP-Head	--	--	524
 #524	--	VP-Head	--	--	525
 #525	--	Clause	--	--	0
-#EOS 180
-#BOS 181
+#EOS 167
+#BOS 168
 2.3m	--	D-Head	--	--	500
 -	--	HYPH	--	--	500
 number	--	N-Head	--	--	527
@@ -9901,8 +9094,8 @@ administration	--	N-Head	--	--	515
 #527	--	Nom-Head	--	--	528
 #528	--	NP-Supplement	--	--	529
 #529	--	NP	--	--	0
-#EOS 181
-#BOS 182
+#EOS 168
+#BOS 169
 he	--	Npro-Head	--	--	500
 could	--	Vaux-Head	--	--	541
 bear	--	V-Head	--	--	502
@@ -9976,8 +9169,8 @@ abyss	--	N-Head	--	--	521
 #540	--	Clause-Comp	--	--	541
 #541	--	VP-Head	--	--	542
 #542	--	Clause	--	--	0
-#EOS 182
-#BOS 183
+#EOS 169
+#BOS 170
 you	--	Npro-Head	--	--	500
 need	--	V-Head	--	--	531
 to	--	Sdr-Marker	--	--	529
@@ -10033,8 +9226,8 @@ Hospital	--	N-Head	--	--	517
 #530	--	Clause-Comp	--	--	531
 #531	--	VP-Head	--	--	532
 #532	--	Clause	--	--	0
-#EOS 183
-#BOS 184
+#EOS 170
+#BOS 171
 they	--	Npro-Head	--	--	500
 trust	--	V-Head	--	--	529
 you	--	Npro-Head	--	--	502
@@ -10087,8 +9280,8 @@ wilt	--	Vaux-Head	--	--	520
 #528	--	Clause-Comp	--	--	529
 #529	--	VP-Head	--	--	530
 #530	--	Clause	--	--	0
-#EOS 184
-#BOS 185
+#EOS 171
+#BOS 172
 Linda	--	N-Flat	--	--	500
 Robertson	--	N-Flat	--	--	500
 says	--	V-Head	--	--	521
@@ -10127,8 +9320,8 @@ etc.	--	Coordinator-MarkerHead	--	--	511
 #520	--	Clause-Comp	--	--	521
 #521	--	VP-Head	--	--	522
 #522	--	Clause	--	--	0
-#EOS 185
-#BOS 186
+#EOS 172
+#BOS 173
 we	--	Npro-Head	--	--	500
 played	--	V-Head	--	--	527
 a	--	D-Head	--	--	502
@@ -10183,8 +9376,8 @@ challenging	--	Adj-Head	--	--	519
 #526	--	NP-Obj	--	--	527
 #527	--	VP-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 186
-#BOS 187
+#EOS 173
+#BOS 174
 and	--	Coordinator-Marker	--	--	525
 now	--	P-Head	--	--	500
 they	--	Npro-Head	--	--	501
@@ -10227,8 +9420,8 @@ only	--	Adv-Head	--	--	517
 #523	--	Clause-Head	--	--	524
 #524	--	Clause-Head	--	--	525
 #525	--	Clause	--	--	0
-#EOS 187
-#BOS 188
+#EOS 174
+#BOS 175
 you	--	Npro-Head	--	--	500
 can	--	Vaux-Head	--	--	529
 find	--	V-Head	--	--	509
@@ -10281,8 +9474,8 @@ upstairs	--	P-Head	--	--	524
 #528	--	Coordination-Comp	--	--	529
 #529	--	VP-Head	--	--	530
 #530	--	Clause	--	--	0
-#EOS 188
-#BOS 189
+#EOS 175
+#BOS 176
 Mr.	--	N-Head	--	--	500
 Murph	--	N-Flat	--	--	501
 Archibald	--	N-Flat	--	--	501
@@ -10340,8 +9533,8 @@ mid-evenings	--	N-Head	--	--	523
 #529	--	Coordination-Comp	--	--	530
 #530	--	VP-Head	--	--	531
 #531	--	Clause	--	--	0
-#EOS 189
-#BOS 190
+#EOS 176
+#BOS 177
 10	--	D-Flat	--	--	500
 m	--	D-Flat	--	--	500
 $	--	N-Head	--	--	502
@@ -10377,8 +9570,8 @@ budget	--	N-Head	--	--	511
 #517	--	Nom-Head	--	--	518
 #518	--	NP-Supplement	--	--	519
 #519	--	NP	--	--	0
-#EOS 190
-#BOS 191
+#EOS 177
+#BOS 178
 they	--	Npro-Head	--	--	500
 have	--	Vaux-Head	--	--	517
 sent	--	V-Head	--	--	515
@@ -10448,8 +9641,8 @@ Al-Sahhaf	--	N-Head	--	--	533
 #539	--	Clause-Head	--	--	540
 #540	--	Clause-Coordinate	--	--	541
 #541	--	Coordination	--	--	0
-#EOS 191
-#BOS 192
+#EOS 178
+#BOS 179
 or	--	Coordinator-Marker	--	--	527
 ,	--	,	--	--	527
 as	--	P-Head	--	--	512
@@ -10499,8 +9692,8 @@ well	--	Adv-Head	--	--	521
 #525	--	VP-Head	--	--	526
 #526	--	Clause-Head	--	--	527
 #527	--	Clause	--	--	0
-#EOS 192
-#BOS 193
+#EOS 179
+#BOS 180
 West	--	N-Head	--	--	500
 Nile	--	N-Head	--	--	501
 can	--	Vaux-Head	--	--	510
@@ -10537,8 +9730,8 @@ fever	--	N-Head	--	--	514
 #519	--	VP-Coordinate	--	--	520
 #520	--	Coordination-Head	--	--	521
 #521	--	Clause	--	--	0
-#EOS 193
-#BOS 194
+#EOS 180
+#BOS 181
 he	--	Npro-Head	--	--	500
 has	--	V-Head	--	--	516
 encyclopedic	--	Adj-Head	--	--	502
@@ -10591,8 +9784,8 @@ memory	--	N-Head	--	--	523
 #529	--	Clause-Head	--	--	530
 #530	--	Clause-Coordinate	--	--	531
 #531	--	Coordination	--	--	0
-#EOS 194
-#BOS 195
+#EOS 181
+#BOS 182
 the	--	D-Head	--	--	500
 ability	--	N-Head	--	--	509
 to	--	Sdr-Marker	--	--	507
@@ -10641,8 +9834,8 @@ life	--	N-Head	--	--	516
 #526	--	Clause-Comp	--	--	527
 #527	--	VP-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 195
-#BOS 196
+#EOS 182
+#BOS 183
 dining	--	V-Head	--	--	500
 room	--	N-Head	--	--	501
 we	--	Npro-Head	--	--	503
@@ -10689,8 +9882,8 @@ Seas	--	N-Head	--	--	512
 #524	--	NP-Obj	--	--	525
 #525	--	VP-Head	--	--	526
 #526	--	Clause	--	--	0
-#EOS 196
-#BOS 197
+#EOS 183
+#BOS 184
 he	--	Npro-Head	--	--	500
 doesn't	--	Vaux-Head	--	--	503
 just	--	Adv-Head	--	--	502
@@ -10755,8 +9948,8 @@ there	--	P-Head	--	--	531
 #538	--	Clause-Head	--	--	539
 #539	--	Clause-Coordinate	--	--	540
 #540	--	Coordination	--	--	0
-#EOS 197
-#BOS 198
+#EOS 184
+#BOS 185
 if	--	P-Head	--	--	511
 you	--	Npro-Head	--	--	500
 ever	--	Adv-Head	--	--	502
@@ -10827,8 +10020,8 @@ sailing	--	V-Head	--	--	525
 #538	--	VP-Head	--	--	539
 #539	--	Clause-Head	--	--	540
 #540	--	Clause	--	--	0
-#EOS 198
-#BOS 199
+#EOS 185
+#BOS 186
 I	--	Npro-Head	--	--	500
 rarely	--	Adv-Head	--	--	502
 listen	--	V-Head	--	--	523
@@ -10914,8 +10107,8 @@ point	--	N-Head	--	--	545
 #552	--	PP-Mod	--	--	553
 #553	--	VP-Head	--	--	554
 #554	--	Clause	--	--	0
-#EOS 199
-#BOS 200
+#EOS 186
+#BOS 187
 I	--	Npro-Head	--	--	500
 know	--	V-Head	--	--	531
 that	--	Sdr-Marker	--	--	530
@@ -10969,8 +10162,8 @@ Doors	--	N-Head	--	--	520
 #530	--	Clause-Comp	--	--	531
 #531	--	VP-Head	--	--	532
 #532	--	Clause	--	--	0
-#EOS 200
-#BOS 201
+#EOS 187
+#BOS 188
 NZers	--	N-Head	--	--	500
 :	--	:	--	--	500
 have	--	Vaux.y-Prenucleus	--	--	521
@@ -11008,8 +10201,8 @@ _.	--	GAP.x-Obj	--	--	508
 #519	--	VP-Head	--	--	520
 #520	--	Clause-Head	--	--	521
 #521	--	Clause	--	--	0
-#EOS 201
-#BOS 202
+#EOS 188
+#BOS 189
 money	--	N-Head	--	--	500
 can't	--	Vaux-Head	--	--	508
 buy	--	V-Head	--	--	506
@@ -11057,8 +10250,8 @@ misery	--	N-Head	--	--	517
 #526	--	Clause-Head	--	--	527
 #527	--	Clause-Coordinate	--	--	528
 #528	--	Coordination	--	--	0
-#EOS 202
-#BOS 203
+#EOS 189
+#BOS 190
 place	--	N-Head	--	--	500
 is	--	Vaux-Head	--	--	510
 next	--	P-Head	--	--	509
@@ -11079,8 +10272,8 @@ walmart	--	N-Head	--	--	504
 #509	--	PP-Comp	--	--	510
 #510	--	VP-Head	--	--	511
 #511	--	Clause	--	--	0
-#EOS 203
-#BOS 204
+#EOS 190
+#BOS 191
 in_case	--	P-Head	--	--	505
 you	--	Npro-Head	--	--	500
 are	--	Vaux-Head	--	--	503
@@ -11116,8 +10309,8 @@ modeling	--	N-Head	--	--	512
 #517	--	NP-Obj	--	--	518
 #518	--	VP-Head	--	--	519
 #519	--	Clause	--	--	0
-#EOS 204
-#BOS 205
+#EOS 191
+#BOS 192
 I	--	Npro-Head	--	--	500
 have	--	V-Head	--	--	506
 two	--	D-Head	--	--	502
@@ -11161,8 +10354,8 @@ for	--	P-Head	--	--	522
 #525	--	Clause-Coordinate	--	--	526
 #526	--	Coordination-Supplement	--	--	527
 #527	--	Clause	--	--	0
-#EOS 205
-#BOS 206
+#EOS 192
+#BOS 193
 plus	--	Coordinator-Marker	--	--	509
 you	--	Npro-Head	--	--	500
 land	--	V-Head	--	--	507
@@ -11181,8 +10374,8 @@ terminal	--	N-Head	--	--	504
 #507	--	VP-Head	--	--	508
 #508	--	Clause-Head	--	--	509
 #509	--	Clause	--	--	0
-#EOS 206
-#BOS 207
+#EOS 193
+#BOS 194
 visit	--	V-Head	--	--	502
 people	--	N-Head	--	--	500
 only	--	Adv-Head	--	--	503
@@ -11203,8 +10396,8 @@ year	--	N-Head	--	--	506
 #510	--	NP-Mod	--	--	511
 #511	--	VP-Head	--	--	512
 #512	--	Clause	--	--	0
-#EOS 207
-#BOS 208
+#EOS 194
+#BOS 195
 the	--	D-Head	--	--	500
 clerics	--	N-Head	--	--	501
 demanded	--	V-Head	--	--	511
@@ -11227,8 +10420,8 @@ commanders	--	N-Head	--	--	505
 #510	--	NP-Obj	--	--	511
 #511	--	VP-Head	--	--	512
 #512	--	Clause	--	--	0
-#EOS 208
-#BOS 209
+#EOS 195
+#BOS 196
 "	--	*	--	--	500
 our	--	Npro-Head	--	--	500
 plans	--	N-Head	--	--	502
@@ -11313,8 +10506,8 @@ investors	--	N-Head	--	--	532
 #542	--	Clause-Comp	--	--	543
 #543	--	VP-Head	--	--	544
 #544	--	Clause	--	--	0
-#EOS 209
-#BOS 210
+#EOS 196
+#BOS 197
 recommend	--	V-Head	--	--	510
 you	--	Npro-Head	--	--	500
 call	--	V-Head	--	--	503
@@ -11335,8 +10528,8 @@ look	--	N-Head	--	--	505
 #509	--	Clause-Comp	--	--	510
 #510	--	VP-Head	--	--	511
 #511	--	Clause	--	--	0
-#EOS 210
-#BOS 211
+#EOS 197
+#BOS 198
 I	--	Npro-Head	--	--	500
 need	--	V-Head	--	--	509
 something	--	D-Head	--	--	502
@@ -11355,8 +10548,8 @@ good-looking	--	Adj-Head	--	--	504
 #508	--	NP-Obj	--	--	509
 #509	--	VP-Head	--	--	510
 #510	--	Clause	--	--	0
-#EOS 211
-#BOS 212
+#EOS 198
+#BOS 199
 is	--	Vaux.x-Prenucleus	--	--	529
 mazzoni's	--	N-Head	--	--	500
 deli	--	N-Head	--	--	502
@@ -11407,8 +10600,8 @@ country	--	N-Head	--	--	522
 #527	--	VP-Head	--	--	528
 #528	--	Clause-Head	--	--	529
 #529	--	Clause	--	--	0
-#EOS 212
-#BOS 213
+#EOS 199
+#BOS 200
 Bisconti	--	N-Head	--	--	500
 wanted	--	V-Head	--	--	514
 over	--	P-Head	--	--	504
@@ -11457,8 +10650,8 @@ $	--	N-Head	--	--	523
 #527	--	Clause-Head	--	--	528
 #528	--	Clause-Coordinate	--	--	529
 #529	--	Coordination	--	--	0
-#EOS 213
-#BOS 214
+#EOS 200
+#BOS 201
 would	--	Vaux.x-Prenucleus	--	--	508
 this	--	D-Head	--	--	500
 _.	--	GAP.x-Head	--	--	506
@@ -11474,8 +10667,8 @@ fine	--	Adj-Head	--	--	503
 #506	--	VP-Head	--	--	507
 #507	--	Clause-Head	--	--	508
 #508	--	Clause	--	--	0
-#EOS 214
-#BOS 215
+#EOS 201
+#BOS 202
 I	--	Npro-Head	--	--	500
 don't	--	Vaux-Head	--	--	515
 know	--	V-Head	--	--	513
@@ -11505,8 +10698,8 @@ however	--	Adv-Head	--	--	516
 #515	--	VP-Head	--	--	517
 #516	--	AdvP-Supplement	--	--	517
 #517	--	Clause	--	--	0
-#EOS 215
-#BOS 216
+#EOS 202
+#BOS 203
 I	--	Npro-Head	--	--	500
 don't	--	Vaux-Head	--	--	519
 want	--	V-Head	--	--	517
@@ -11542,8 +10735,8 @@ Groupon	--	N-Head	--	--	505
 #518	--	Clause-Comp	--	--	519
 #519	--	VP-Head	--	--	520
 #520	--	Clause	--	--	0
-#EOS 216
-#BOS 217
+#EOS 203
+#BOS 204
 great	--	Adj-Head	--	--	500
 food	--	N-Head	--	--	501
 and	--	Coordinator-Marker	--	--	506
@@ -11565,8 +10758,8 @@ experience	--	N-Head	--	--	509
 #509	--	Nom-Head	--	--	510
 #510	--	NP-Supplement	--	--	511
 #511	--	Coordination	--	--	0
-#EOS 217
-#BOS 218
+#EOS 204
+#BOS 205
 in	--	P-Head	--	--	502
 addition	--	N-Head	--	--	500
 ,	--	,	--	--	500
@@ -11626,8 +10819,8 @@ rate	--	N-Head	--	--	517
 #532	--	VP-Head	--	--	533
 #533	--	Clause-Head	--	--	534
 #534	--	Clause	--	--	0
-#EOS 218
-#BOS 219
+#EOS 205
+#BOS 206
 very	--	Adv-Head	--	--	500
 professional	--	Adj-Head	--	--	501
 and	--	Coordinator-Marker	--	--	505
@@ -11641,8 +10834,8 @@ results	--	N-Head	--	--	503
 #504	--	NP-Head	--	--	505
 #505	--	NP-Coordinate	--	--	506
 #506	--	Coordination	--	--	0
-#EOS 219
-#BOS 220
+#EOS 206
+#BOS 207
 you	--	Npro-Head	--	--	500
 need	--	V-Head	--	--	530
 to	--	Sdr-Marker	--	--	528
@@ -11699,8 +10892,8 @@ War	--	N-Head	--	--	517
 #529	--	Clause-Comp	--	--	530
 #530	--	VP-Head	--	--	531
 #531	--	Clause	--	--	0
-#EOS 220
-#BOS 221
+#EOS 207
+#BOS 208
 Mohammed	--	N-Flat	--	--	500
 Dirie	--	N-Flat	--	--	500
 ,	--	,	--	--	500
@@ -11720,8 +10913,8 @@ Ont.	--	N-Head	--	--	506
 #507	--	NP-Supplement	--	--	508
 #508	--	NP-Supplement	--	--	509
 #509	--	NP	--	--	0
-#EOS 221
-#BOS 222
+#EOS 208
+#BOS 209
 send	--	V-Head	--	--	504
 the	--	D-Head	--	--	500
 revised	--	V-Head	--	--	501
@@ -11739,8 +10932,8 @@ e-mail	--	N-Head	--	--	505
 #507	--	PP-Mod	--	--	508
 #508	--	VP-Head	--	--	509
 #509	--	Clause	--	--	0
-#EOS 222
-#BOS 223
+#EOS 209
+#BOS 210
 I	--	Npro-Head	--	--	500
 like	--	V-Head	--	--	512
 my	--	Npro-Head	--	--	502
@@ -11768,8 +10961,8 @@ sure	--	Adj-Head	--	--	513
 #513	--	AdjP-Comp	--	--	514
 #514	--	PP-Supplement	--	--	515
 #515	--	Clause	--	--	0
-#EOS 223
-#BOS 224
+#EOS 210
+#BOS 211
 but	--	Coordinator-Marker	--	--	508
 we	--	Npro-Head	--	--	500
 can't	--	Vaux-Head	--	--	506
@@ -11785,8 +10978,8 @@ it	--	Npro-Head	--	--	502
 #506	--	VP-Head	--	--	507
 #507	--	Clause-Head	--	--	508
 #508	--	Clause	--	--	0
-#EOS 224
-#BOS 225
+#EOS 211
+#BOS 212
 along	--	P-Head	--	--	505
 with	--	P-Head	--	--	504
 the	--	D-Head	--	--	500
@@ -11829,8 +11022,8 @@ someone	--	D-Head	--	--	516
 #522	--	PP-Mod	--	--	523
 #523	--	VP-Head	--	--	524
 #524	--	Clause	--	--	0
-#EOS 225
-#BOS 226
+#EOS 212
+#BOS 213
 the	--	D-Head	--	--	500
 new	--	Adj-Head	--	--	501
 rocket	--	N-Head	--	--	502
@@ -11920,8 +11113,8 @@ on	--	P-Head	--	--	538
 #551	--	Clause-Comp	--	--	552
 #552	--	VP-Head	--	--	553
 #553	--	Clause	--	--	0
-#EOS 226
-#BOS 227
+#EOS 213
+#BOS 214
 I	--	Npro-Head	--	--	500
 started	--	V-Head	--	--	524
 collecting	--	V-Head	--	--	508
@@ -11963,8 +11156,8 @@ depression	--	N-Head	--	--	513
 #523	--	Clause-Comp	--	--	524
 #524	--	VP-Head	--	--	525
 #525	--	Clause	--	--	0
-#EOS 227
-#BOS 228
+#EOS 214
+#BOS 215
 a	--	D-Head	--	--	500
 pacman	--	N-Head	--	--	501
 frog	--	N-Head	--	--	502
@@ -12039,8 +11232,8 @@ day	--	N-Head	--	--	531
 #542	--	Clause-Comp	--	--	543
 #543	--	VP-Head	--	--	544
 #544	--	Clause	--	--	0
-#EOS 228
-#BOS 229
+#EOS 215
+#BOS 216
 there	--	Npro-Head	--	--	500
 are	--	Vaux-Head	--	--	503
 currently	--	Adv-Head	--	--	502
@@ -12056,8 +11249,8 @@ locations	--	N-Head	--	--	505
 #506	--	NP-DisplacedSubj	--	--	507
 #507	--	VP-Head	--	--	508
 #508	--	Clause	--	--	0
-#EOS 229
-#BOS 230
+#EOS 216
+#BOS 217
 UN	--	N-Head	--	--	500
 Secretary	--	N-Head	--	--	502
 -	--	HYPH	--	--	502
@@ -12136,8 +11329,8 @@ _.	--	GAP.x-Obj	--	--	527
 #541	--	Clause-Comp	--	--	542
 #542	--	PP-Supplement	--	--	543
 #543	--	Clause	--	--	0
-#EOS 230
-#BOS 231
+#EOS 217
+#BOS 218
 here	--	P-Head	--	--	500
 _.	--	GAP.y-Subj	--	--	502
 is	--	Vaux-Head	--	--	501
@@ -12170,8 +11363,8 @@ Francisco	--	N-Flat	--	--	506
 #516	--	NP.y-Postnucleus	--	--	517
 #517	--	Clause-Head	--	--	518
 #518	--	Clause	--	--	0
-#EOS 231
-#BOS 232
+#EOS 218
+#BOS 219
 the	--	D-Head	--	--	500
 apartment	--	N-Head	--	--	501
 only	--	Adv-Head	--	--	503
@@ -12199,8 +11392,8 @@ bad	--	Adj-Head	--	--	511
 #512	--	VP-Head	--	--	513
 #513	--	Clause-Supplement	--	--	514
 #514	--	Clause	--	--	0
-#EOS 232
-#BOS 233
+#EOS 219
+#BOS 220
 lol	--	Int-Head	--	--	500
 ...	--	:	--	--	500
 Kolkata	--	N-Head	--	--	501
@@ -12219,8 +11412,8 @@ sale	--	N-Head	--	--	505
 #507	--	PP-PredComp	--	--	508
 #508	--	VP-Head	--	--	509
 #509	--	Clause	--	--	0
-#EOS 233
-#BOS 234
+#EOS 220
+#BOS 221
 I	--	Npro-Head	--	--	500
 had	--	V-Head	--	--	517
 to	--	Sdr-Marker	--	--	515
@@ -12262,8 +11455,8 @@ joke	--	N-Head	--	--	520
 #521	--	NP-Head	--	--	522
 #522	--	NP-Supplement	--	--	523
 #523	--	Clause	--	--	0
-#EOS 234
-#BOS 235
+#EOS 221
+#BOS 222
 has	--	Vaux.x-Prenucleus	--	--	514
 anyone	--	D-Head	--	--	500
 _.	--	GAP.x-Head	--	--	512
@@ -12289,8 +11482,8 @@ cruises	--	N-Head	--	--	506
 #512	--	VP-Head	--	--	513
 #513	--	Clause-Head	--	--	514
 #514	--	Clause	--	--	0
-#EOS 235
-#BOS 236
+#EOS 222
+#BOS 223
 hopefully	--	Adv-Head	--	--	500
 she	--	Npro-Head	--	--	501
 doesn't	--	Vaux-Head	--	--	507
@@ -12306,8 +11499,8 @@ you	--	Npro-Head	--	--	503
 #506	--	Clause-Comp	--	--	507
 #507	--	VP-Head	--	--	508
 #508	--	Clause	--	--	0
-#EOS 236
-#BOS 237
+#EOS 223
+#BOS 224
 deep	--	Adj-Head	--	--	500
 tissue	--	N-Head	--	--	501
 massage	--	N-Head	--	--	502
@@ -12334,8 +11527,8 @@ shoulders	--	N-Head	--	--	506
 #513	--	PP-Comp	--	--	514
 #514	--	VP-Head	--	--	515
 #515	--	Clause	--	--	0
-#EOS 237
-#BOS 238
+#EOS 224
+#BOS 225
 out	--	P-Head	--	--	509
 of	--	P-Head	--	--	508
 Carnival	--	N-Head	--	--	500
@@ -12376,8 +11569,8 @@ why	--	Adv-Head	--	--	519
 #518	--	VP-Head	--	--	520
 #519	--	AdvP-Supplement	--	--	520
 #520	--	Clause	--	--	0
-#EOS 238
-#BOS 239
+#EOS 225
+#BOS 226
 fast	--	Adj-Head	--	--	500
 food	--	N-Head	--	--	501
 chains	--	N-Head	--	--	502
@@ -12394,8 +11587,8 @@ dairies	--	N-Head	--	--	506
 #506	--	Nom-Head	--	--	507
 #507	--	NP-Coordinate	--	--	508
 #508	--	Coordination	--	--	0
-#EOS 239
-#BOS 240
+#EOS 226
+#BOS 227
 Richard	--	N-Flat	--	--	500
 Harper	--	N-Flat	--	--	500
 and	--	Coordinator-Marker	--	--	506
@@ -12459,8 +11652,8 @@ them	--	Npro-Head	--	--	526
 #536	--	Clause-Head	--	--	537
 #537	--	Clause-Coordinate	--	--	538
 #538	--	Coordination	--	--	0
-#EOS 240
-#BOS 241
+#EOS 227
+#BOS 228
 this	--	D-Head	--	--	500
 BuzzMachine	--	N-Head	--	--	501
 post	--	N-Head	--	--	502
@@ -12537,8 +11730,8 @@ post	--	N-Head	--	--	531
 #542	--	Clause-Comp	--	--	543
 #543	--	VP-Head	--	--	544
 #544	--	Clause	--	--	0
-#EOS 241
-#BOS 242
+#EOS 228
+#BOS 229
 Janette	--	N-Flat	--	--	500
 Elbertson	--	N-Flat	--	--	500
 administrative	--	Adj-Head	--	--	502
@@ -12591,8 +11784,8 @@ janette.elbertson@enron.com	--	N-Head	--	--	524
 #525	--	NP-Supplement	--	--	526
 #526	--	NP-Supplement	--	--	527
 #527	--	NP	--	--	0
-#EOS 242
-#BOS 243
+#EOS 229
+#BOS 230
 how	--	Adv-Head	--	--	500
 do	--	Vaux.y-Prenucleus	--	--	519
 you	--	Npro-Head	--	--	501
@@ -12630,8 +11823,8 @@ _.	--	GAP.x-Mod	--	--	515
 #518	--	Clause-Head	--	--	519
 #519	--	Clause-Head	--	--	520
 #520	--	Clause	--	--	0
-#EOS 243
-#BOS 244
+#EOS 230
+#BOS 231
 is	--	Vaux.y-Prenucleus	--	--	525
 there	--	Npro-Head	--	--	500
 _.	--	GAP.y-Head	--	--	523
@@ -12678,8 +11871,8 @@ Zealand	--	N-Head	--	--	517
 #523	--	VP-Head	--	--	524
 #524	--	Clause-Head	--	--	525
 #525	--	Clause	--	--	0
-#EOS 244
-#BOS 245
+#EOS 231
+#BOS 232
 I	--	Npro-Head	--	--	500
 talked	--	V-Head	--	--	506
 with	--	P-Head	--	--	505
@@ -12718,8 +11911,8 @@ correct	--	Adj-Head	--	--	514
 #519	--	Clause-Head	--	--	520
 #520	--	Clause-Coordinate	--	--	521
 #521	--	Coordination	--	--	0
-#EOS 245
-#BOS 246
+#EOS 232
+#BOS 233
 I	--	Npro-Head	--	--	500
 have	--	V-Head	--	--	507
 a	--	D-Head	--	--	502
@@ -12736,8 +11929,8 @@ question	--	N-Head	--	--	505
 #506	--	NP-Obj	--	--	507
 #507	--	VP-Head	--	--	508
 #508	--	Clause	--	--	0
-#EOS 246
-#BOS 247
+#EOS 233
+#BOS 234
 Umar	--	N-Flat	--	--	500
 Islam	--	N-Flat	--	--	500
 ,	--	,	--	--	500
@@ -12764,8 +11957,8 @@ Wycombe	--	N-Flat	--	--	510
 #511	--	Nom-Head	--	--	512
 #512	--	NP-Supplement	--	--	513
 #513	--	NP	--	--	0
-#EOS 247
-#BOS 248
+#EOS 234
+#BOS 235
 the	--	D-Head	--	--	500
 work	--	N-Head	--	--	501
 was	--	Vaux-Head	--	--	509
@@ -12807,8 +12000,8 @@ completion	--	N-Head	--	--	516
 #522	--	Clause-Head	--	--	523
 #523	--	Clause-Coordinate	--	--	524
 #524	--	Coordination	--	--	0
-#EOS 248
-#BOS 249
+#EOS 235
+#BOS 236
 when	--	P-Head	--	--	509
 I	--	Npro-Head	--	--	500
 tried	--	V-Head	--	--	507
@@ -12862,8 +12055,8 @@ hungry	--	Adj-Head	--	--	522
 #529	--	Clause-Head	--	--	530
 #530	--	Clause-Coordinate	--	--	531
 #531	--	Coordination	--	--	0
-#EOS 249
-#BOS 250
+#EOS 236
+#BOS 237
 I	--	Npro-Head	--	--	500
 can't	--	Vaux-Head	--	--	510
 find	--	V-Head	--	--	508
@@ -12883,8 +12076,8 @@ it	--	Npro-Head	--	--	503
 #509	--	Clause-Comp	--	--	510
 #510	--	VP-Head	--	--	511
 #511	--	Clause	--	--	0
-#EOS 250
-#BOS 251
+#EOS 237
+#BOS 238
 they	--	Npro-Head	--	--	500
 sell	--	V-Head	--	--	505
 these	--	D-Head	--	--	502
@@ -12912,8 +12105,8 @@ stores	--	N-Head	--	--	511
 #513	--	PP-Mod	--	--	514
 #514	--	VP-Head	--	--	515
 #515	--	Clause	--	--	0
-#EOS 251
-#BOS 252
+#EOS 238
+#BOS 239
 great	--	Adj-Head	--	--	500
 job	--	N-Head	--	--	501
 on	--	P-Head	--	--	506
@@ -12941,8 +12134,8 @@ fair	--	Adj-Head	--	--	511
 #513	--	Clause-Head	--	--	514
 #514	--	Clause-Supplement	--	--	515
 #515	--	NP	--	--	0
-#EOS 252
-#BOS 253
+#EOS 239
+#BOS 240
 it	--	Npro-Head	--	--	500
 looks	--	V-Head	--	--	542
 as_if	--	P-Head	--	--	541
@@ -13016,8 +12209,8 @@ proved	--	V-Head	--	--	530
 #541	--	PP-PredComp	--	--	542
 #542	--	VP-Head	--	--	543
 #543	--	Clause	--	--	0
-#EOS 253
-#BOS 254
+#EOS 240
+#BOS 241
 Zakaria	--	N-Flat	--	--	500
 Amara	--	N-Flat	--	--	500
 ,	--	,	--	--	500
@@ -13037,8 +12230,8 @@ Ont.	--	N-Head	--	--	506
 #507	--	NP-Supplement	--	--	508
 #508	--	NP-Supplement	--	--	509
 #509	--	NP	--	--	0
-#EOS 254
-#BOS 255
+#EOS 241
+#BOS 242
 after	--	P-Head	--	--	503
 that	--	D-Head	--	--	500
 point	--	N-Head	--	--	501
@@ -13109,8 +12302,8 @@ Saudi	--	Adj-Head	--	--	528
 #538	--	VP-Head	--	--	539
 #539	--	Clause-Head	--	--	540
 #540	--	Clause	--	--	0
-#EOS 255
-#BOS 256
+#EOS 242
+#BOS 243
 well	--	Int-Head	--	--	500
 ,	--	,	--	--	500
 not	--	Adv-Head	--	--	501
@@ -13152,8 +12345,8 @@ experience	--	N-Head	--	--	515
 #521	--	Clause-Comp	--	--	522
 #522	--	PP-Mod	--	--	523
 #523	--	NP	--	--	0
-#EOS 256
-#BOS 257
+#EOS 243
+#BOS 244
 microbiologist	--	N-Head	--	--	500
 Abdul	--	N-Flat	--	--	501
 Qadoos	--	N-Flat	--	--	501
@@ -13195,8 +12388,8 @@ fugitives	--	N-Head	--	--	514
 #520	--	Clause-Comp	--	--	521
 #521	--	VP-Head	--	--	522
 #522	--	Clause	--	--	0
-#EOS 257
-#BOS 258
+#EOS 244
+#BOS 245
 Pat	--	N-Flat	--	--	500
 Wood	--	N-Flat	--	--	500
 made	--	V-Head	--	--	511
@@ -13242,8 +12435,8 @@ fixed	--	Adj-Head	--	--	518
 #523	--	VP-Coordinate	--	--	524
 #524	--	Coordination-Head	--	--	525
 #525	--	Clause	--	--	0
-#EOS 258
-#BOS 259
+#EOS 245
+#BOS 246
 the	--	D-Head	--	--	500
 name	--	N-Head	--	--	501
 started	--	V-Head	--	--	528
@@ -13297,8 +12490,8 @@ _.	--	GAP.x-Obj	--	--	509
 #527	--	PP-Comp	--	--	528
 #528	--	VP-Head	--	--	529
 #529	--	Clause	--	--	0
-#EOS 259
-#BOS 260
+#EOS 246
+#BOS 247
 lol	--	Int-Head	--	--	500
 they	--	Npro-Head	--	--	501
 were	--	Vaux-Head	--	--	509
@@ -13346,8 +12539,8 @@ cash	--	N-Head	--	--	516
 #526	--	Clause-Head	--	--	527
 #527	--	Clause-Coordinate	--	--	528
 #528	--	Coordination	--	--	0
-#EOS 260
-#BOS 261
+#EOS 247
+#BOS 248
 a_few	--	D-Head	--	--	500
 hundred	--	D-Head	--	--	501
 out	--	P-Head	--	--	505
@@ -13399,8 +12592,8 @@ name	--	N-Head	--	--	521
 #529	--	Clause-Comp	--	--	530
 #530	--	VP-Head	--	--	531
 #531	--	Clause	--	--	0
-#EOS 261
-#BOS 262
+#EOS 248
+#BOS 249
 Zawahiri	--	N-Head	--	--	500
 was	--	Vaux-Head	--	--	525
 associated	--	V-Head	--	--	523
@@ -13446,8 +12639,8 @@ Conquest	--	N-Head	--	--	512
 #524	--	Clause-Comp	--	--	525
 #525	--	VP-Head	--	--	526
 #526	--	Clause	--	--	0
-#EOS 262
-#BOS 263
+#EOS 249
+#BOS 250
 huge	--	Adj-Head	--	--	500
 selection	--	N-Head	--	--	501
 and	--	Coordinator-Marker	--	--	511
@@ -13514,8 +12707,8 @@ _.	--	GAP.x-Obj	--	--	527
 #538	--	Clause-Head	--	--	539
 #539	--	Clause-Coordinate	--	--	540
 #540	--	Coordination	--	--	0
-#EOS 263
-#BOS 264
+#EOS 250
+#BOS 251
 founder	--	N-Head	--	--	500
 Paul	--	N-Flat	--	--	501
 Galvin	--	N-Flat	--	--	501
@@ -13559,8 +12752,8 @@ cars	--	N-Head	--	--	514
 #523	--	PP-Mod	--	--	524
 #524	--	VP-Head	--	--	525
 #525	--	Clause	--	--	0
-#EOS 264
-#BOS 265
+#EOS 251
+#BOS 252
 Dr.	--	N-Head	--	--	500
 Aster	--	N-Head	--	--	501
 is	--	Vaux-Head	--	--	530
@@ -13615,8 +12808,8 @@ parents	--	N-Head	--	--	523
 #529	--	Coordination-PredComp	--	--	530
 #530	--	VP-Head	--	--	531
 #531	--	Clause	--	--	0
-#EOS 265
-#BOS 266
+#EOS 252
+#BOS 253
 I	--	Npro-Head	--	--	500
 'm	--	Vaux-Head	--	--	509
 looking	--	V-Head	--	--	507
@@ -13668,8 +12861,8 @@ yet	--	Adv-Head	--	--	522
 #526	--	Clause-Supplement	--	--	527
 #527	--	Clauserel-Supplement	--	--	528
 #528	--	Clause	--	--	0
-#EOS 266
-#BOS 267
+#EOS 253
+#BOS 254
 I	--	Npro-Head	--	--	500
 just	--	Adv-Head	--	--	502
 get	--	V-Head	--	--	509
@@ -13723,8 +12916,8 @@ _.	--	GAP.x-Obj	--	--	521
 #528	--	PP-Mod	--	--	529
 #529	--	VP-Head	--	--	530
 #530	--	Clause	--	--	0
-#EOS 267
-#BOS 268
+#EOS 254
+#BOS 255
 the	--	D-Head	--	--	500
 charges	--	N.x-Head	--	--	518
 that	--	Sdr-Marker	--	--	517
@@ -13792,8 +12985,8 @@ false	--	Adj-Head	--	--	527
 #536	--	VP-Coordinate	--	--	537
 #537	--	Coordination-Head	--	--	538
 #538	--	Clause	--	--	0
-#EOS 268
-#BOS 269
+#EOS 255
+#BOS 256
 over	--	P-Head	--	--	503
 300	--	D-Head	--	--	500
 Iraqis	--	N-Head	--	--	504
@@ -13831,8 +13024,8 @@ alone	--	Adj-Head	--	--	520
 #521	--	NP-Obj	--	--	522
 #522	--	PP-Mod	--	--	523
 #523	--	Clause	--	--	0
-#EOS 269
-#BOS 270
+#EOS 256
+#BOS 257
 I	--	Npro-Head	--	--	500
 love	--	V-Head	--	--	536
 how	--	Adv-Head	--	--	502
@@ -13896,8 +13089,8 @@ _.	--	GAP.i-Mod	--	--	534
 #535	--	Clause-Comp	--	--	536
 #536	--	VP-Head	--	--	537
 #537	--	Clause	--	--	0
-#EOS 270
-#BOS 271
+#EOS 257
+#BOS 258
 aside	--	P-Head	--	--	505
 from	--	P-Head	--	--	504
 that	--	D-Head	--	--	500
@@ -14009,8 +13202,8 @@ _.	--	GAP.z-Mod	--	--	556
 #562	--	AdjP-PredComp	--	--	563
 #563	--	VP-Head	--	--	564
 #564	--	Clause	--	--	0
-#EOS 271
-#BOS 272
+#EOS 258
+#BOS 259
 she	--	Npro-Head	--	--	500
 really	--	Adv-Head	--	--	502
 listens	--	V-Head	--	--	521
@@ -14073,8 +13266,8 @@ results	--	N-Head	--	--	529
 #535	--	Clause-Head	--	--	536
 #536	--	Clause-Coordinate	--	--	537
 #537	--	Coordination	--	--	0
-#EOS 272
-#BOS 273
+#EOS 259
+#BOS 260
 I	--	Npro-Head	--	--	500
 actually	--	Adv-Head	--	--	502
 lost	--	V-Head	--	--	525
@@ -14120,8 +13313,8 @@ treatment	--	N-Head	--	--	519
 #525	--	VP-Head	--	--	526
 #526	--	VP-Head	--	--	527
 #527	--	Clause	--	--	0
-#EOS 273
-#BOS 274
+#EOS 260
+#BOS 261
 unfortunately	--	Adv-Head	--	--	500
 ,	--	,	--	--	500
 it	--	Npro-Head	--	--	501
@@ -14175,8 +13368,8 @@ way	--	N-Head	--	--	518
 #529	--	Clause-Comp	--	--	530
 #530	--	VP-Head	--	--	531
 #531	--	Clause	--	--	0
-#EOS 274
-#BOS 275
+#EOS 261
+#BOS 262
 some	--	D-Head	--	--	500
 people	--	N-Head	--	--	501
 put	--	V-Head	--	--	511
@@ -14246,8 +13439,8 @@ eyedropper	--	N-Head	--	--	526
 #538	--	Clause-Mod	--	--	539
 #539	--	VP-Head	--	--	540
 #540	--	Clause	--	--	0
-#EOS 275
-#BOS 276
+#EOS 262
+#BOS 263
 the	--	D-Head	--	--	500
 company	--	N-Head	--	--	501
 is	--	Vaux-Head	--	--	506
@@ -14284,8 +13477,8 @@ file	--	N-Head	--	--	514
 #518	--	Clause-Head	--	--	519
 #519	--	Clause-Coordinate	--	--	520
 #520	--	Coordination	--	--	0
-#EOS 276
-#BOS 277
+#EOS 263
+#BOS 264
 continue	--	V-Head	--	--	527
 to	--	Sdr-Marker	--	--	525
 feel	--	V-Head	--	--	524
@@ -14334,8 +13527,8 @@ gently	--	Adv-Head	--	--	518
 #526	--	Clause-Comp	--	--	527
 #527	--	VP-Head	--	--	528
 #528	--	Clause	--	--	0
-#EOS 277
-#BOS 278
+#EOS 264
+#BOS 265
 with	--	P-Head	--	--	507
 the	--	D-Head	--	--	500
 price	--	N-Head	--	--	501
@@ -14379,8 +13572,8 @@ costs	--	N-Head	--	--	519
 #523	--	VP-Head	--	--	524
 #524	--	Clause-Head	--	--	525
 #525	--	Clause	--	--	0
-#EOS 278
-#BOS 279
+#EOS 265
+#BOS 266
 3.7	--	D-Flat	--	--	500
 m	--	D-Flat	--	--	500
 $	--	N-Head	--	--	502
@@ -14435,8 +13628,8 @@ administration	--	N-Head	--	--	521
 #528	--	Clauserel-Mod	--	--	529
 #529	--	Nom-Head	--	--	530
 #530	--	NP	--	--	0
-#EOS 279
-#BOS 280
+#EOS 266
+#BOS 267
 1584	--	D-Head	--	--	500
 Lopez's	--	N-Head	--	--	502
 book	--	N-Head	--	--	503
@@ -14472,8 +13665,8 @@ Venice	--	N-Head	--	--	513
 #519	--	Coordination-Head	--	--	520
 #520	--	Clause-Supplement	--	--	521
 #521	--	NP	--	--	0
-#EOS 280
-#BOS 281
+#EOS 267
+#BOS 268
 I	--	Npro-Head	--	--	500
 go	--	V-Head	--	--	503
 in	--	P-Head	--	--	502
@@ -14533,8 +13726,8 @@ great	--	Adj-Head	--	--	532
 #534	--	Clause-Head	--	--	535
 #535	--	Clause-Coordinate	--	--	536
 #536	--	Coordination	--	--	0
-#EOS 281
-#BOS 282
+#EOS 268
+#BOS 269
 the	--	D-Head	--	--	500
 amusing	--	Adj-Head	--	--	501
 world	--	N-Head	--	--	502
@@ -14576,8 +13769,8 @@ children	--	N-Head	--	--	515
 #522	--	Clause-Comp	--	--	523
 #523	--	VP-Head	--	--	524
 #524	--	Clause	--	--	0
-#EOS 282
-#BOS 283
+#EOS 269
+#BOS 270
 Andrew	--	N-Flat	--	--	500
 Tate	--	N-Flat	--	--	500
 was	--	Vaux-Head	--	--	514
@@ -14712,8 +13905,8 @@ trafficking	--	N-Head	--	--	550
 #579	--	Clause-Head	--	--	580
 #580	--	Clause-Coordinate	--	--	581
 #581	--	Coordination	--	--	0
-#EOS 283
-#BOS 284
+#EOS 270
+#BOS 271
 Jeremy	--	N-Flat	--	--	500
 Renner	--	N-Flat	--	--	500
 ,	--	,	--	--	500
@@ -14848,8 +14041,8 @@ _.	--	GAP.z-Comp	--	--	577
 #577	--	VP-Head	--	--	578
 #578	--	Clause-Head	--	--	579
 #579	--	Clause	--	--	0
-#EOS 284
-#BOS 285
+#EOS 271
+#BOS 272
 we	--	Npro-Head	--	--	500
 're	--	Vaux-Head	--	--	542
 at	--	P-Head	--	--	541
@@ -14921,8 +14114,8 @@ _.	--	GAP.y-Obj	--	--	520
 #541	--	PP-PredComp	--	--	542
 #542	--	VP-Head	--	--	543
 #543	--	Clause	--	--	0
-#EOS 285
-#BOS 286
+#EOS 272
+#BOS 273
 reports	--	N-Head	--	--	500
 _.	--	GAP.x-Comp	--	--	500
 are	--	Vaux-Head	--	--	507
@@ -14954,8 +14147,8 @@ jail	--	N-Head	--	--	511
 #515	--	NP-Obj	--	--	516
 #516	--	PP.x-Postnucleus	--	--	517
 #517	--	Clause	--	--	0
-#EOS 286
-#BOS 287
+#EOS 273
+#BOS 274
 then	--	P-Head	--	--	500
 there	--	Npro-Head	--	--	501
 's	--	Vaux-Head	--	--	572
@@ -15083,8 +14276,8 @@ race	--	N-Head	--	--	560
 #572	--	VP-Head	--	--	573
 #573	--	Clause-Head	--	--	574
 #574	--	Clause	--	--	0
-#EOS 287
-#BOS 288
+#EOS 274
+#BOS 275
 why	--	Adv-Head	--	--	500
 is	--	Vaux.y-Prenucleus	--	--	523
 there	--	Npro-Head	--	--	501
@@ -15127,8 +14320,8 @@ _.	--	GAP.z-Mod	--	--	521
 #522	--	Clause-Head	--	--	523
 #523	--	Clause-Head	--	--	524
 #524	--	Clause	--	--	0
-#EOS 288
-#BOS 289
+#EOS 275
+#BOS 276
 it	--	Npro-Head	--	--	500
 may	--	Vaux-Head	--	--	526
 be	--	Vaux-Head	--	--	503
@@ -15194,8 +14387,8 @@ Sunderland	--	N-Flat	--	--	530
 #533	--	VP-Head	--	--	534
 #534	--	Clause-Supplement	--	--	535
 #535	--	Clause	--	--	0
-#EOS 289
-#BOS 290
+#EOS 276
+#BOS 277
 it	--	Npro-Head	--	--	500
 's	--	Vaux-Head	--	--	509
 that	--	Sdr-Marker	--	--	508
@@ -15227,8 +14420,8 @@ offputting	--	Adj-Head	--	--	513
 #515	--	Clauserel-Head	--	--	516
 #516	--	Clauserel-Postnucleus	--	--	517
 #517	--	Clause	--	--	0
-#EOS 290
-#BOS 291
+#EOS 277
+#BOS 278
 wasn't	--	Vaux.x-Prenucleus	--	--	526
 it	--	Npro-Head	--	--	500
 _.	--	GAP.x-Head	--	--	505
@@ -15273,8 +14466,8 @@ contention	--	N-Head	--	--	510
 #524	--	Clauserel-Postnucleus	--	--	525
 #525	--	Clause-Head	--	--	526
 #526	--	Clause	--	--	0
-#EOS 291
-#BOS 292
+#EOS 278
+#BOS 279
 who	--	Npro-Head	--	--	500
 ’s	--	Vaux-Head	--	--	544
 the	--	D-Head	--	--	502
@@ -15350,4 +14543,4 @@ POTUS	--	N-Head	--	--	527
 #543	--	NP-PredComp	--	--	544
 #544	--	VP-Head	--	--	545
 #545	--	Clause	--	--	0
-#EOS 292
+#EOS 279
