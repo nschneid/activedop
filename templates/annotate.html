@@ -15,6 +15,7 @@
 		<!-- | <a href="/annotate/exportallcgeltrees" title="all saved annotations as cgel">export all as cgel</a> -->
 		| <a href="#" onclick="document.location='/annotate/get_data_psv'" title="download as psv">export all data as psv</a>
 		| <a href="javascript: toggle('help');">help</a>
+		| <a href="#" onclick="addsentence()">add a sentence</a>
 		| {% if not session.username -%}
 		<a href="{{ url_for('login') }}">log in</a>
 		{% else -%}

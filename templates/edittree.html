@@ -19,6 +19,7 @@
 	| <a href="#" onclick="document.location='/annotate/download_pdf' + '?tree=' + encodeURIComponent(editor.getValue());" title="download pdf">export pdf of tree</a>
 	| <a href="#" onclick="document.location='/annotate/get_data_psv'" title="download as psv">export all data as psv</a>
 	<!-- | <a href="#" onclick="document.location='/annotate/exportcgeltree' + '?tree=' + encodeURIComponent(editor.getValue());" title=".cgel format of tree currently in text editor">export CGEL tree</a> -->
+	| <a href="#" onclick="addsentence()">add a sentence</a>
 	| <a href="javascript: toggle('help');">help</a>
 	| {% if not session.username -%}
 	<a href="{{ url_for('login') }}">log in</a>

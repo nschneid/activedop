@@ -355,6 +355,14 @@ def main():
 	"""Redirect to main page."""
 	return redirect(url_for('login'))
 
+@app.route('/annotate/direct_entry', methods=['GET'])
+@loginrequired
+def direct_entry():
+	"""Directly enter a sentence."""
+	sent = request.args.get('sent', '')
+	SENTENCES.append(sent)
+	QUEUE.append([len(SENTENCES)-1, 0, sent, "directentry_"+str(time())])
+	return redirect(url_for('annotate', sentno=len(SENTENCES)))
 
 @app.route('/annotate/login', methods=['GET', 'POST'])
 def login():
