@@ -514,6 +514,13 @@ def retokenize():
 	SENTENCES[lineno] = newtext
 	return jsonify({"success": True})
 
+@app.route('/revert_tokenization', methods=['POST'])
+def revert_tokenization():
+	sentno = int(request.json.get('sentno', 0))
+	lineno = QUEUE[sentno - 1][0]
+	SENTENCES[lineno] = SENTENCES_ORIG[lineno]
+	return jsonify({"success": True, "newtext": SENTENCES_ORIG[lineno]})
+
 @app.route('/annotate/parse')
 @loginrequired
 def parse():
