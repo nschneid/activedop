@@ -443,5 +443,8 @@ class ActivedopTree:
 			ptree, senttok = brackettree(tree)
 			return cls(ptree = ptree, senttok = senttok)
 		else:
-			cgel_tree = cgel.parse(tree)[0]
+			try:
+				cgel_tree = cgel.parse(tree)[0]
+			except Exception:
+				raise ValueError(f'Format error in CGEL input. Check for matching parentheses, quotes, etc.')
 			return cls(cgel_tree = cgel_tree)
