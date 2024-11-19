@@ -305,13 +305,15 @@ function addsentence() {
 	var xmlhttp = getxmlhttp();
 	// open a dialog window to get the user's sentence entry
 	var sent = prompt("Please enter the sentence to be added:", "");
-	url = "/annotate/direct_entry?sent=" + encodeURIComponent(sent);
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
-	// flask app will return a redirect to the new sentence
-	xmlhttp.onreadystatechange=function() {
-		if(xmlhttp.readyState==4 & sent != null) { // && xmlhttp.status==200) {
-			window.location.href = xmlhttp.responseURL;
+	if (! (sent === null || sent === "")) {
+		url = "/annotate/direct_entry?sent=" + encodeURIComponent(sent);
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send(null);
+		// flask app will return a redirect to the new sentence
+		xmlhttp.onreadystatechange=function() {
+			if(xmlhttp.readyState==4 & sent != null) { // && xmlhttp.status==200) {
+				window.location.href = xmlhttp.responseURL;
+			}
 		}
 	}
 }
