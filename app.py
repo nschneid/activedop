@@ -110,6 +110,29 @@ logger.setLevel(logging.DEBUG)
 logger.handlers[0].setFormatter(logging.Formatter(
 		fmt='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
 
+def refreshqueue(username):
+	""""Refresh the queue of sentences to annotate.
+	Add the user's direct-entry sentences to the front of the queue."""
+	db = getdb()
+	cur = db.execute(
+		'SELECT * FROM entries WHERE username = ? ORDER BY sentno ASC',
+		(username, )
+	)
+	dbentries = cur.fetchall()
+	direct_entry_rows = [entry for entry in dbentries if entry[0].startswith("directentry_")]
+	QUEUE_IDS = [entry[3] for entry in QUEUE]
+	for row in direct_entry_rows:
+		lineno = row[1]
+		#TODO: load sent directly from db rather than initializing an ActivedopTree object
+		sent = " ".join(ActivedopTree.from_str(row[4]).senttok)
+		id = row[0]
+		if id not in QUEUE_IDS:
+			SENTENCES.insert(0, sent)
+			QUEUE.insert(0, [lineno, 0, sent, id])
+		# re-index the queue
+		for i, entry in enumerate(QUEUE):
+			entry[0] = i
+
 @app.cli.command('initpriorities')
 @click.option('--username', default='JoeAnnotator', help='Username to initialize priorities for.')
 def initpriorities(username):
@@ -481,6 +504,7 @@ def logout():
 def annotate(sentno):
 	"""Serve the main annotation page for a sentence."""
 	username = session['username']
+	refreshqueue(username)
 	if sentno == -1:
 		sentno = firstunannotated(username)
 		redirect(url_for('annotate', sentno=sentno))
