@@ -360,9 +360,12 @@ def main():
 def direct_entry():
 	"""Directly enter a sentence."""
 	sent = request.args.get('sent', '')
-	SENTENCES.append(sent)
-	QUEUE.append([len(SENTENCES)-1, 0, sent, "directentry_"+str(time())])
-	return redirect(url_for('annotate', sentno=len(SENTENCES)))
+	SENTENCES.insert(0, sent)
+	QUEUE.insert(0, [0, 0, sent, "directentry_"+str(time())])
+	# re-index the queue
+	for i, entry in enumerate(QUEUE):
+		entry[0] = i
+	return redirect(url_for('annotate', sentno=1))
 
 @app.route('/annotate/login', methods=['GET', 'POST'])
 def login():
