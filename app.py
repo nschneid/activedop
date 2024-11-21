@@ -387,7 +387,7 @@ def direct_entry():
 	# re-index the queue
 	for i, entry in enumerate(QUEUE):
 		entry[0] = i
-	return redirect(url_for('annotate', sentno=1))
+	return jsonify({'redirect_url': url_for('annotate', sentno=1)})
 
 @app.route('/annotate/login', methods=['GET', 'POST'])
 def login():

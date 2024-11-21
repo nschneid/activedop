@@ -15,7 +15,7 @@
 		<!-- | <a href="/annotate/exportallcgeltrees" title="all saved annotations as cgel">export all as cgel</a> -->
 		| <a href="#" onclick="document.location='/annotate/get_data_psv'" title="download as psv">export all data as psv</a>
 		| <a href="javascript: toggle('help');">help</a>
-		| <a href="#" onclick="addsentence()">add a sentence</a>
+		| <a href="#" onclick="addSentence()">add a sentence</a>
 		| {% if not session.username -%}
 		<a href="{{ url_for('login') }}">log in</a>
 		{% else -%}
@@ -32,6 +32,10 @@
 			<option value=rfe>RFE</option>
 			<option value=ewe>EWE</option>
 		</select>
+		<div id="customPrompt" title="Enter Sentence" style="display:none;">
+			<p>Please enter the sentence to be added:</p>
+			<input type="text" id="sentenceInput" />
+		</div>
 		<input type=hidden id=sent value="{{ sent }}" />
 		<input type=hidden id=sentno value="{{ sentno }}" />
 		<input type=submit value="Re-parse" /> <br>
@@ -43,6 +47,45 @@
 </form>
 
 <script>
+	function addSentence() {
+		$("#customPrompt").dialog({
+			modal: true,
+			buttons: {
+				"Submit": function() {
+					var sent = $('#sentenceInput').val();
+					if (sent !== null) {
+						// Process the user input
+						console.log("User entered: " + sent);
+						
+						// Make the AJAX GET request using jQuery
+                        $.ajax({
+                            url: "/annotate/direct_entry",
+                            type: "GET",
+                            data: { sent: sent },
+                            success: function(response, textStatus, jqXHR) {
+								var responseURL = response.redirect_url;
+                                // Handle the redirect
+                                if (responseURL) {
+                                    // Redirect the user to the specified URL
+                                    window.location.href = responseURL;
+                                } else {
+                                    console.error('No redirect URL found in the response');
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.error('Error: ' + jqXHR.status);
+                            }
+                        });
+					}
+					$(this).dialog("close");
+				},
+				"Cancel": function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	};
+
 	function makeEditable() {
 		event.preventDefault();
 		document.getElementById('editableSent').style.display = "none";
