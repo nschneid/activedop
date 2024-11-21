@@ -707,6 +707,9 @@ def edit():
 		id = QUEUE[sentno - 1][3]
 		treestr, n = getannotation(username, id) # get tree from database
 		treeobj = ActivedopTree.from_str(treestr)
+    		senttok = treeobj.senttok
+		# ensures that SENTENCES array is updated with the tokenized sentence
+		SENTENCES[lineno] = ' '.join(senttok)
 	elif 'n' in request.args: # edit the nth automatic parse
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
@@ -748,23 +751,34 @@ def redraw():
 	"""Validate and re-draw tree."""
 	data = request.get_json()
 	sentno = int(data.get('sentno')) # 1-indexed
-	treeobj = ActivedopTree.from_str(data.get('tree'))
+	has_error = False
+	link = ('''<a href="#" onclick="accept()">accept this tree</a>
+		<input type="hidden" id="sentno" value="%d">'''
+	% (sentno))
+	try:
+		treeobj = ActivedopTree.from_str(data.get('tree'))
+		msg = treeobj.validate()
+	except ValueError as err:
+		msg = str(err)
+		treeobj = None
+		has_error = True
+		return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
+			msg,
+			link,
+			'',
+			)), 'has_error': has_error})
 	tree_to_accept = treeobj.treestr()
 	tree_for_editdist = re.sub(r'\s+', ' ', str(tree_to_accept))
-	msg = treeobj.validate()
-	link = ('''<a href="#" onclick="accept()">accept this tree</a>
-			<input type="hidden" id="sentno" value="%d">'''
-		% (sentno))
 	oldtree = request.args.get('oldtree', '')
 	oldtree = re.sub(r'\s+', ' ', oldtree)
 	if oldtree and tree_for_editdist != oldtree:
 		session['actions'][EDITDIST] += editdistance(tree_for_editdist, oldtree)
 		session.modified = True
-	return Markup('%s\n\n%s\n\n%s' % (
+	return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
 			msg,
 			link,
 			treeobj.gtree(add_editable_attr=True)
-			))
+			)), 'has_error': has_error})
 
 def graphical_operation_preamble(treestr):
 	treeobj = ActivedopTree.from_str(treestr)
@@ -789,7 +803,10 @@ def newlabel():
 	"""Re-draw tree with newly picked label."""
 	data = request.get_json()
 	treestr = data.get('tree')
-	treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	try:
+		treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	except ValueError as err:
+		return Markup(str(err))
 	senttok = treeobj.senttok
 	# FIXME: re-factor; check label AFTER replacing it
 	# now actually replace label at nodeid
@@ -838,7 +855,10 @@ def reattach():
 	"""Re-draw tree after re-attaching node under new parent."""
 	data = request.get_json()
 	treestr = data.get('tree')
-	treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	try:
+		treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	except ValueError as err:
+		return Markup(str(err))
 	# kludge (can't deep copy treeobj)
 	old_treeobj, _ = graphical_operation_preamble(treestr)
 	try:

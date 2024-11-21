@@ -324,8 +324,13 @@ function replacetree() {
 	var el = document.getElementById('tree');
 	xmlhttp.onreadystatechange=function() {
 		if(xmlhttp.readyState==4) { // && xmlhttp.status==200) {
-			el.innerHTML = xmlhttp.responseText;
+			resp = JSON.parse(xmlhttp.responseText)
+			el.innerHTML = resp.html;
 			registerdraggable(el);
+			if (! resp.has_error) {
+				// Update oldtree with the current value from the editor
+				oldtree = editor.getValue();
+			}
 		}
 	};
 	// Create the data object to be sent in a POST request
@@ -347,9 +352,6 @@ function replacetree() {
 
 	// Send the JSON data in the body of the request
 	xmlhttp.send(jsonData);
-
-	// Update oldtree with the current value from the editor
-	oldtree = editor.getValue();
 }
 
 // global to track which node is being modified when label picker is used
