@@ -479,18 +479,11 @@ def annotate(sentno):
 	sent = SENTENCES[lineno]
 	senttok, _ = worker.postokenize(sent)
 	annotation, n = getannotation(username, id)
-	if annotation is not None:
-		if app.config['CGELVALIDATE'] is None:
-			item = exporttree(annotation.splitlines(), functions='add')
-			canonicalize(item.tree)
-			worker.domorph(item.tree)
-			tree = writediscbrackettree(item.tree, item.sent)
-		else: 
-			treeobj = ActivedopTree.from_str(annotation)
-			tree = treeobj.cgel_tree
-			SENTENCES[lineno] = ' '.join(treeobj.senttok)
+	if annotation is not None: # a tree is saved in the database
+		# go directly to edit mode
 		return redirect(url_for(
-				'edit', sentno=sentno, annotated=1, tree=tree, n=n))
+				'edit', sentno=sentno, annotated=1, n=n))
+	# render annotate mode: browsing parser outputs for the sentence
 	return render_template(
 			'annotate.html',
 			prevlink=str(sentno - 1) if sentno > 1 else str(len(SENTENCES)),
@@ -558,7 +551,7 @@ def parse():
 		result = ''
 		dectree, maxdepth, _ = decisiontree(parsetrees, senttok, urlprm)
 		prob, ptree, _treestr, _fragments = parsetrees[0]
-		treeobj = ActivedopTree(ptree, senttok)
+		treeobj = ActivedopTree(ptree = ptree, senttok = senttok)
 		nbest = Markup('%s\nbest tree: %s' % (
 				dectree,
 				('%(n)d. [%(prob)s] '
@@ -612,8 +605,8 @@ def filterparsetrees():
 			worker.getparses,
 			sent, require, block).result()
 	senttok, parsetrees, _messages, _elapsed = resp
-	parsetrees_ = [(n, prob, ActivedopTree(tree, senttok), treestr, frags)
-			for n, (prob, tree, treestr, frags) in enumerate(parsetrees)
+	parsetrees_ = [(n, prob, ActivedopTree(ptree = ptree, senttok = senttok), treestr, frags)
+			for n, (prob, ptree, treestr, frags) in enumerate(parsetrees)
 			if treestr is None or testconstraints(treestr, frequire, fblock)]
 	if len(parsetrees_) == 0:
 		return ('No parse trees after filtering; try pressing Re-parse, '
@@ -674,11 +667,16 @@ def edit():
 		session['actions'][DECTREE] += int(request.args.get('dec', 0))
 	session.modified = True
 	msg = ''
-	if request.args.get('annotated', False):
+	if request.args.get('annotated') == '1': # there is a saved tree
 		msg = Markup('<font color=red>You have already annotated '
 				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
-		treeobj = ActivedopTree.from_str(request.args.get('tree'))
-	elif 'n' in request.args:
+		id = QUEUE[sentno - 1][3]
+		treestr, n = getannotation(username, id) # get tree from database
+		treeobj = ActivedopTree.from_str(treestr)
+    senttok = treeobj.senttok
+		# ensures that SENTENCES array is updated with the tokenized sentence
+		SENTENCES[lineno] = ' '.join(senttok)
+	elif 'n' in request.args: # edit the nth automatic parse
 		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
 		n = int(request.args.get('n', 1))
 		session['actions'][NBEST] = n
@@ -689,11 +687,8 @@ def edit():
 				worker.getparses,
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
-		tree = parsetrees[n - 1][1]
-		treeobj = ActivedopTree(tree, senttok)
-	elif 'tree' in request.args:
-		msg = Markup('<button id="undo" onclick="goback()">Go back</button>')
-		treeobj = ActivedopTree.from_str(request.args.get('tree'))
+		ptree = parsetrees[n - 1][1]
+		treeobj = ActivedopTree(ptree = ptree, senttok = senttok)
 	else:
 		return 'ERROR: pass n or tree argument.'
 	rows = max(5, treeobj.treestr().count('\n') + 1)
@@ -715,73 +710,92 @@ def edit():
 			annotationhelp=ANNOTATIONHELP,
 			rows=rows, cols=100,
 			msg=msg)
-	
-@app.route('/annotate/redraw')
+
+@app.route('/annotate/redraw', methods=['POST'])
 @loginrequired
 def redraw():
 	"""Validate and re-draw tree."""
-	sentno = int(request.args.get('sentno'))  # 1-indexed
-	treeobj = ActivedopTree.from_str(request.args.get('tree'))
+	data = request.get_json()
+	sentno = int(data.get('sentno')) # 1-indexed
+	has_error = False
+	link = ('''<a href="#" onclick="accept()">accept this tree</a>
+		<input type="hidden" id="sentno" value="%d">'''
+	% (sentno))
+	try:
+		treeobj = ActivedopTree.from_str(data.get('tree'))
+		msg = treeobj.validate()
+	except ValueError as err:
+		msg = str(err)
+		treeobj = None
+		has_error = True
+		return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
+			msg,
+			link,
+			'',
+			)), 'has_error': has_error})
 	tree_to_accept = treeobj.treestr()
 	tree_for_editdist = re.sub(r'\s+', ' ', str(tree_to_accept))
-	msg = treeobj.validate()
-	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-		% urlencode(dict(sentno=sentno, tree=tree_to_accept)))
 	oldtree = request.args.get('oldtree', '')
 	oldtree = re.sub(r'\s+', ' ', oldtree)
 	if oldtree and tree_for_editdist != oldtree:
 		session['actions'][EDITDIST] += editdistance(tree_for_editdist, oldtree)
 		session.modified = True
-	return Markup('%s\n\n%s\n\n%s' % (
+	return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
 			msg,
 			link,
 			treeobj.gtree(add_editable_attr=True)
-			))
+			)), 'has_error': has_error})
 
-def graphical_operation_preamble():
-	treeobj = ActivedopTree.from_str(request.args.get('tree'))
+def graphical_operation_preamble(treestr):
+	treeobj = ActivedopTree.from_str(treestr)
 	if app.config['CGELVALIDATE'] is None:
 		cgel_tree_terminals = None
 	else:
 		cgel_tree_terminals = treeobj.cgel_tree.terminals(gaps=True)
 	return treeobj, cgel_tree_terminals
 
-def graphical_operation_postamble(dt, senttok, cgel_tree_terminals):
+def graphical_operation_postamble(dt, senttok, cgel_tree_terminals, sentno):
 	ptree = ParentedTree.convert(canonicalize(dt.nodes[0]))
-	treeobj = ActivedopTree(ptree, senttok, cgel_tree_terminals)
+	treeobj = ActivedopTree(ptree = ptree, senttok = senttok, 
+						 cgel_tree_terminals = cgel_tree_terminals)
 	msg = treeobj.validate()
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
-		% urlencode(dict(sentno=int(request.args.get('sentno')), tree=treeobj.treestr())))	
+		% urlencode(dict(sentno=sentno, tree=treeobj.treestr())))	
 	return treeobj, link, msg
 
-@app.route('/annotate/newlabel')
+@app.route('/annotate/newlabel', methods=['POST'])
 @loginrequired
 def newlabel():
 	"""Re-draw tree with newly picked label."""
-	treeobj, cgel_tree_terminals = graphical_operation_preamble()
+	data = request.get_json()
+	treestr = data.get('tree')
+	try:
+		treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	except ValueError as err:
+		return Markup(str(err))
 	senttok = treeobj.senttok
 	# FIXME: re-factor; check label AFTER replacing it
 	# now actually replace label at nodeid
-	_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
+	_treeid, nodeid = data.get('nodeid', '').lstrip('t').split('_')
 	nodeid = int(nodeid)
 	dt = DrawTree(treeobj.ptree, treeobj.senttok)
 	m = LABELRE.match(dt.nodes[nodeid].label)
 	error = ""
-	if 'label' in request.args:
-		label = request.args.get('label', '')
+	if data.get('label') is not None:
+		label = data.get('label', '')
 		dt.nodes[nodeid].label = (label
 				+ (m.group(2) or '')
 				+ (m.group(3) or ''))
-	elif 'function' in request.args:
-		label = request.args.get('function', '')
+	elif data.get('function') is not None:
+		label = data.get('function', '')
 		if label == '':
 			dt.nodes[nodeid].label = '%s%s' % (
 					m.group(1), m.group(3) or '')
 		else:
 			dt.nodes[nodeid].label = '%s-%s%s' % (
 					m.group(1), label, m.group(3) or '')
-	elif 'morph' in request.args:
-		label = request.args.get('morph', '')
+	elif data.get('morph') is not None:
+		label = data.get('morph', '')
 		if label == '':
 			dt.nodes[nodeid].label = '%s%s' % (
 					m.group(1), m.group(2) or '')
@@ -790,7 +804,7 @@ def newlabel():
 					m.group(1), m.group(2) or '', label)
 	else:
 		raise ValueError('expected label or function argument')
-	treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals) 
+	treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, int(data.get('sentno'))) 
 	if error == '':
 		session['actions'][RELABEL] += 1
 		session.modified = True
@@ -801,154 +815,174 @@ def newlabel():
 			treeobj.treestr()))
 
 
-@app.route('/annotate/reattach')
+@app.route('/annotate/reattach', methods=['POST'])
 @loginrequired
 def reattach():
 	"""Re-draw tree after re-attaching node under new parent."""
-	treeobj, cgel_tree_terminals = graphical_operation_preamble()
-	dt = DrawTree(treeobj.ptree, treeobj.senttok)
-	error = ''
-	senttok = treeobj.senttok
-	if request.args.get('newparent') == 'deletenode':
-		# remove nodeid by replacing it with its children
-		_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
-		nodeid = int(nodeid)
-		x = dt.nodes[nodeid]
-		if nodeid == 0 or isinstance(x[0], int):
-			error = 'ERROR: cannot remove ROOT or POS node'
-		else:
-			children = list(x)
-			x[:] = []
-			for y in dt.nodes[0].subtrees():
-				if any(child is x for child in y):
-					i = y.index(x)
-					y[i:i + 1] = children
-					tree = canonicalize(dt.nodes[0])
-					dt = DrawTree(tree, senttok)  # kludge..
-					break
-	elif request.args.get('nodeid', '') == 'newproj':
-		# splice in a new node under parentid
-		_treeid, newparent = request.args.get('newparent', ''
-				).lstrip('t').split('_')
-		newparent = int(newparent)
-		y = dt.nodes[newparent]
-		label = y.label
-		if isinstance(y[0], int):
-			error = 'ERROR: cannot add node under POS tag'
-		else:
-			children = list(y)
-			y[:] = []
-			y[:] = [Tree(label, children)]
-			tree = canonicalize(dt.nodes[0])
-			dt = DrawTree(tree, senttok)  # kludge..
-	elif request.args.get('nodeid', '').startswith('newlabel_'):
-		# splice in a new node under parentid
-		_treeid, newparent = request.args.get('newparent', ''
-				).lstrip('t').split('_')
-		newparent = int(newparent)
-		label = request.args.get('nodeid').split('_', 1)[1]
-		y = dt.nodes[newparent]
-		if isinstance(y[0], int):
-			error = 'ERROR: cannot add node under POS tag'
-		else:
-			children = list(y)
-			y[:] = []
-			y[:] = [Tree(label, children)]
-			tree = canonicalize(dt.nodes[0])
-			dt = DrawTree(tree, senttok)  # kludge..
-	else:  # re-attach existing node at existing new parent
-		_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
-		nodeid = int(nodeid)
-		_treeid, newparent = request.args.get('newparent', ''
-				).lstrip('t').split('_')
-		newparent = int(newparent)
-		# remove node from old parent
-		# dt.nodes[nodeid].parent.pop(dt.nodes[nodeid].parent_index)
-		x = dt.nodes[nodeid]
-		y = dt.nodes[newparent]
-
-		def find_self_and_sisters(tree, subtree):
-			parent = None
-			sisters = []
-
-			# Helper function to find the parent of the subtree
-			def find_parent(node, target):
-				nonlocal parent
-				if target in node.children:
-					parent = node
-					return True
-				for child in node.children:
-					if isinstance(child, int):
-						return False
-					elif find_parent(child, target):
-						return True
-				return False
-
-			# Find the parent of the subtree
-			find_parent(tree, subtree)
-
-			if parent:
-				# Collect all children of the parent node
-				sisters = [child for child in parent.children]
-
-			return sisters
-		
-		def extract_adjacent_punctuation(arr, target):
-			# Find the index of the target character
-			try:
-				target_index = arr.index(target)
-			except ValueError:
-				return []  # If target is not in the list, return an empty list
-	
-			# Initialize the result list with the target character
-			result = [target]
-
-			# Collect punctuation characters to the left of the target
-			left_index = target_index - 1
-			while left_index >= 0 and is_punct_label(arr[left_index].label):
-				result.insert(0, arr[left_index])
-				left_index -= 1
-			
-			# Collect punctuation characters to the right of the target
-			right_index = target_index + 1
-			while right_index < len(arr) and is_punct_label(arr[right_index].label):
-				result.append(arr[right_index])
-				right_index += 1
-	
-			return result
-		
-		for node in x.subtrees():
-			if node is y:
-				error = ('ERROR: cannot re-attach subtree'
-						' under (descendant of) itself\n')
-				break
-		else:
-			for node in dt.nodes[0].subtrees():
-				if any(child is x for child in node):
-					if len(node) > 1:
-						self_and_sisters = find_self_and_sisters(dt.nodes[0], x)
-						self_and_nearbypunct = extract_adjacent_punctuation(self_and_sisters, x)
-						for s in self_and_nearbypunct:
-							# iteratively move all sister punctuation to the target. 
-							# (prevents problematic crossover movement of non-punctuation nodes over punctuation nodes)
-							# punctuation positions are subsequently re-canonicalized when ActivedopTree is reconstructed
-							node.remove(s)
-							dt.nodes[newparent].append(s)
+	data = request.get_json()
+	treestr = data.get('tree')
+	try:
+		treeobj, cgel_tree_terminals = graphical_operation_preamble(treestr)
+	except ValueError as err:
+		return Markup(str(err))
+	# kludge (can't deep copy treeobj)
+	old_treeobj, _ = graphical_operation_preamble(treestr)
+	try:
+		dt = DrawTree(treeobj.ptree, treeobj.senttok)
+		error = ''
+		senttok = treeobj.senttok
+		if data.get('newparent') == 'deletenode':
+			# remove nodeid by replacing it with its children
+			_treeid, nodeid = data.get('nodeid', '').lstrip('t').split('_')
+			nodeid = int(nodeid)
+			x = dt.nodes[nodeid]
+			if nodeid == 0 or isinstance(x[0], int):
+				error = 'ERROR: cannot remove ROOT or POS node'
+			else:
+				children = list(x)
+				x[:] = []
+				for y in dt.nodes[0].subtrees():
+					if any(child is x for child in y):
+						i = y.index(x)
+						y[i:i + 1] = children
 						tree = canonicalize(dt.nodes[0])
 						dt = DrawTree(tree, senttok)  # kludge..
-					else:
-						error = ('ERROR: re-attaching only child creates'
-								' empty node %s; remove manually\n' % node)
+						break
+		elif data.get('nodeid', '') == 'newproj':
+			# splice in a new node under parentid
+			_treeid, newparent = data.get('newparent', ''
+					).lstrip('t').split('_')
+			newparent = int(newparent)
+			y = dt.nodes[newparent]
+			label = y.label
+			if isinstance(y[0], int):
+				error = 'ERROR: cannot add node under POS tag'
+			else:
+				children = list(y)
+				y[:] = []
+				y[:] = [Tree(label, children)]
+				tree = canonicalize(dt.nodes[0])
+				dt = DrawTree(tree, senttok)  # kludge..
+		elif data.get('nodeid', '').startswith('newlabel_'):
+			# splice in a new node under parentid
+			_treeid, newparent = data.get('newparent', ''
+					).lstrip('t').split('_')
+			newparent = int(newparent)
+			label = data.get('nodeid').split('_', 1)[1]
+			y = dt.nodes[newparent]
+			if isinstance(y[0], int):
+				error = 'ERROR: cannot add node under POS tag'
+			else:
+				children = list(y)
+				y[:] = []
+				y[:] = [Tree(label, children)]
+				tree = canonicalize(dt.nodes[0])
+				dt = DrawTree(tree, senttok)  # kludge..
+		else:  # re-attach existing node at existing new parent
+			_treeid, nodeid = data.get('nodeid', '').lstrip('t').split('_')
+			nodeid = int(nodeid)
+			_treeid, newparent = data.get('newparent', ''
+					).lstrip('t').split('_')
+			newparent = int(newparent)
+			# remove node from old parent
+			# dt.nodes[nodeid].parent.pop(dt.nodes[nodeid].parent_index)
+			x = dt.nodes[nodeid]
+			y = dt.nodes[newparent]
+
+			def find_self_and_sisters(tree, subtree):
+				parent = None
+				sisters = []
+
+				# Helper function to find the parent of the subtree
+				def find_parent(node, target):
+					nonlocal parent
+					if target in node.children:
+						parent = node
+						return True
+					for child in node.children:
+						if isinstance(child, int):
+							return False
+						elif find_parent(child, target):
+							return True
+					return False
+
+				# Find the parent of the subtree
+				find_parent(tree, subtree)
+
+				if parent:
+					# Collect all children of the parent node
+					sisters = [child for child in parent.children]
+
+				return sisters
+			
+			def extract_adjacent_punctuation(arr, target):
+				# Find the index of the target character
+				try:
+					target_index = arr.index(target)
+				except ValueError:
+					return []  # If target is not in the list, return an empty list
+		
+				# Initialize the result list with the target character
+				result = [target]
+
+				# Collect punctuation characters to the left of the target
+				left_index = target_index - 1
+				while left_index >= 0 and is_punct_label(arr[left_index].label):
+					result.insert(0, arr[left_index])
+					left_index -= 1
+				
+				# Collect punctuation characters to the right of the target
+				right_index = target_index + 1
+				while right_index < len(arr) and is_punct_label(arr[right_index].label):
+					result.append(arr[right_index])
+					right_index += 1
+		
+				return result
+			
+			for node in x.subtrees():
+				if node is y:
+					error = ('ERROR: cannot re-attach subtree'
+							' under (descendant of) itself\n')
 					break
-	treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals) 
-	if error == '':
-		session['actions'][REATTACH] += 1
-		session.modified = True
-	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
-			msg,
-			link, error,
-			treeobj.gtree(add_editable_attr=True),
-			treeobj.treestr()))
+			else:
+				for node in dt.nodes[0].subtrees():
+					if any(child is x for child in node):
+						if len(node) > 1:
+							self_and_sisters = find_self_and_sisters(dt.nodes[0], x)
+							self_and_nearbypunct = extract_adjacent_punctuation(self_and_sisters, x)
+							for s in self_and_nearbypunct:
+								# iteratively move all sister punctuation to the target. 
+								# (prevents problematic crossover movement of non-punctuation nodes over punctuation nodes)
+								# punctuation positions are subsequently re-canonicalized when ActivedopTree is reconstructed
+								node.remove(s)
+								dt.nodes[newparent].append(s)
+							tree = canonicalize(dt.nodes[0])
+							dt = DrawTree(tree, senttok)  # kludge..
+						else:
+							error = ('ERROR: re-attaching only child creates'
+									' empty node %s; remove manually\n' % node)
+						break
+		treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, int(data.get('sentno')))
+		if treeobj.senttok != old_treeobj.senttok:
+			raise ValueError('movement would result in reordered tokens')
+		if error == '':
+			session['actions'][REATTACH] += 1
+			session.modified = True
+		return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+				msg,
+				link, error + "\n",
+				treeobj.gtree(add_editable_attr=True),
+				treeobj.treestr()))
+	except Exception as err:
+		msg = old_treeobj.validate()
+		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
+			% urlencode(dict(sentno=int(data.get('sentno')), tree=old_treeobj.treestr())))
+		error = "ERROR: " + str(err)
+		return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+				msg,
+				link, error + "\n",
+				old_treeobj.gtree(add_editable_attr=True),
+				old_treeobj.treestr()))
 
 
 @app.route('/annotate/reparsesubtree')
@@ -1027,7 +1061,8 @@ def replacesubtree():
 		a[0] = subseq[n]
 	dt.nodes[nodeid][:] = newsubtree[:]
 	ptree = ParentedTree.convert(canonicalize(dt.nodes[0]))
-	treeobj = ActivedopTree(ptree, treeobj.senttok, cgel_tree_terminals)
+	treeobj = ActivedopTree(ptree = ptree, senttok = treeobj.senttok, 
+						 cgel_tree_terminals = cgel_tree_terminals)
 	session['actions'][REPARSE] += 1
 	session.modified = True
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
@@ -1039,13 +1074,18 @@ def replacesubtree():
 			treeobj.treestr()))
 
 
-@app.route('/annotate/accept')
+@app.route('/annotate/accept', methods=['GET', 'POST'])
 @loginrequired
 def accept():
 	"""Store parse & redirect to next sentence."""
+	if request.method == 'POST':
+		# request.get_json() returns a dictionary
+		data = request.get_json()
+	elif request.method == 'GET':
+		data = request.args
 	# should include n referring to which n-best tree is to be accepted,
 	# or tree in discbracket format if tree was manually edited.
-	sentno = int(request.args.get('sentno'))  # 1-indexed
+	sentno = int(data.get('sentno'))  # 1-indexed
 	lineno = QUEUE[sentno - 1][0]
 	id = QUEUE[sentno - 1][3]
 	sent = SENTENCES[lineno]
@@ -1053,11 +1093,11 @@ def accept():
 	actions = session['actions']
 	actions[TIME] = int(round(time() - actions[TIME]))
 	treestr = None
-	if 'dec' in request.args:
-		actions[DECTREE] += int(request.args.get('dec', 0))
-	if 'tree' in request.args:
+	if 'dec' in data:
+		actions[DECTREE] += int(data.get('dec', 0))
+	if 'tree' in data:
 		n = 0
-		treeobj = ActivedopTree.from_str(request.args.get('tree'))
+		treeobj = ActivedopTree.from_str(data.get('tree'))
 		tree_to_train = treeobj.ptree
 		senttok = treeobj.senttok
 		cgel_tree = treeobj.cgel_tree
@@ -1066,16 +1106,16 @@ def accept():
 		if False:
 			reversetransform(tree, senttok, ('APPEND-FUNC', 'addCase'))
 	else:
-		n = int(request.args.get('n', 0))
-		require = request.args.get('require', '')
-		block = request.args.get('block', '')
+		n = int(data.get('n', 0))
+		require = data.get('require', '')
+		block = data.get('block', '')
 		require, block = parseconstraints(require, block)
 		resp = WORKERS[username].submit(
 				worker.getparses,
 				sent, require, block).result()
 		senttok, parsetrees, _messages, _elapsed = resp
-		tree = parsetrees[n - 1][1]
-		treeobj = ActivedopTree(tree, senttok)
+		ptree = parsetrees[n - 1][1]
+		treeobj = ActivedopTree(ptree = ptree, senttok = senttok)
 		tree_to_train, cgel_tree = treeobj.ptree, treeobj.cgel_tree
 		if False:
 			# strip function tags
@@ -1305,7 +1345,7 @@ def cgel2export(inputfile, outputfile):
 		for tree in cgel.trees(f):
 			ptree, senttok = cgel_to_ptree(tree)
 			print(tree.metadata)
-			treeobj = ActivedopTree(ptree, senttok)
+			treeobj = ActivedopTree(ptree = ptree, senttok = senttok)
 			# remove -p function label for training the parser
 			for subt in treeobj.ptree.subtrees(lambda t: t.height() == 2):
 				if subt.label.endswith("-p"):

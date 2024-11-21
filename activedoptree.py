@@ -1,10 +1,9 @@
 from collections import defaultdict
 import copy
 import io
-from typing import List
 import traceback
 from discodop.tree import (Tree, ParentedTree, writediscbrackettree,
-							DrawTree, brackettree, discbrackettree)
+							DrawTree, brackettree)
 from discodop.treebank import writetree
 import re
 import sys
@@ -50,7 +49,7 @@ def cgel_to_ptree_rec(cgel_tree, head: int, depth: int, punct: bool=True):
 	if punct:
 		for p in node.prepunct:
 			result.append(ParentedTree(p+"-p", []))
-	tag = node.constituent
+	tag = node.constituent.replace("_", "")
 	if node.label != '' and node.label is not None:
 		tag += '.' + node.label
 	if node.deprel != '' and node.deprel is not None:
@@ -85,30 +84,31 @@ def cgel_to_ptree(cgel_tree, punct: bool=True, gap_token_symbol: str='_.', compl
 	return ptree, senttok
 
 class ActivedopTree:
-	"""Wrapper for a ParentedTree object with additional methods for activedop."""
-	def __init__(self, ptree: ParentedTree, senttok: List[str], cgel_terminals = None):
-		"""
-		ptree: ParentedTree object with terminals that are numeric indices.
-		senttok: list of tokens corresponding to the terminals of ptree.
-		cgel_terminals: a list of CGELTree terminals (optional, to replace terminals of CGELTree in initialization).
-		"""
+	"""Wrapper for a tree object with additional methods for activedop."""
+	def __init__(self, **kwargs):
 		from flask import current_app
 		self.app = current_app
-		self.ptree = ptree
-		self.senttok = senttok
+		if 'ptree' in kwargs and 'senttok' in kwargs:
+			self.ptree = kwargs.get('ptree')
+			self.senttok = kwargs.get('senttok')
+			# standardize ptree with correct labels for punctuation and gaps
+			self.ptree = self._apply_standard_labels()
+			# convert ptree to a CGELTree object
+			self.cgel_tree = self._ptree_to_cgel()
+			# update cgel_tree with a set of terminals if provided
+			cgel_tree_terminals = kwargs.get('cgel_tree_terminals', None)
+			if cgel_tree_terminals is not None:
+				self.cgel_tree.update_terminals(cgel_tree_terminals, gaps=True, restore_old_cat=True, restore_old_func=True, restore_old_label=True)
+		elif 'cgel_tree' in kwargs:
+			self.cgel_tree = kwargs.get('cgel_tree')
+		elif 'ptree' in kwargs:
+			raise ValueError('missing senttok')
+		else:
+			raise ValueError('source must be either ptree or cgel')
+		# if original source is ptree, back-converting from cgel_tree canonicalizes punctuation positions in the ptree
+		self.ptree, self.senttok = cgel_to_ptree(self.cgel_tree)
 		# standardize ptree with correct labels for punctuation and gaps
 		self.ptree = self._apply_standard_labels()
-		ptree_terminals_with_labels = copy.deepcopy([subt for subt in self.ptree.subtrees(lambda t: t.height() == 2)])
-		# convert ptree to a CGELTree object
-		self.cgel_tree = self._ptree_to_cgel()
-		# back-convert the CGELTree object to a ParentedTree object to canonicalize punctuation positions
-		self.ptree, self.senttok = cgel_to_ptree(self.cgel_tree)
-		# update canonicalized ptree with standardized labels
-		for i, subt in enumerate(self.ptree.subtrees(lambda t: t.height() == 2)):
-			subt.label = ptree_terminals_with_labels[i].label
-		# update cgel_tree with a set of terminals if provided
-		if cgel_terminals is not None:
-			self.cgel_tree.update_terminals(cgel_terminals, gaps=True, restore_old_cat=True, restore_old_func=True, restore_old_label=True)
 
 	def brackettreestr(self, pretty = False):
 		"""returns a string representation of ptree in bracket notation, with labels consisting of a POS tag and a function tag separated by a hyphen."""
@@ -191,13 +191,6 @@ class ActivedopTree:
 			# if label is a single POS tag, add '-Head' to the label
 			if subt.label.count('-') == 0:
 				subt.label += '-Head'
-			# if label contains a coindexation variable but there are no gaps in the sentence, remove the period and following character from the label
-			if subt.label.count('.') > 0 and senttok.count('_.') == 0:
-				# match period and following character
-				m = re.search(r'\.(\w)', subt.label)
-				# if there is a match, remove the period and following character
-				if m:
-					subt.label = subt.label.replace(m.group(), '')
 		return tree_copy
 			
 	def _ptree_to_cgel(self) -> CGELTree:
@@ -349,6 +342,8 @@ class ActivedopTree:
 			msg += '\n(CGEL VALIDATOR IS OFF)\n'
 		else:
 			errS = errS.getvalue()
+			if 'Invalid category name' in errS:
+				errS += 'Missing underscores in category names will be added automatically upon graphical tree edit.'
 			if errS:
 				msg += '\nCGEL VALIDATOR\n==============\n' + errS
 			else:
@@ -366,24 +361,25 @@ class ActivedopTree:
 		# check tree structure
 		coindexed = defaultdict(set)	# {coindexationvar -> {labels}}
 		for node in tree.subtrees():
-			if node is not tree.root and node.label==tree.root.label:
-				raise ValueError(('ERROR: non-root node cannot have same label as root: '+node.label))
-			m = LABELRE.match(node.label)
+			# create copy of node to validate POS and function tags
+			node_to_validate = copy.deepcopy(node)
+			# strip -p from label if present
+			if node_to_validate.label.endswith('-p'):
+				node_to_validate.label = node_to_validate.label[:-2]
+			if node is not tree.root and node_to_validate.label==tree.root.label:
+				raise ValueError(('ERROR: non-root node cannot have same label as root: '+node_to_validate.label))
+			m = LABELRE.match(node_to_validate.label)
 			if m is None:
 				raise ValueError('malformed label: %r\n'
 						'expected: cat-func/morph or cat-func; e.g. NN-SB/Nom'
-						% node.label)
+						% node_to_validate.label)
 			else:
-				mCoidx = COIDXRE.search(node.label)
+				mCoidx = COIDXRE.search(node_to_validate.label)
 				if mCoidx:
-					coindexed[mCoidx.group(1)].add(node.label)
-			if len(node) == 0:
+					coindexed[mCoidx.group(1)].add(node_to_validate.label)
+			if len(node_to_validate) == 0:
 				raise ValueError(('ERROR: a constituent should have '
-						'one or more children:\n%s' % node))
-			# create copy of node to validate POS and function tags (stripping -p from label if present)
-			node_to_validate = copy.deepcopy(node)
-			if node_to_validate.label.endswith('-p'):
-				node_to_validate.label = node.label[:-2]
+						'one or more children:\n%s' % node_to_validate))
 			# a POS tag
 			elif isinstance(node_to_validate[0], int):
 				if not self._isValidPOS(m.group(1)):
@@ -445,9 +441,10 @@ class ActivedopTree:
 			if add_root:
 				tree = "(ROOT" + tree + ")"
 			ptree, senttok = brackettree(tree)
-			return cls(ptree, senttok)
+			return cls(ptree = ptree, senttok = senttok)
 		else:
-			cgel_tree = cgel.parse(tree)[0]
-			cgel_terminals = cgel_tree.terminals(gaps=True)
-			ptree, senttok = cgel_to_ptree(cgel_tree)
-			return cls(ptree, senttok, cgel_terminals)
+			try:
+				cgel_tree = cgel.parse(tree)[0]
+			except Exception:
+				raise ValueError(f'Format error in CGEL input. Check for matching parentheses, quotes, etc.')
+			return cls(cgel_tree = cgel_tree)
