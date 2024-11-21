@@ -111,21 +111,20 @@ logger.handlers[0].setFormatter(logging.Formatter(
 		fmt='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
 
 def refreshqueue(username):
-	""""Refresh the queue of sentences to annotate.
-	Add the user's direct-entry sentences to the front of the queue."""
+	""""Ensures that user can view annotations of sentences not in the 'initpriorities' queue.
+	These sentences are shown first, before the prioritized queue."""
 	db = getdb()
 	cur = db.execute(
 		'SELECT * FROM entries WHERE username = ? ORDER BY sentno ASC',
 		(username, )
 	)
 	dbentries = cur.fetchall()
-	direct_entry_rows = [entry for entry in dbentries if entry[0].startswith("directentry_")]
-	QUEUE_IDS = [entry[3] for entry in QUEUE]
-	for row in direct_entry_rows:
+	queue_ids = [entry[3] for entry in QUEUE]
+	for row in dbentries:
 		lineno = row[1]
 		sent = " ".join(ActivedopTree.from_str(row[4]).senttok)
 		id = row[0]
-		if id not in QUEUE_IDS:
+		if id not in queue_ids:
 			SENTENCES.insert(0, sent)
 			QUEUE.insert(0, [lineno, 0, sent, id])
 		# re-index the queue
