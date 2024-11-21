@@ -1330,7 +1330,7 @@ def decisiontree(parsetrees, sent, urlprm):
 	return nodes + ''.join(leaves), estimator.tree_.max_depth, path
 
 if __name__ == '__main__':
-	pass
+	app.run(host='0.0.0.0', port=5000)
 
 @app.cli.command('cgel2export')
 @click.option('--inputfile')
