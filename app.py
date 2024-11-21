@@ -168,7 +168,7 @@ def initpriorities(username):
 @app.before_first_request
 def initapp():
 	"""Load sentences, check config."""
-	global SENTENCES, SENTENCES_ORIG, QUEUE, ANNOTATIONHELP
+	global SENTENCES, QUEUE, ANNOTATIONHELP
 	sentfilename = app.config['SENTENCES']
 	if sentfilename is None:
 		raise ValueError('SENTENCES not configured')
@@ -184,7 +184,6 @@ def initapp():
 			if any(field.strip() for field in row.values()):
 				sentences.append(row['sentence'])
 	SENTENCES = sentences
-	SENTENCES_ORIG = list(SENTENCES)
 	rankingfilename = '%s.rankings.json' % sentfilename
 	if (os.path.exists(rankingfilename) and
 			os.stat(rankingfilename).st_mtime
