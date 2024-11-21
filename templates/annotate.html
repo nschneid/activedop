@@ -33,7 +33,7 @@
 		</select>
 		<input type=hidden id=sent value="{{ sent }}" />
 		<input type=hidden id=sentno value="{{ sentno }}" />
-		<input type=submit value="Re-parse" /> <button id="revertButton" onclick="revertTokenization()">Revert tokenization</button><br>
+		<input type=submit value="Re-parse" /> <br>
 		<span id="editableSent" onclick="makeEditable()">{{ sent }}</span>
 		<input type="text" id="editInput" size=120 value="{{sent}}" style="display:none">
 		<button id="cancelButton" onclick="cancelEdit()" style="display:none">Cancel</button>
@@ -56,26 +56,6 @@
 		document.getElementById('editInput').style.display = "none";
 		document.getElementById('cancelButton').style.display = "none";
 		document.getElementById('reTokenizeButton').style.display = "none";
-	}
-
-	function revertTokenization() {
-		var sentno = document.getElementById('sentno').value;
-		fetch('/revert_tokenization', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({sentno: sentno}),
-		})
-		.then(response => response.json())
-		.then(data => {
-			console.log('Success:', data)
-			document.getElementById('editableSent').innerText = data.newtext;
-			document.getElementById('editInput').value = data.newtext;
-		})
-		.catch((error) => {
-			console.error('Error:', error);
-		});
 	}
 	
 	function reTokenize(sentno) {
