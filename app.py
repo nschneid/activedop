@@ -1111,7 +1111,7 @@ def accept():
 		comment='%s %r' % (username, actions))
 	app.logger.info(block)
 	treeout = block
-	addentry(id, lineno, treeout, str(cgel_tree), " ".join(senttok), actions)	# save annotation in the database
+	addentry(id, lineno, treeout, str(cgel_tree), actions)	# save annotation in the database
 	WORKERS[username].submit(worker.augment, [tree_to_train], [senttok])	# update the parser's grammar
 	# validate and stay on this sentence if there are issues
 	if treestr:
