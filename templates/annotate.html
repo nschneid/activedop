@@ -32,13 +32,6 @@
 			<option value=rfe>RFE</option>
 			<option value=ewe>EWE</option>
 		</select>
-		<div id="customPrompt" title="Enter Sentence" style="display:none;">
-			<p>Please enter the sentence to be added:</p>
-			<input style = "width:100%" type="text" id="sentenceInput" />
-			<p>Enter a unique id for the sentence:</p>
-			<input type="text" id="sentid" /> <p>
-			<div id = "entryError" style="display:none; color:red;"></div>
-		</div>
 		<input type=hidden id=sent value="{{ sent }}" />
 		<input type=hidden id=sentno value="{{ sentno }}" />
 		<input type=submit value="Re-parse" /> <br>
@@ -50,48 +43,6 @@
 </form>
 
 <script>
-	function addSentence() {
-		$("#customPrompt").dialog({
-			modal: true,
-			buttons: {
-				"Submit": function() {
-					var sent = $('#sentenceInput').val();
-					var id = $('#sentid').val();
-					if (sent !== null) {
-						// Process the user input
-						console.log("User entered: " + sent);
-						
-						// Make the AJAX GET request using jQuery
-                        $.ajax({
-                            url: "/annotate/direct_entry",
-                            type: "GET",
-                            data: { sent: sent, id: id },
-                            success: function(response, textStatus, jqXHR) {
-								var responseURL = response.redirect_url;
-								var responseError = response.error;
-                                // Handle the redirect
-                                if (responseURL) {
-                                    // Redirect the user to the specified URL
-                                    window.location.href = responseURL;
-									$(this).dialog("close");
-                                } else if ( responseError ) {
-									$("#entryError").show();
-									$("#entryError").text("Error: " + responseError);
-                                }
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                console.error('Error: ' + jqXHR.status);
-                            }
-                        });
-					}
-				},
-				"Cancel": function() {
-					$(this).dialog("close");
-				}
-			}
-		});
-	};
-
 	function makeEditable() {
 		event.preventDefault();
 		document.getElementById('editableSent').style.display = "none";

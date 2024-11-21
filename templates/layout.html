@@ -10,5 +10,11 @@
 {%- for message in get_flashed_messages() %}
 <div class=flash>{{ message }}</div>
 {% endfor -%}
-
+<div id="sentEntry" title="Enter Sentence" style="display:none;">
+    <p>Please enter the sentence to be added:</p>
+    <input style = "width:100%" type="text" id="sentenceInput" />
+    <p>Enter a unique id for the sentence:</p>
+    <input type="text" id="idInput" /> <p>
+    <div id = "entryError" style="display:none; color:red;"></div>
+</div>
 {% block body %}{% endblock %}
