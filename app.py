@@ -123,7 +123,6 @@ def refreshqueue(username):
 	QUEUE_IDS = [entry[3] for entry in QUEUE]
 	for row in direct_entry_rows:
 		lineno = row[1]
-		#TODO: load sent directly from db rather than initializing an ActivedopTree object
 		sent = " ".join(ActivedopTree.from_str(row[4]).senttok)
 		id = row[0]
 		if id not in QUEUE_IDS:
