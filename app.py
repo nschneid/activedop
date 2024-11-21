@@ -673,7 +673,7 @@ def edit():
 		id = QUEUE[sentno - 1][3]
 		treestr, n = getannotation(username, id) # get tree from database
 		treeobj = ActivedopTree.from_str(treestr)
-    senttok = treeobj.senttok
+    		senttok = treeobj.senttok
 		# ensures that SENTENCES array is updated with the tokenized sentence
 		SENTENCES[lineno] = ' '.join(senttok)
 	elif 'n' in request.args: # edit the nth automatic parse
