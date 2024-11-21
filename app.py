@@ -381,9 +381,23 @@ def main():
 @loginrequired
 def direct_entry():
 	"""Directly enter a sentence."""
-	sent = request.args.get('sent', '')
-	SENTENCES.insert(0, sent)
-	QUEUE.insert(0, [0, 0, sent, "directentry_"+str(time())])
+	sent = request.args.get('sent', '').strip()
+	sentid = str(request.args.get('id', '')).strip()
+	if len(sent) == 0:
+		return jsonify({'error': 'Sentence is empty.'})
+	elif len(sentid) == 0:
+		return jsonify({'error': 'Sentence ID is empty.'})
+	db = getdb()
+	cur = db.execute(
+		'SELECT * FROM entries ORDER BY sentno ASC'
+	)
+	entries = cur.fetchall()
+	existing_ids = [entry[0] for entry in entries] + [entry[3] for entry in QUEUE]
+	if sentid in existing_ids:
+		return jsonify({'error': 'Sentence ID already exists in the database or queue.'})
+	else:
+		SENTENCES.insert(0, sent)
+		QUEUE.insert(0, [0, 0, sent, sentid])
 	# re-index the queue
 	for i, entry in enumerate(QUEUE):
 		entry[0] = i
