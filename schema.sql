@@ -5,8 +5,6 @@ create table entries (
   username text not null,
   tree text not null,
   cgel_tree text not null,
-  senttok text not null,
-  origtok text not null,
   nbest integer not null,
   constraints integer not null,
   dectree integer not null,
