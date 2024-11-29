@@ -425,7 +425,7 @@ class ActivedopTree:
 		return tok.startswith('_.')
 
 	def _isValidPOS(self, x):
-		return x in workerattr('poslabels')
+		return x in workerattr('poslabels') or x in self.app.config['PUNCT_TAGS']
 
 	def _isValidPhraseCat(self, x):
 		return x in workerattr('phrasallabels') or (ALLOW_MULTIWORD_POS and self._isValidPOS(x))
