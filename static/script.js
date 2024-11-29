@@ -660,6 +660,19 @@ function accept() {
 }
 
 function addSentence() {
+	// Make a GET request to the server to generate a unique hash id for the new sentence (and populate the #idInput field with it)
+	$.ajax({
+		url: "/annotate/get_id",
+		type: "GET",
+		success: function(response, textStatus, jqXHR) {
+			var id = response.id;
+			$('#idInput').val(id);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
+		}
+	});
+	// Display the dialog box for adding a new sentence
 	$("#sentEntry").dialog({
 		modal: true,
 		buttons: {

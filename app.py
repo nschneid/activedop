@@ -115,18 +115,19 @@ def refreshqueue(username):
 	These sentences are shown first, before the prioritized queue."""
 	db = getdb()
 	cur = db.execute(
-		'SELECT * FROM entries WHERE username = ? ORDER BY sentno ASC',
+		'SELECT id, sentno, cgel_tree FROM entries WHERE username = ? ORDER BY sentno ASC',
 		(username, )
 	)
 	dbentries = cur.fetchall()
 	queue_ids = [entry[3] for entry in QUEUE]
 	for row in dbentries:
-		lineno = row[1]
-		sent = " ".join(ActivedopTree.from_str(row[4]).senttok)
 		id = row[0]
+		sentno = row[1]
+		cgel_tree = row[2]
+		sent = " ".join(ActivedopTree.from_str(cgel_tree).senttok)
 		if id not in queue_ids:
 			SENTENCES.insert(0, sent)
-			QUEUE.insert(0, [lineno, 0, sent, id])
+			QUEUE.insert(0, [sentno, 0, sent, id])
 		# re-index the queue
 		for i, entry in enumerate(QUEUE):
 			entry[0] = i
@@ -375,6 +376,25 @@ def is_safe_url(target):
 def main():
 	"""Redirect to main page."""
 	return redirect(url_for('login'))
+
+@app.route('/annotate/get_id', methods=['GET'])
+@loginrequired
+def get_id():
+	"""Generate a unique 6-character hash ID for a direct entry sentence.
+	(Serves as a default ID in the direct entry dialogue window.)"""
+	import random
+	import string
+	id = None
+	# verify that the ID is unique 
+	db = getdb()
+	cur = db.execute(
+		'SELECT id FROM entries ORDER BY sentno ASC'
+	)
+	entries = cur.fetchall()
+	existing_ids = set(entries) | {entry[3] for entry in QUEUE}
+	while id is None or id in existing_ids:
+		id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+	return jsonify({'id': id})
 
 @app.route('/annotate/direct_entry', methods=['GET'])
 @loginrequired
