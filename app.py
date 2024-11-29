@@ -402,9 +402,9 @@ def direct_entry():
 	"""Directly enter a sentence."""
 	sent = request.args.get('sent', '').strip()
 	sentid = str(request.args.get('id', '')).strip()
-	if len(sent) == 0:
+	if not sent:
 		return jsonify({'error': 'Sentence is empty.'})
-	elif len(sentid) == 0:
+	elif not sentid:
 		return jsonify({'error': 'Sentence ID is empty.'})
 	db = getdb()
 	cur = db.execute(
