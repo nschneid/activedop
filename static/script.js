@@ -658,3 +658,58 @@ function accept() {
 	// Send the JSON data in the body of the request
 	xmlhttp.send(jsonData);
 }
+
+function addSentence() {
+	// Make a GET request to the server to generate a unique hash id for the new sentence (and populate the #idInput field with it)
+	$.ajax({
+		url: "/annotate/get_id",
+		type: "GET",
+		success: function(response, textStatus, jqXHR) {
+			var id = response.id;
+			$('#idInput').val(id);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
+		}
+	});
+	// Display the dialog box for adding a new sentence
+	$("#sentEntry").dialog({
+		modal: true,
+		buttons: {
+			"Submit": function() {
+				var sent = $('#sentenceInput').val();
+				var id = $('#idInput').val();
+				if (sent !== null) {
+					// Process the user input
+					console.log("User entered: " + sent);
+					
+					// Make the AJAX GET request using jQuery
+					$.ajax({
+						url: "/annotate/direct_entry",
+						type: "GET",
+						data: { sent: sent, id: id },
+						success: function(response, textStatus, jqXHR) {
+							var responseURL = response.redirect_url;
+							var responseError = response.error;
+							// Handle the redirect
+							if (responseURL) {
+								// Redirect the user to the specified URL
+								window.location.href = responseURL;
+								$(this).dialog("close");
+							} else if ( responseError ) {
+								$("#entryError").show();
+								$("#entryError").text("Error: " + responseError);
+							}
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.error('Error: ' + jqXHR.status);
+						}
+					});
+				}
+			},
+			"Cancel": function() {
+				$(this).dialog("close");
+			}
+		}
+	});
+};

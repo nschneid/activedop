@@ -110,6 +110,28 @@ logger.setLevel(logging.DEBUG)
 logger.handlers[0].setFormatter(logging.Formatter(
 		fmt='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
 
+def refreshqueue(username):
+	""""Ensures that user can view annotations of sentences not in the 'initpriorities' queue.
+	These sentences are shown first, before the prioritized queue."""
+	db = getdb()
+	cur = db.execute(
+		'SELECT id, sentno, cgel_tree FROM entries WHERE username = ? ORDER BY sentno ASC',
+		(username, )
+	)
+	dbentries = cur.fetchall()
+	queue_ids = [entry[3] for entry in QUEUE]
+	for row in dbentries:
+		id = row[0]
+		sentno = row[1]
+		cgel_tree = row[2]
+		sent = " ".join(ActivedopTree.from_str(cgel_tree).senttok)
+		if id not in queue_ids:
+			SENTENCES.insert(0, sent)
+			QUEUE.insert(0, [sentno, 0, sent, id])
+		# re-index the queue
+		for i, entry in enumerate(QUEUE):
+			entry[0] = i
+
 @app.cli.command('initpriorities')
 @click.option('--username', default='JoeAnnotator', help='Username to initialize priorities for.')
 def initpriorities(username):
@@ -355,6 +377,50 @@ def main():
 	"""Redirect to main page."""
 	return redirect(url_for('login'))
 
+@app.route('/annotate/get_id', methods=['GET'])
+@loginrequired
+def get_id():
+	"""Generate a unique 6-character hash ID for a direct entry sentence.
+	(Serves as a default ID in the direct entry dialogue window.)"""
+	import random
+	import string
+	id = None
+	# verify that the ID is unique 
+	db = getdb()
+	cur = db.execute(
+		'SELECT id FROM entries ORDER BY sentno ASC'
+	)
+	entries = cur.fetchall()
+	existing_ids = {entry[0] for entry in entries} | {entry[3] for entry in QUEUE}
+	while id is None or id in existing_ids:
+		id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+	return jsonify({'id': id})
+
+@app.route('/annotate/direct_entry', methods=['GET'])
+@loginrequired
+def direct_entry():
+	"""Directly enter a sentence."""
+	sent = request.args.get('sent', '').strip()
+	sentid = str(request.args.get('id', '')).strip()
+	if not sent:
+		return jsonify({'error': 'Sentence is empty.'})
+	elif not sentid:
+		return jsonify({'error': 'Sentence ID is empty.'})
+	db = getdb()
+	cur = db.execute(
+		'SELECT id FROM entries ORDER BY sentno ASC'
+	)
+	entries = cur.fetchall()
+	existing_ids = {entry[0] for entry in entries} | {entry[3] for entry in QUEUE}
+	if sentid in existing_ids:
+		return jsonify({'error': 'Sentence ID already exists in the database or queue.'})
+	else:
+		SENTENCES.insert(0, sent)
+		QUEUE.insert(0, [0, 0, sent, sentid])
+	# re-index the queue
+	for i, entry in enumerate(QUEUE):
+		entry[0] = i
+	return jsonify({'redirect_url': url_for('annotate', sentno=1)})
 
 @app.route('/annotate/login', methods=['GET', 'POST'])
 def login():
@@ -470,6 +536,7 @@ def logout():
 def annotate(sentno):
 	"""Serve the main annotation page for a sentence."""
 	username = session['username']
+	refreshqueue(username)
 	if sentno == -1:
 		sentno = firstunannotated(username)
 		redirect(url_for('annotate', sentno=sentno))
