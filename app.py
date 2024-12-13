@@ -391,7 +391,7 @@ def get_id():
 		'SELECT id FROM entries ORDER BY sentno ASC'
 	)
 	entries = cur.fetchall()
-	existing_ids = set(entries[0]) | {entry[3] for entry in QUEUE}
+	existing_ids = {entry[0] for entry in entries} | {entry[3] for entry in QUEUE}
 	while id is None or id in existing_ids:
 		id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 	return jsonify({'id': id})
@@ -411,7 +411,7 @@ def direct_entry():
 		'SELECT id FROM entries ORDER BY sentno ASC'
 	)
 	entries = cur.fetchall()
-	existing_ids = set(entries[0]) | {entry[3] for entry in QUEUE}
+	existing_ids = {entry[0] for entry in entries} | {entry[3] for entry in QUEUE}
 	if sentid in existing_ids:
 		return jsonify({'error': 'Sentence ID already exists in the database or queue.'})
 	else:
