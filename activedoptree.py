@@ -199,7 +199,7 @@ class ActivedopTree:
 		Convert it to a CGELTree object, with prepunct and postpunct attributes assigned to the terminal nodes.
 		Assumes that tree has been processed by apply_standard_labels().
 		"""
-		tree_copy = self.ptree.copy(deep=True)
+		tree_copy = ParentedTree.parse(str(self.ptree))
 		senttok = self.senttok
 		# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
 		non_punct_tokens = []
@@ -290,7 +290,7 @@ class ActivedopTree:
 						terminal_count += 1
 
 		# Create a copy of the tree to avoid modifying the original
-		tree_copy = tree.copy(deep=True)
+		tree_copy = ParentedTree.parse(str(tree))
 		_number_terminals(tree_copy)
 		return tree_copy
 
@@ -362,7 +362,7 @@ class ActivedopTree:
 		coindexed = defaultdict(set)	# {coindexationvar -> {labels}}
 		for node in tree.subtrees():
 			# create copy of node to validate POS and function tags
-			node_to_validate = copy.deepcopy(node)
+			node_to_validate = ParentedTree.parse(str(node))
 			# strip -p from label if present
 			if node_to_validate.label.endswith('-p'):
 				node_to_validate.label = node_to_validate.label[:-2]
