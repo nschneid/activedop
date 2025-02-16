@@ -175,7 +175,7 @@ class ActivedopTree:
 		"""
 		# guardrails against producing illict tree structures
 		tree, senttok = self.ptree, self.senttok
-		tree_copy = tree.copy(deep=True)
+		tree_copy = ParentedTree.parse(str(tree), label_pattern = r'[^\s]+')
 		for subt in tree_copy.subtrees(lambda t: t.height() == 2):
 			i = subt[0]
 			# if initial parse labels non-gaps as GAP, change to N-Head by default
@@ -199,7 +199,7 @@ class ActivedopTree:
 		Convert it to a CGELTree object, with prepunct and postpunct attributes assigned to the terminal nodes.
 		Assumes that tree has been processed by apply_standard_labels().
 		"""
-		tree_copy = ParentedTree.parse(str(self.ptree))
+		tree_copy = ParentedTree.parse(str(self.ptree), label_pattern = r'[^\s]+')
 		senttok = self.senttok
 		# create three lists of equal lengths: one list non-punctuation token strings, one list of lists prepending punctuation, and one list of lists for appending punctuation
 		non_punct_tokens = []
@@ -290,7 +290,7 @@ class ActivedopTree:
 						terminal_count += 1
 
 		# Create a copy of the tree to avoid modifying the original
-		tree_copy = ParentedTree.parse(str(tree))
+		tree_copy = ParentedTree.parse(str(tree), label_pattern = r'[^\s]+')
 		_number_terminals(tree_copy)
 		return tree_copy
 
@@ -321,7 +321,7 @@ class ActivedopTree:
 					del tree[i]
 
 		# Create a copy of the tree to avoid modifying the original
-		tree_copy = tree.copy(deep=True)
+		tree_copy = ParentedTree.parse(str(tree), label_pattern = r'[^\s]+')
 		_remove_punct(tree_copy)
 		return self._number_terminals(self._prune_empty_non_terminals(tree_copy))
 	
@@ -362,7 +362,7 @@ class ActivedopTree:
 		coindexed = defaultdict(set)	# {coindexationvar -> {labels}}
 		for node in tree.subtrees():
 			# create copy of node to validate POS and function tags
-			node_to_validate = ParentedTree.parse(str(node))
+			node_to_validate = ParentedTree.parse(str(node), label_pattern = r'[^\s]+')
 			# strip -p from label if present
 			if node_to_validate.label.endswith('-p'):
 				node_to_validate.label = node_to_validate.label[:-2]
