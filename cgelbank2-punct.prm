@@ -6,15 +6,15 @@ stages=[
 ],
 
 evalparam='../disco-dop/proper.prm',  # EVALB-style parameter file
-corpusfmt='bracket',  # choices: export, bracket, discbracket, alpino, tiger
+corpusfmt='export',  # choices: export, bracket, discbracket, alpino, tiger
 traincorpus=dict(
-	path='cgelbank2-punct.trees',
+	path='cgelbank2-punct.export',
 	encoding='utf-8',
 	maxwords=100,  # max number of words for sentences in train corpus
 	numsents=9999,  # length (sents) of training corpus
 ),
 testcorpus=dict(
-	path='cgelbank2-punct.trees',
+	path='cgelbank2-punct.export',
 	encoding='utf-8',
 	maxwords=100,  # max number of words for sentences in test corpus
 	numsents=9999,  # (max) number of test sentences to parse
