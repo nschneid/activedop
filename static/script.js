@@ -1,17 +1,3 @@
-function getxmlhttp() {
-	var xmlhttp;
-	if(window.XMLHttpRequest) {
-		// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp=new XMLHttpRequest();
-	} else if(window.ActiveXObject) {
-		// code for IE6, IE5
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	} else {
-		alert("Your browser does not support XMLHTTP!");
-	}
-	return xmlhttp;
-}
-
 function toggle(id) {
 	/* toggle element with id to be hidden or not. */
 	var el = $('#' + id);
@@ -120,31 +106,27 @@ function nohighlightdep() {
 function annotate() {
 	/* function to send request to parse a sentence and append the result to
 	 * the current document. */
-	var xmlhttp = getxmlhttp();
 	var div = $('#result');
 	div.html('[...wait for it...]');
-	xmlhttp.onreadystatechange=function() {
-		if(xmlhttp.readyState==4) { // && xmlhttp.status==200) {
-			div.html(xmlhttp.responseText);
+	$.ajax({
+		url: "/annotate/parse",
+		type: "GET",
+		data: {
+			html: 1,
+			sent: document.queryform.sent.value,
+			sentno: document.queryform.sentno.value,
+			require: require.join('\t'),
+			block: block.join('\t')
+		},
+		success: function(response) {
+			div.html(response);
 			registertoggleable(div[0]);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
 		}
-	};
-	url = "/annotate/parse?html=1&sent=" + encodeURIComponent(document.queryform.sent.value);
-	/* if there were any filter constraints, convert them to parsing constraints now */
-	require.push.apply(require, frequire);
-	block.push.apply(block, fblock);
-	frequire = [];
-	fblock = [];
-	if(require.length > 0 || block.length > 0) {
-		url += "&require=" + encodeURIComponent(require.join('\t'))
-				+ "&block=" + encodeURIComponent(block.join('\t'));
-		$('#constraintdiv').show();
-	}
-	url += '&sentno=' + document.queryform.sentno.value;
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
+	});
 }
-
 
 /* constraints used during parsing */
 var require = [];
@@ -194,15 +176,24 @@ function togglespan(flag, pos, elem) {
 	}
 
 	// make AJAX call to display only matching trees
-	var xmlhttp = getxmlhttp();
 	var div = $('#nbest');
 	if(div.css('display') == 'none')
 		div.show();
 	div.html('[...wait for it...]');
 
-	xmlhttp.onreadystatechange=function() {
-		if(xmlhttp.readyState==4) { // && xmlhttp.status==200) {
-			div.html(xmlhttp.responseText);
+	$.ajax({
+		url: "/annotate/filter",
+		type: "GET",
+		data: {
+			sent: document.queryform.sent.value,
+			require: require.join('\t'),
+			block: block.join('\t'),
+			frequire: frequire.join('\t'),
+			fblock: fblock.join('\t'),
+			sentno: document.queryform.sentno.value
+		},
+		success: function(response) {
+			div.html(response);
 			registertoggleable(div[0]);
 			var elems = div.find('span.n, span.p');
 			elems.each(function() {
@@ -214,18 +205,11 @@ function togglespan(flag, pos, elem) {
 					$(this).css('background-color', 'lightcoral');
 				}
 			});
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
 		}
-	};
-	var lang = document.queryform.lang;
-	url = "/annotate/filter?sent=" + encodeURIComponent(document.queryform.sent.value);
-	if(require.length > 0 || block.length > 0)
-		url += "&require=" + encodeURIComponent(require.join('\t'))
-			+ "&block=" + encodeURIComponent(block.join('\t'));
-	url += "&frequire=" + encodeURIComponent(frequire.join('\t'))
-		+ "&fblock=" + encodeURIComponent(fblock.join('\t'))
-		+ '&sentno=' + document.queryform.sentno.value;
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
+	});
 
 	return false;  // do not handle click further
 }
@@ -276,38 +260,29 @@ function registerdraggable(div) {
 }
 
 function replacetree() {
-	var xmlhttp = getxmlhttp();
-	var el = document.getElementById('tree');
-	xmlhttp.onreadystatechange=function() {
-		if(xmlhttp.readyState==4) { // && xmlhttp.status==200) {
-			resp = JSON.parse(xmlhttp.responseText)
-			el.innerHTML = resp.html;
-			registerdraggable(el);
-			if (! resp.has_error) {
+	var el = $('#tree');
+	$.ajax({
+		url: '/annotate/redraw',
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify({
+			sentno: document.queryform.sentno.value,
+			senttok: document.queryform.senttok.value,
+			oldtree: oldtree,
+			tree: editor.getValue()
+		}),
+		success: function(response) {
+			el.html(response.html);
+			registerdraggable(el[0]);
+			if (!response.has_error) {
 				// Update oldtree with the current value from the editor
 				oldtree = editor.getValue();
 			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
 		}
-	};
-	// Create the data object to be sent in a POST request
-	const data = {
-		sentno: document.queryform.sentno.value,
-		senttok: document.queryform.senttok.value,
-		oldtree: oldtree,
-		tree: editor.getValue()
-	};
-
-	// Convert the data object to a JSON string
-	const jsonData = JSON.stringify(data);
-
-	// Open the POST request
-	xmlhttp.open("POST", '/annotate/redraw', true);
-
-	// Set the request header to indicate the content type
-	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-	// Send the JSON data in the body of the request
-	xmlhttp.send(jsonData);
+	});
 }
 
 function pickphrasal(ev) {
@@ -369,19 +344,8 @@ function pick(labeltype, label) {
 	if (label === null) {
 		return;
 	}
-	var xmlhttp = getxmlhttp();
 	var el = $('#tree');
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4) {
-			var res = xmlhttp.responseText.split('\t', 2);
-			el.html(res[0]);
-			if (res[1]) {
-				editor.setValue(res[1]);
-				oldtree = editor.getValue();
-			}
-			registerdraggable(el[0]);
-		}
-	};
+
 	// Create the data object to be sent in the POST request
 	const data = {
 		sentno: document.queryform.sentno.value,
@@ -399,27 +363,41 @@ function pick(labeltype, label) {
 		data.label = label;
 	}
 
-	// Convert the data object to a JSON string
-	const jsonData = JSON.stringify(data);
-
-	// Open the POST request
-	xmlhttp.open("POST", '/annotate/newlabel', true);
-
-	// Set the request header to indicate the content type
-	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-	// Send the JSON data in the body of the request
-	xmlhttp.send(jsonData);
+	// Make the AJAX POST request using jQuery
+	$.ajax({
+		url: '/annotate/newlabel',
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(data),
+		success: function(response) {
+			var res = response.split('\t', 2);
+			el.html(res[0]);
+			if (res[1]) {
+				editor.setValue(res[1]);
+				oldtree = editor.getValue();
+			}
+			registerdraggable(el[0]);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
+		}
+	});
 }
 
 function reparsesubtree(ev) {
 	ev.stopPropagation();
 	var node = ev.currentTarget;
-	var xmlhttp = getxmlhttp();
 	nodeid = $(node).data('id');
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4) {
-			var res = xmlhttp.responseText.split('\t', 2);
+	$.ajax({
+		url: '/annotate/reparsesubtree',
+		type: 'GET',
+		data: {
+			sentno: document.queryform.sentno.value,
+			nodeid: nodeid,
+			tree: editor.getValue()
+		},
+		success: function(response) {
+			var res = response.split('\t', 2);
 			var el = $('#nbest');
 			el.html(res[0]);
 			el.show();
@@ -427,21 +405,26 @@ function reparsesubtree(ev) {
 				editor.setValue(res[1]);
 				oldtree = editor.getValue();
 			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
 		}
-	};
-	var url = '/annotate/reparsesubtree?sentno=' + document.queryform.sentno.value
-			+ '&nodeid=' + encodeURIComponent(nodeid)
-			+ '&tree=' + encodeURIComponent(editor.getValue());
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
+	});
 	return false;
 }
 
 function picksubtree(n) {
-	var xmlhttp = getxmlhttp();
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4) {
-			var res = xmlhttp.responseText.split('\t', 2);
+	$.ajax({
+		url: '/annotate/replacesubtree',
+		type: 'GET',
+		data: {
+			sentno: document.queryform.sentno.value,
+			n: n,
+			nodeid: nodeid,
+			tree: editor.getValue()
+		},
+		success: function(response) {
+			var res = response.split('\t', 2);
 			var el = $('#tree');
 			el.html(res[0]);
 			if (res[1]) {
@@ -452,14 +435,11 @@ function picksubtree(n) {
 			el = $('#nbest');
 			el.html('');
 			el.hide();
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
 		}
-	};
-	var url = '/annotate/replacesubtree?sentno=' + document.queryform.sentno.value
-			+ '&n=' + n
-			+ '&nodeid=' + encodeURIComponent(nodeid)
-			+ '&tree=' + encodeURIComponent(editor.getValue());
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send(null);
+	});
 	return false;
 }
 
@@ -490,19 +470,8 @@ function drop(ev) {
 	ev.preventDefault();
 	var childid = (ev.originalEvent || ev).dataTransfer.getData("text");
 	var newparentid = $(ev.target).data('id');
-	var xmlhttp = getxmlhttp();
 	var el = $('#tree');
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4) {
-			var res = xmlhttp.responseText.split('\t', 2);
-			el.html(res[0]);
-			if (res[1]) {
-				editor.setValue(res[1]);
-				oldtree = editor.getValue();
-			}
-			registerdraggable(el[0]);
-		}
-	};
+
 	// Create the data object to be sent in the POST request
 	const data = {
 		sentno: document.queryform.sentno.value,
@@ -512,35 +481,32 @@ function drop(ev) {
 		tree: editor.getValue()
 	};
 
-	// Convert the data object to a JSON string
-	const jsonData = JSON.stringify(data);
-
-	// Open the POST request
-	xmlhttp.open("POST", '/annotate/reattach', true);
-
-	// Set the request header to indicate the content type
-	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-	// Send the JSON data in the body of the request
-	xmlhttp.send(jsonData);
-}
-
-function newproj(ev) {
-	ev.preventDefault();
-	var targetid = $(ev.target).data('id');
-	var xmlhttp = getxmlhttp();
-	var el = $('#tree');
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4) {
-			var res = xmlhttp.responseText.split('\t', 2);
+	// Make the AJAX POST request using jQuery
+	$.ajax({
+		url: '/annotate/reattach',
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(data),
+		success: function(response) {
+			var res = response.split('\t', 2);
 			el.html(res[0]);
 			if (res[1]) {
 				editor.setValue(res[1]);
 				oldtree = editor.getValue();
 			}
 			registerdraggable(el[0]);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
 		}
-	};
+	});
+}
+
+function newproj(ev) {
+	ev.preventDefault();
+	var targetid = $(ev.target).data('id');
+	var el = $('#tree');
+
 	// Create the data object to be sent in the POST request
 	const data = {
 		sentno: document.queryform.sentno.value,
@@ -550,61 +516,53 @@ function newproj(ev) {
 		tree: editor.getValue()
 	};
 
-	// Convert the data object to a JSON string
-	const jsonData = JSON.stringify(data);
-
-	// Open the POST request
-	xmlhttp.open("POST", '/annotate/reattach', true);
-
-	// Set the request header to indicate the content type
-	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-	// Send the JSON data in the body of the request
-	xmlhttp.send(jsonData);
+	// Make the AJAX POST request using jQuery
+	$.ajax({
+		url: '/annotate/reattach',
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(data),
+		success: function(response) {
+			var res = response.split('\t', 2);
+			el.html(res[0]);
+			if (res[1]) {
+				editor.setValue(res[1]);
+				oldtree = editor.getValue();
+			}
+			registerdraggable(el[0]);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
+		}
+	});
 }
 
 function accept() {
-	// make AJAX call to accept the current tree.
-	var xmlhttp = getxmlhttp();
-	var tree = editor.getValue();
-	var sentno = document.getElementById('sentno').value;
-	
 	// Create the data object to be sent in the POST request
 	const data = {
-		sentno: sentno,
-		tree: tree,
+		sentno: document.getElementById('sentno').value,
+		tree: editor.getValue()
 	};
 
-	console.log(data);
-
-	// Convert the data object to a JSON string
-	const jsonData = JSON.stringify(data);
-
-	// Define the callback function to handle the response
-	  xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState === 4) {
-            if (xmlhttp.status === 200 || xmlhttp.status === 302) {
-                var responseURL = xmlhttp.responseURL;
-                if (responseURL) {
-                    // Redirect the user to the specified URL
-                    window.location.href = responseURL;
-                } else {
-                    console.error('No redirect URL found in the response');
-                }
-            } else {
-                console.error('Error: ' + xmlhttp.status);
-            }
-        }
-    };
-
-	// Open the POST request
-	xmlhttp.open("POST", '/annotate/accept', true);
-
-	// Set the request header to indicate the content type
-	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-	// Send the JSON data in the body of the request
-	xmlhttp.send(jsonData);
+	// Make the AJAX POST request using jQuery
+	$.ajax({
+		url: '/annotate/accept',
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(data),
+		success: function(response, textStatus, jqXHR) {
+			var responseURL = jqXHR.getResponseHeader('Location');
+			if (responseURL) {
+				// Redirect the user to the specified URL
+				window.location.href = responseURL;
+			} else {
+				console.error('No redirect URL found in the response');
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.error('Error: ' + jqXHR.status);
+		}
+	});
 }
 
 function addSentence() {
