@@ -29,23 +29,19 @@ function togglelink(id) {
 
 function toggletextbox() {
 	/* toggle a textbox to be single or multi line. */
-	var state = document.queryform.textarea;
-	var cur = document.queryform.query;
-	var next = document.queryform.notquery;
+	var state = $('#textarea');
+	var cur = $('#query');
+	var next = $('#notquery');
 	var link = $('#textboxlink');
-	cur.name = 'notquery';
-	cur.disabled = true;
-	$(cur).hide();
-	next.name = 'query';
-	next.disabled = false;
-	$(next).show();
-	if(state.disabled) {
-		state.disabled = false;
-		next.innerHTML = cur.value;
+	cur.prop('name', 'notquery').prop('disabled', true).hide();
+	next.prop('name', 'query').prop('disabled', false).show();
+	if(state.prop('disabled')) {
+		state.prop('disabled', false);
+		next.val(cur.val());
 		link.html('smaller');
 	} else {
-		state.disabled = true;
-		next.value = cur.value;
+		state.prop('disabled', true);
+		cur.val(next.val());
 		link.html('larger');
 	}
 }
@@ -108,16 +104,26 @@ function annotate() {
 	 * the current document. */
 	var div = $('#result');
 	div.html('[...wait for it...]');
+
+	// Construct the URL for the AJAX request
+	var url = "/annotate/parse?html=1&sent=" + encodeURIComponent(document.queryform.sent.value);
+
+	/* if there were any filter constraints, convert them to parsing constraints now */
+	require.push.apply(require, frequire);
+	block.push.apply(block, fblock);
+	frequire = [];
+	fblock = [];
+	if(require.length > 0 || block.length > 0) {
+		url += "&require=" + encodeURIComponent(require.join('\t'))
+				+ "&block=" + encodeURIComponent(block.join('\t'));
+		$('#constraintdiv').show();
+	}
+	url += '&sentno=' + document.queryform.sentno.value;
+
+	// Make the AJAX GET request using jQuery
 	$.ajax({
-		url: "/annotate/parse",
+		url: url,
 		type: "GET",
-		data: {
-			html: 1,
-			sent: document.queryform.sent.value,
-			sentno: document.queryform.sentno.value,
-			require: require.join('\t'),
-			block: block.join('\t')
-		},
 		success: function(response) {
 			div.html(response);
 			registertoggleable(div[0]);
@@ -540,7 +546,7 @@ function newproj(ev) {
 function accept() {
 	// Create the data object to be sent in the POST request
 	const data = {
-		sentno: document.getElementById('sentno').value,
+		sentno: $('#sentno').val(),
 		tree: editor.getValue()
 	};
 
@@ -551,15 +557,17 @@ function accept() {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(response, textStatus, jqXHR) {
-			var responseURL = jqXHR.getResponseHeader('Location');
+			var responseURL = response.redirect_url;
+			var responseError = response.error;
+			// Handle the redirect
 			if (responseURL) {
 				// Redirect the user to the specified URL
 				window.location.href = responseURL;
-			} else {
-				console.error('No redirect URL found in the response');
+			} else if ( responseError ) {
+				console.error("Error: " + responseError);
 			}
 		},
-		error: function(jqXHR, textStatus, errorThrown) {
+		error: function(jqXHR) {
 			console.error('Error: ' + jqXHR.status);
 		}
 	});
