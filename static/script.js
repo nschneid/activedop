@@ -488,7 +488,7 @@ function dropTrash(ev) {
 
 function drop(ev) {
 	ev.preventDefault();
-	var childid = ev.originalEvent.dataTransfer.getData("text");
+	var childid = (ev.originalEvent || ev).dataTransfer.getData("text");
 	var newparentid = $(ev.target).data('id');
 	var xmlhttp = getxmlhttp();
 	var el = $('#tree');
