@@ -1107,7 +1107,6 @@ def replacesubtree():
 	except ValueError as err:
 		return str(err)
 	error = ''
-	msg = treeobj.validate()
 	dt = DrawTree(treeobj.ptree, treeobj.senttok)
 	cgel_tree_terminals = treeobj.cgel_tree.terminals(gaps=True)
 	_treeid, nodeid = request.args.get('nodeid', '').lstrip('t').split('_')
@@ -1130,6 +1129,7 @@ def replacesubtree():
 	ptree = ParentedTree.convert(canonicalize(dt.nodes[0]))
 	treeobj = ActivedopTree(ptree = ptree, senttok = treeobj.senttok, 
 						 cgel_tree_terminals = cgel_tree_terminals)
+	msg = treeobj.validate()
 	session['actions'][REPARSE] += 1
 	session.modified = True
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
