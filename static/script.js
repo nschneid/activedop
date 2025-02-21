@@ -267,6 +267,7 @@ function registerdraggable(div) {
 
 function replacetree() {
 	var el = $('#tree');
+	var validatorOut = $('#validatorOut');
 	$.ajax({
 		url: '/annotate/redraw',
 		type: 'POST',
@@ -278,6 +279,7 @@ function replacetree() {
 			tree: editor.getValue()
 		}),
 		success: function(response) {
+			validatorOut.html(response.msg);
 			el.html(response.html);
 			registerdraggable(el[0]);
 			if (!response.has_error) {
@@ -351,6 +353,7 @@ function pick(labeltype, label) {
 		return;
 	}
 	var el = $('#tree');
+	var validatorOut = $('#validatorOut');
 
 	// Create the data object to be sent in the POST request
 	const data = {
@@ -376,10 +379,11 @@ function pick(labeltype, label) {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(response) {
-			var res = response.split('\t', 2);
-			el.html(res[0]);
-			if (res[1]) {
-				editor.setValue(res[1]);
+			var res = response.split('\t', 3);
+			validatorOut.html(res[0]);
+			el.html(res[1]);
+			if (res[2]) {
+				editor.setValue(res[2]);
 				oldtree = editor.getValue();
 			}
 			registerdraggable(el[0]);
@@ -430,11 +434,14 @@ function picksubtree(n) {
 			tree: editor.getValue()
 		},
 		success: function(response) {
-			var res = response.split('\t', 2);
+			var res = response.split('\t', 3);
+			console.log(res)
 			var el = $('#tree');
-			el.html(res[0]);
-			if (res[1]) {
-				editor.setValue(res[1]);
+			var validatorOut = $('#validatorOut');
+			validatorOut.html(res[0]);
+			el.html(res[1]);
+			if (res[2]) {
+				editor.setValue(res[2]);
 				oldtree = editor.getValue();
 			}
 			registerdraggable(el[0]);
@@ -476,6 +483,7 @@ function drop(ev) {
 	ev.preventDefault();
 	var childid = (ev.originalEvent || ev).dataTransfer.getData("text");
 	var newparentid = $(ev.target).data('id');
+	var validatorOut = $('#validatorOut');
 	var el = $('#tree');
 
 	// Create the data object to be sent in the POST request
@@ -494,10 +502,11 @@ function drop(ev) {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(response) {
-			var res = response.split('\t', 2);
-			el.html(res[0]);
-			if (res[1]) {
-				editor.setValue(res[1]);
+			var res = response.split('\t', 3);
+			validatorOut.html(res[0]);
+			el.html(res[1]);
+			if (res[2]) {
+				editor.setValue(res[2]);
 				oldtree = editor.getValue();
 			}
 			registerdraggable(el[0]);
@@ -511,6 +520,7 @@ function drop(ev) {
 function newproj(ev) {
 	ev.preventDefault();
 	var targetid = $(ev.target).data('id');
+	var validatorOut = $('#validatorOut');
 	var el = $('#tree');
 
 	// Create the data object to be sent in the POST request
@@ -529,10 +539,11 @@ function newproj(ev) {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(response) {
-			var res = response.split('\t', 2);
-			el.html(res[0]);
-			if (res[1]) {
-				editor.setValue(res[1]);
+			var res = response.split('\t', 3);
+			validatorOut.html(res[0]);
+			el.html(res[1]);
+			if (res[2]) {
+				editor.setValue(res[2]);
 				oldtree = editor.getValue();
 			}
 			registerdraggable(el[0]);

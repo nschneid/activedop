@@ -795,11 +795,11 @@ def redraw():
 		msg = str(err)
 		treeobj = None
 		has_error = True
-		return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
-			msg,
-			link,
-			'',
-			)), 'has_error': has_error})
+		return jsonify({'msg': msg,
+				'html': Markup('%s\n\n%s' % (
+					link,
+					'')), 
+					'has_error': has_error})
 	tree_to_accept = treeobj.treestr()
 	tree_for_editdist = re.sub(r'\s+', ' ', str(tree_to_accept))
 	oldtree = request.args.get('oldtree', '')
@@ -807,11 +807,11 @@ def redraw():
 	if oldtree and tree_for_editdist != oldtree:
 		session['actions'][EDITDIST] += editdistance(tree_for_editdist, oldtree)
 		session.modified = True
-	return jsonify({'html': Markup('%s\n\n%s\n\n%s' % (
-			msg,
-			link,
-			treeobj.gtree(add_editable_attr=True)
-			)), 'has_error': has_error})
+	return jsonify({'msg': msg,
+				 'html': Markup('%s\n\n%s' % (
+					 link,
+					 treeobj.gtree(add_editable_attr=True))), 
+					 'has_error': has_error})
 
 def graphical_operation_preamble(treestr):
 	treeobj = ActivedopTree.from_str(treestr)
@@ -875,7 +875,7 @@ def newlabel():
 	if error == '':
 		session['actions'][RELABEL] += 1
 		session.modified = True
-	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+	return Markup('%s\t%s\n\n%s%s\t%s' % (
 			msg,
 			link, error,
 			treeobj.gtree(add_editable_attr=True),
@@ -1035,7 +1035,7 @@ def reattach():
 		if error == '':
 			session['actions'][REATTACH] += 1
 			session.modified = True
-		return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+		return Markup('%s\t%s\n\n%s%s\t%s' % (
 				msg,
 				link, error + "\n",
 				treeobj.gtree(add_editable_attr=True),
@@ -1045,7 +1045,7 @@ def reattach():
 		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=int(data.get('sentno')), tree=old_treeobj.treestr())))
 		error = "ERROR: " + str(err)
-		return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+		return Markup('%s\t%s\n\n%s%s\t%s' % (
 				msg,
 				link, error + "\n",
 				old_treeobj.gtree(add_editable_attr=True),
@@ -1134,7 +1134,7 @@ def replacesubtree():
 	session.modified = True
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treeobj.treestr())))
-	return Markup('%s\n\n%s\n\n%s%s\t%s' % (
+	return Markup('%s\t%s\n\n%s%s\t%s' % (
 			msg,
 			link, error,
 			treeobj.gtree(add_editable_attr=True),
