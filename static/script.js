@@ -14,38 +14,6 @@ function showhide(id1, id2, id3, n) {
 	$('#' + id3).show();
 }
 
-function togglelink(id) {
-	/* toggle element with id to be hidden or not, and also toggle
-	 * link with id 'link'+id to start with 'show' or 'hide'. */
-	var el = $('#' + id);
-	var link = $('#link' + id);
-	el.toggle();
-	if(el.is(':visible')) {
-		link.html('hide' + link.html().substring(4));
-	} else {
-		link.html('show' + link.html().substring(4));
-	}
-}
-
-function toggletextbox() {
-	/* toggle a textbox to be single or multi line. */
-	var state = $('#textarea');
-	var cur = $('#query');
-	var next = $('#notquery');
-	var link = $('#textboxlink');
-	cur.prop('name', 'notquery').prop('disabled', true).hide();
-	next.prop('name', 'query').prop('disabled', false).show();
-	if(state.prop('disabled')) {
-		state.prop('disabled', false);
-		next.val(cur.val());
-		link.html('smaller');
-	} else {
-		state.prop('disabled', true);
-		cur.val(next.val());
-		link.html('larger');
-	}
-}
-
 function show(id, name) {
 	/* show element with 'id' and enable (un-disable) all form elements with 'name'. */
 	var el = $('#' + id);
