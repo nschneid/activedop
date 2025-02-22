@@ -94,6 +94,7 @@ app.config.update(
 		ACCOUNTS=None,  # dictionary mapping usernames to passwords
 		ANNOTATIONHELP=None,  # plain text file summarizing the annotation scheme
 		CGELVALIDATE=None,  # whether to run the CGEL validator when editing
+		PROJ_POS={},  # dictionary mapping POS tags to their corresponding projection tags (for the 'newproj' action)
 		PUNCT_TAGS={}, # dictionary mapping idiosyncratic punctuation POS tags to their corresponding tokens
 		SYMBOL_TAG=None, # pos tag for symbols (and symbol sequences) that don't have an idiosyncratic tag (in PUNCT_TAGS)
 		AMBIG_SYM={}, # 'ambiguous' symbols that can be punctuation or something else depending on context
@@ -921,15 +922,17 @@ def reattach():
 					).lstrip('t').split('_')
 			newparent = int(newparent)
 			y = dt.nodes[newparent]
+			children = list(y)
 			label = y.label
+			new_top_label = label
 			if isinstance(y[0], int):
-				error = 'ERROR: cannot add node under POS tag'
-			else:
-				children = list(y)
-				y[:] = []
-				y[:] = [Tree(label, children)]
-				tree = canonicalize(dt.nodes[0])
-				dt = DrawTree(tree, senttok)  # kludge..
+				old_pos = LABELRE.match(label).group(1)
+				new_pos = app.config['PROJ_POS'].get(old_pos, 'Clause')
+				new_top_label = new_pos + "-Head"
+			y[:] = [Tree(label, children)]
+			y.label = new_top_label
+			tree = canonicalize(dt.nodes[0])
+			dt = DrawTree(tree, senttok)  # kludge..
 		elif data.get('nodeid', '').startswith('newlabel_'):
 			# splice in a new node under parentid
 			_treeid, newparent = data.get('newparent', ''
