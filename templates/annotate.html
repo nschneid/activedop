@@ -72,8 +72,8 @@
 				"Content-Type":'application/json'
 			},
 			data: JSON.stringify({newtext: newtext, sentno: sentno}),
-			success: function(response, jqXHR, textStatus) {
-				if (jqXHR.status >= 200 && jqXHR.status < 300) {
+			success: function(response) {
+				if (response.success) {
 					$("#sent").val(newtext);
 					$("#editableSent").text(newtext);
 					$("#editableSent").css("display", "inline");
