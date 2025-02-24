@@ -60,30 +60,32 @@
 		$("#reTokenizeButton").hide();
 	}
 	
-	function reTokenize(sentno) {
+	function reTokenize() {
 		var newtext = $("#editInput").val();
 		newtext = newtext.trim();
 		newtext = newtext.replace(/\s+/g, ' ');
 		var sentno = $("#sentno").val();
-		$("#editableSent").text(newtext)
-		$("#editableSent").css("display", "inline");
-		$("#editInput").hide();
-		$("#cancelButton").hide();
-		$("#reTokenizeButton").hide();
 		$.ajax({
 			method: 'POST',
 			url: '/retokenize',
 			headers: {
 				"Content-Type":'application/json'
 			},
-			data: JSON.stringify({newtext: newtext, sentno: sentno})
-		}).then(data => {
-			console.log('Success', data);
+			data: JSON.stringify({newtext: newtext, sentno: sentno}),
+			success: function(response, jqXHR, textStatus) {
+				if (jqXHR.status >= 200 && jqXHR.status < 300) {
+					$("#sent").val(newtext);
+					$("#editableSent").text(newtext);
+					$("#editableSent").css("display", "inline");
+					$("#editInput").hide();
+					$("#cancelButton").hide();
+					$("#reTokenizeButton").hide();
+				} else {
+					alert('Error: ' + response.error);
+				}
+			}
 		})
-		.catch((error) => {
-			console.error('Error:', error);
-		});
-		}
+	}
 </script>
 {% endblock %}
 

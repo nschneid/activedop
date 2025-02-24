@@ -396,12 +396,14 @@ def get_id():
 		id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 	return jsonify({'id': id})
 
-@app.route('/annotate/direct_entry', methods=['GET'])
+@app.route('/annotate/direct_entry', methods=['POST'])
 @loginrequired
 def direct_entry():
 	"""Directly enter a sentence."""
-	sent = request.args.get('sent', '').strip()
-	sentid = str(request.args.get('id', '')).strip()
+	sent = request.json.get('sent', '').strip()
+	sentid = str(request.json.get('id', '')).strip()
+	if len(sent.split()) > app.config['LIMIT']:
+		return jsonify({'error': 'Sentence too long. (Maximum length: {})'.format(app.config['LIMIT'])})
 	if not sent:
 		return jsonify({'error': 'Sentence is empty.'})
 	elif not sentid:
@@ -576,19 +578,22 @@ def undoaccept():
 def retokenize():
 	sentno = int(request.json.get('sentno', 0))
 	newtext = request.json.get('newtext', 0)
+	if len(newtext.split()) > app.config['LIMIT']:
+		return jsonify({'success': False,	
+			'error': 'Sentence too long. (Maximum length: {})'.format(app.config['LIMIT'])})
 	lineno = QUEUE[sentno - 1][0]
 	SENTENCES[lineno] = newtext
 	return jsonify({"success": True})
 
-@app.route('/annotate/parse')
+@app.route('/annotate/parse', methods=['POST'])
 @loginrequired
 def parse():
 	"""Display parse. To be invoked by an AJAX call."""
-	sentno = int(request.args.get('sentno'))  # 1-indexed
+	sentno = int(request.json.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
 	username = session['username']
-	require = request.args.get('require', '')
-	block = request.args.get('block', '')
+	require = request.json.get('require', '')
+	block = request.json.get('block', '')
 	urlprm = dict(sentno=sentno)
 	if require and require != '':
 		urlprm['require'] = require
@@ -598,8 +603,8 @@ def parse():
 	if require or block:
 		session['actions'][CONSTRAINTS] += 1
 		session.modified = True
-	if False and app.config['DEBUG']:
-		resp = worker.getparses(sent, require, block)
+	if len(sent.split()) > app.config['LIMIT']:
+		return jsonify({'error': 'Sentence too long. (Maximum length: {})'.format(app.config['LIMIT'])})
 	else:
 		resp = WORKERS[username].submit(
 				worker.getparses,

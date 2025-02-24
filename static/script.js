@@ -73,8 +73,8 @@ function annotate() {
 	var div = $('#result');
 	div.html('[...wait for it...]');
 
-	// Construct the URL for the AJAX request
-	var url = "/annotate/parse?html=1&sent=" + encodeURIComponent(document.queryform.sent.value);
+	data = { sent: document.queryform.sent.value,
+			sentno: document.queryform.sentno.value };
 
 	/* if there were any filter constraints, convert them to parsing constraints now */
 	require.push.apply(require, frequire);
@@ -82,16 +82,17 @@ function annotate() {
 	frequire = [];
 	fblock = [];
 	if(require.length > 0 || block.length > 0) {
-		url += "&require=" + encodeURIComponent(require.join('\t'))
-				+ "&block=" + encodeURIComponent(block.join('\t'));
+		data.require = require.join('\t');
+		data.block = block.join('\t');
 		$('#constraintdiv').show();
 	}
-	url += '&sentno=' + document.queryform.sentno.value;
 
 	// Make the AJAX GET request using jQuery
 	$.ajax({
-		url: url,
-		type: "GET",
+		url: '/annotate/parse',
+		type: "POST",
+		contentType: 'application/json',
+		data: JSON.stringify(data),
 		success: function(response) {
 			div.html(response);
 			registertoggleable(div[0]);
@@ -568,8 +569,9 @@ function addSentence() {
 					// Make the AJAX GET request using jQuery
 					$.ajax({
 						url: "/annotate/direct_entry",
-						type: "GET",
-						data: { sent: sent, id: id },
+						type: "POST",
+						contentType: 'application/json',
+						data: JSON.stringify({ sent: sent, id: id }),
 						success: function(response, textStatus, jqXHR) {
 							var responseURL = response.redirect_url;
 							var responseError = response.error;
