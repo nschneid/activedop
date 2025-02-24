@@ -248,7 +248,7 @@ function replacetree() {
 		}),
 		success: function(response) {
 			validatorOut.html(response.msg);
-			el.html(response.html);
+			el.html(response.accept_link + "<br>" + response.gtree);
 			registerdraggable(el[0]);
 			if (!response.has_error) {
 				// Update oldtree with the current value from the editor
@@ -347,13 +347,10 @@ function pick(labeltype, label) {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(response) {
-			var res = response.split('\t', 3);
-			validatorOut.html(res[0]);
-			el.html(res[1]);
-			if (res[2]) {
-				editor.setValue(res[2]);
-				oldtree = editor.getValue();
-			}
+			validatorOut.html(response.msg);
+			el.html(response.accept_link + "<br>" + response.gtree);
+			editor.setValue(response.treestr);
+			oldtree = editor.getValue();
 			registerdraggable(el[0]);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -402,16 +399,12 @@ function picksubtree(n) {
 			tree: editor.getValue()
 		},
 		success: function(response) {
-			var res = response.split('\t', 3);
-			console.log(res)
 			var el = $('#tree');
 			var validatorOut = $('#validatorOut');
-			validatorOut.html(res[0]);
-			el.html(res[1]);
-			if (res[2]) {
-				editor.setValue(res[2]);
-				oldtree = editor.getValue();
-			}
+			validatorOut.html(response.msg);
+			el.html(response.accept_link + "<br>" + response.gtree);
+			editor.setValue(response.treestr);
+			oldtree = editor.getValue();
 			registerdraggable(el[0]);
 			el = $('#nbest');
 			el.html('');
@@ -470,13 +463,13 @@ function drop(ev) {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(response) {
-			var res = response.split('\t', 3);
-			validatorOut.html(res[0]);
-			el.html(res[1]);
-			if (res[2]) {
-				editor.setValue(res[2]);
-				oldtree = editor.getValue();
+			validatorOut.html(response.msg);
+			if (response.error) {
+				console.error(response.error);
 			}
+			el.html(response.accept_link + "<br>" + response.error + "<br>" + response.gtree);
+			editor.setValue(response.treestr);
+			oldtree = editor.getValue();
 			registerdraggable(el[0]);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -507,13 +500,13 @@ function newproj(ev) {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(response) {
-			var res = response.split('\t', 3);
-			validatorOut.html(res[0]);
-			el.html(res[1]);
-			if (res[2]) {
-				editor.setValue(res[2]);
-				oldtree = editor.getValue();
+			validatorOut.html(response.msg);
+			if (response.error) {
+				console.error(response.error);
 			}
+			el.html(response.accept_link + "<br>" + response.error + "<br>" + response.gtree);
+			editor.setValue(response.treestr);
+			oldtree = editor.getValue();
 			registerdraggable(el[0]);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
