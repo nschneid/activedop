@@ -1356,7 +1356,7 @@ def decisiontree(parsetrees, sent, urlprm):
 			thistree = ('%(n)d. [%(prob)s] '
 					'<a href="/annotate/accept?%(urlprm)s">accept this tree</a>; '
 					'<a href="/annotate/edit?%(urlprm)s">edit</a>; '
-					'<a href="/annotate/deriv?%(urlprm)s">derivation</a>\n\n'
+					'<a href="/annotate/deriv?%(urlprm)s">derivation</a><br>\n\n'
 					% dict(
 						n=x + 1,
 						prob=probstr(prob),
@@ -1372,7 +1372,7 @@ def decisiontree(parsetrees, sent, urlprm):
 					'good constituent</a> '
 				'<a href="javascript: showhide(\'d%(left)s\', \'d%(right)s\', '
 					'\'dd%(exleft)s\', \'%(numtrees)s\'); ">'
-					'bad constituent</a> '
+					'bad constituent</a><br>'
 				'%(subtree1)s%(subtree2)s</span>' % dict(
 				n=n,
 				display='block' if n == 0 else 'none',
