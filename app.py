@@ -449,12 +449,14 @@ def get_id():
 		id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 	return jsonify({'id': id})
 
-@app.route('/annotate/direct_entry', methods=['GET'])
+@app.route('/annotate/direct_entry', methods=['POST'])
 @loginrequired
 def direct_entry():
 	"""Directly enter a sentence."""
-	sent = request.args.get('sent', '').strip()
-	sentid = str(request.args.get('id', '')).strip()
+	sent = request.json.get('sent', '').strip()
+	sentid = str(request.json.get('id', '')).strip()
+	if len(sent.split()) > app.config['LIMIT']:
+		return jsonify({'error': 'Sentence too long. (Maximum length: {})'.format(app.config['LIMIT'])})
 	if not sent:
 		return jsonify({'error': 'Sentence is empty.'})
 	elif not sentid:
@@ -636,19 +638,22 @@ def undoaccept():
 def retokenize():
 	sentno = int(request.json.get('sentno', 0))
 	newtext = request.json.get('newtext', 0)
+	if len(newtext.split()) > app.config['LIMIT']:
+		return jsonify({'success': False,	
+			'error': 'Sentence too long. (Maximum length: {})'.format(app.config['LIMIT'])})
 	lineno = QUEUE[sentno - 1][0]
 	SENTENCES[lineno] = newtext
 	return jsonify({"success": True})
 
-@app.route('/annotate/parse')
+@app.route('/annotate/parse', methods=['POST'])
 @loginrequired
 def parse():
 	"""Display parse. To be invoked by an AJAX call."""
-	sentno = int(request.args.get('sentno'))  # 1-indexed
+	sentno = int(request.json.get('sentno'))  # 1-indexed
 	sent = SENTENCES[QUEUE[sentno - 1][0]]
 	username = session['username']
-	require = request.args.get('require', '')
-	block = request.args.get('block', '')
+	require = request.json.get('require', '')
+	block = request.json.get('block', '')
 	urlprm = dict(sentno=sentno)
 	if require and require != '':
 		urlprm['require'] = require
@@ -658,8 +663,8 @@ def parse():
 	if require or block:
 		session['actions'][CONSTRAINTS] += 1
 		session.modified = True
-	if False and app.config['DEBUG']:
-		resp = worker.getparses(sent, require, block)
+	if len(sent.split()) > app.config['LIMIT']:
+		return jsonify({'error': 'Sentence too long. (Maximum length: {})'.format(app.config['LIMIT'])})
 	else:
 		resp = WORKERS[username].submit(
 				worker.getparses,
@@ -856,10 +861,9 @@ def redraw():
 		treeobj = None
 		has_error = True
 		return jsonify({'msg': msg,
-				'html': Markup('%s\n\n%s' % (
-					link,
-					'')), 
-					'has_error': has_error})
+				  'accept_link': link,
+				  'gtree': '',
+				  'has_error': has_error})
 	tree_to_accept = treeobj.treestr()
 	tree_for_editdist = re.sub(r'\s+', ' ', str(tree_to_accept))
 	oldtree = request.args.get('oldtree', '')
@@ -868,10 +872,9 @@ def redraw():
 		session['actions'][EDITDIST] += editdistance(tree_for_editdist, oldtree)
 		session.modified = True
 	return jsonify({'msg': msg,
-				 'html': Markup('%s\n\n%s' % (
-					 link,
-					 treeobj.gtree(add_editable_attr=True))), 
-					 'has_error': has_error})
+				  'accept_link': link,
+				  'gtree': treeobj.gtree(add_editable_attr=True),
+				  'has_error': has_error})
 
 def graphical_operation_preamble(treestr):
 	treeobj = ActivedopTree.from_str(treestr)
@@ -907,40 +910,45 @@ def newlabel():
 	nodeid = int(nodeid)
 	dt = DrawTree(treeobj.ptree, treeobj.senttok)
 	m = LABELRE.match(dt.nodes[nodeid].label)
-	error = ""
-	if data.get('label') is not None:
-		label = data.get('label', '')
-		dt.nodes[nodeid].label = (label
-				+ (m.group(2) or '')
-				+ (m.group(3) or ''))
-	elif data.get('function') is not None:
-		label = data.get('function', '')
-		if label == '':
-			dt.nodes[nodeid].label = '%s%s' % (
-					m.group(1), m.group(3) or '')
+	try:
+		if data.get('label') is not None:
+			label = data.get('label', '')
+			dt.nodes[nodeid].label = (label
+					+ (m.group(2) or '')
+					+ (m.group(3) or ''))
+		elif data.get('function') is not None:
+			label = data.get('function', '')
+			if label == '':
+				dt.nodes[nodeid].label = '%s%s' % (
+						m.group(1), m.group(3) or '')
+			else:
+				dt.nodes[nodeid].label = '%s-%s%s' % (
+						m.group(1), label, m.group(3) or '')
+		elif data.get('morph') is not None:
+			label = data.get('morph', '')
+			if label == '':
+				dt.nodes[nodeid].label = '%s%s' % (
+						m.group(1), m.group(2) or '')
+			else:
+				dt.nodes[nodeid].label = '%s%s/%s' % (
+						m.group(1), m.group(2) or '', label)
 		else:
-			dt.nodes[nodeid].label = '%s-%s%s' % (
-					m.group(1), label, m.group(3) or '')
-	elif data.get('morph') is not None:
-		label = data.get('morph', '')
-		if label == '':
-			dt.nodes[nodeid].label = '%s%s' % (
-					m.group(1), m.group(2) or '')
-		else:
-			dt.nodes[nodeid].label = '%s%s/%s' % (
-					m.group(1), m.group(2) or '', label)
-	else:
-		raise ValueError('expected label or function argument')
-	treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, int(data.get('sentno'))) 
-	if error == '':
+			raise ValueError('expected label or function argument')
+		treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, int(data.get('sentno'))) 
 		session['actions'][RELABEL] += 1
 		session.modified = True
-	return Markup('%s\t%s\n\n%s%s\t%s' % (
-			msg,
-			link, error,
-			treeobj.gtree(add_editable_attr=True),
-			treeobj.treestr()))
-
+		return jsonify({'msg': msg,
+					'accept_link': link,
+					'error' : '',
+					'gtree': treeobj.gtree(add_editable_attr=True),
+					'treestr': treeobj.treestr()})
+	except ValueError as err:
+		error = str(err)
+		return jsonify({'msg': msg,
+					'accept_link': link,
+					'error' : error,
+					'gtree': treeobj.gtree(add_editable_attr=True),
+					'treestr': treeobj.treestr()})
 
 @app.route('/annotate/reattach', methods=['POST'])
 @loginrequired
@@ -956,7 +964,6 @@ def reattach():
 	old_treeobj, _ = graphical_operation_preamble(treestr)
 	try:
 		dt = DrawTree(treeobj.ptree, treeobj.senttok)
-		error = ''
 		senttok = treeobj.senttok
 		if data.get('newparent') == 'deletenode':
 			# remove nodeid by replacing it with its children
@@ -964,7 +971,7 @@ def reattach():
 			nodeid = int(nodeid)
 			x = dt.nodes[nodeid]
 			if nodeid == 0 or isinstance(x[0], int):
-				error = 'ERROR: cannot remove ROOT or POS node'
+				raise ValueError('cannot remove ROOT or POS node')
 			else:
 				children = list(x)
 				x[:] = []
@@ -1000,7 +1007,7 @@ def reattach():
 			label = data.get('nodeid').split('_', 1)[1]
 			y = dt.nodes[newparent]
 			if isinstance(y[0], int):
-				error = 'ERROR: cannot add node under POS tag'
+				raise ValueError('cannot add node under POS tag')
 			else:
 				children = list(y)
 				y[:] = []
@@ -1070,9 +1077,8 @@ def reattach():
 			
 			for node in x.subtrees():
 				if node is y:
-					error = ('ERROR: cannot re-attach subtree'
+					raise ValueError('cannot re-attach subtree'
 							' under (descendant of) itself\n')
-					break
 			else:
 				for node in dt.nodes[0].subtrees():
 					if any(child is x for child in node):
@@ -1088,30 +1094,29 @@ def reattach():
 							tree = canonicalize(dt.nodes[0])
 							dt = DrawTree(tree, senttok)  # kludge..
 						else:
-							error = ('ERROR: re-attaching only child creates'
+							raise ValueError('re-attaching only child creates'
 									' empty node %s; remove manually\n' % node)
 						break
 		treeobj, link, msg = graphical_operation_postamble(dt, senttok, cgel_tree_terminals, int(data.get('sentno')))
 		if treeobj.senttok != old_treeobj.senttok:
 			raise ValueError('movement would result in reordered tokens')
-		if error == '':
-			session['actions'][REATTACH] += 1
-			session.modified = True
-		return Markup('%s\t%s\n\n%s%s\t%s' % (
-				msg,
-				link, error + "\n",
-				treeobj.gtree(add_editable_attr=True),
-				treeobj.treestr()))
+		session['actions'][REATTACH] += 1
+		session.modified = True
+		return jsonify({'msg': msg,
+				'accept_link': link,
+				'gtree': treeobj.gtree(add_editable_attr=True),
+				'error': '',
+				'treestr': treeobj.treestr()})
 	except Exception as err:
 		msg = old_treeobj.validate()
 		link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=int(data.get('sentno')), tree=old_treeobj.treestr())))
 		error = "ERROR: " + str(err)
-		return Markup('%s\t%s\n\n%s%s\t%s' % (
-				msg,
-				link, error + "\n",
-				old_treeobj.gtree(add_editable_attr=True),
-				old_treeobj.treestr()))
+		return jsonify({'msg': msg,
+				  'accept_link': link,
+				  'gtree': old_treeobj.gtree(add_editable_attr=True),
+				  'error': error,
+				  'treestr': old_treeobj.treestr()})
 
 
 @app.route('/annotate/reparsesubtree')
@@ -1196,11 +1201,11 @@ def replacesubtree():
 	session.modified = True
 	link = ('<a href="/annotate/accept?%s">accept this tree</a>'
 			% urlencode(dict(sentno=sentno, tree=treeobj.treestr())))
-	return Markup('%s\t%s\n\n%s%s\t%s' % (
-			msg,
-			link, error,
-			treeobj.gtree(add_editable_attr=True),
-			treeobj.treestr()))
+	return jsonify({'msg': msg,
+				  'accept_link': link,
+				  'gtree': treeobj.gtree(add_editable_attr=True),
+				  'error': error,
+				  'treestr': treeobj.treestr()})
 
 
 @app.route('/annotate/accept', methods=['GET', 'POST'])
@@ -1413,7 +1418,7 @@ def decisiontree(parsetrees, sent, urlprm):
 			thistree = ('%(n)d. [%(prob)s] '
 					'<a href="/annotate/accept?%(urlprm)s">accept this tree</a>; '
 					'<a href="/annotate/edit?%(urlprm)s">edit</a>; '
-					'<a href="/annotate/deriv?%(urlprm)s">derivation</a>\n\n'
+					'<a href="/annotate/deriv?%(urlprm)s">derivation</a><br>\n\n'
 					% dict(
 						n=x + 1,
 						prob=probstr(prob),
@@ -1429,7 +1434,7 @@ def decisiontree(parsetrees, sent, urlprm):
 					'good constituent</a> '
 				'<a href="javascript: showhide(\'d%(left)s\', \'d%(right)s\', '
 					'\'dd%(exleft)s\', \'%(numtrees)s\'); ">'
-					'bad constituent</a> '
+					'bad constituent</a><br>'
 				'%(subtree1)s%(subtree2)s</span>' % dict(
 				n=n,
 				display='block' if n == 0 else 'none',
