@@ -3,3 +3,4 @@ numpy
 scikit-learn
 pylatexenc
 Werkzeug==2.2.2
+psycopg2-binary

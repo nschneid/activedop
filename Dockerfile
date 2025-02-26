@@ -22,6 +22,7 @@ COPY worker.py worker.py
 COPY workerattr.py workerattr.py
 
 COPY newsentsExample.csv newsentsExample.csv
+COPY newsentsExample.csv.rankings.json newsentsExample.csv.rankings.json
 
 # Install dependencies
 
@@ -38,12 +39,13 @@ RUN pip3 install -r requirements.txt
 
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_ENV=production
 
 # Initialize the database
-RUN python -m flask initdb
+# RUN python -m flask initdb 
 
 # Initialize priorities
-RUN python -m flask initpriorities
+#RUN python -m flask initpriorities
 
 # Run the Flask application with threading enabled
 CMD ["python", "-m", "flask", "run", "--with-threads"]
