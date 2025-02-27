@@ -41,11 +41,5 @@ ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_ENV=production
 
-# Initialize the database
-# RUN python -m flask initdb 
-
-# Initialize priorities
-#RUN python -m flask initpriorities
-
 # Run the Flask application with threading enabled
 CMD ["python", "-m", "flask", "run", "--with-threads"]
