@@ -1,8 +1,8 @@
 top='ROOT',
 stages=[
   dict(
-    name='dop', mode='plcfrs', dop='doubledop',
-	m=1000, estimator='rfe', objective = 'mpp',
+    name='dop', mode='pcfg', dop='doubledop',
+	m=1000, estimator='rfe', objective = 'mpp'
   ),
 ],
 

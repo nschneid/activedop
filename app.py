@@ -33,6 +33,7 @@ import sys
 import csv
 import json
 import sqlite3
+import psycopg2
 import logging
 import subprocess
 import click
@@ -94,6 +95,7 @@ app.config.update(
 		ACCOUNTS=None,  # dictionary mapping usernames to passwords
 		ANNOTATIONHELP=None,  # plain text file summarizing the annotation scheme
 		CGELVALIDATE=None,  # whether to run the CGEL validator when editing
+		PROJ_POS={},  # dictionary mapping POS tags to their corresponding projection tags (for the 'newproj' action)
 		PUNCT_TAGS={}, # dictionary mapping idiosyncratic punctuation POS tags to their corresponding tokens
 		SYMBOL_TAG=None, # pos tag for symbols (and symbol sequences) that don't have an idiosyncratic tag (in PUNCT_TAGS)
 		AMBIG_SYM={}, # 'ambiguous' symbols that can be punctuation or something else depending on context
@@ -110,15 +112,23 @@ logger.setLevel(logging.DEBUG)
 logger.handlers[0].setFormatter(logging.Formatter(
 		fmt='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
 
+if app.config['DATABASE'] == 'remote':
+	db_blank = '%s'
+else:	
+	db_blank = '?'
+
 def refreshqueue(username):
 	""""Ensures that user can view annotations of sentences not in the 'initpriorities' queue.
 	These sentences are shown first, before the prioritized queue."""
 	db = getdb()
-	cur = db.execute(
-		'SELECT id, sentno, cgel_tree FROM entries WHERE username = ? ORDER BY sentno ASC',
-		(username, )
-	)
-	dbentries = cur.fetchall()
+	cmd = 'SELECT id, sentno, cgel_tree FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(db_blank)
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd, (username,))
+			dbentries = cur.fetchall()
+	else:
+		cur = db.execute(cmd, (username,))
+		dbentries = cur.fetchall()
 	queue_ids = [entry[3] for entry in QUEUE]
 	for row in dbentries:
 		id = row[0]
@@ -139,11 +149,14 @@ def initpriorities(username):
 	Sentences with saved annotations are included first in the order and are not re-parsed."""
 	sentfilename = app.config['SENTENCES']
 	db = getdb()
-	cur = db.execute(
-		'SELECT * FROM entries WHERE username = ? ORDER BY sentno ASC',
-		(username, )
-	)
-	dbentries = cur.fetchall()
+	cmd = 'SELECT id FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(db_blank)
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd, (username,))
+			dbentries = cur.fetchall()
+	else:
+		cur = db.execute(cmd, (username,))
+		dbentries = cur.fetchall()
 	dbentryids = {a[0] for a in dbentries}
 	if sentfilename is None:
 		raise ValueError('SENTENCES not configured')
@@ -226,41 +239,60 @@ def initdb():
 	"""Initializes the database."""
 	db = getdb()
 	with app.open_resource('schema.sql', mode='r') as inp:
-		db.cursor().executescript(inp.read())
+		schema = inp.read()
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			for statement in schema.split(';'):
+				if statement.strip():
+					cur.execute(statement)
+	else:
+		db.cursor().executescript(schema)
 	db.commit()
 	app.logger.info('Initialized the database.')
 
 
 def connectdb():
 	"""Connects to the specific database."""
-	result = sqlite3.connect(app.config['DATABASE'])
-	# result.row_factory = sqlite3.Row
+	if app.config['DATABASE'] == 'remote':
+		db_params = {
+            "host": os.getenv("DB_HOST"),  
+            "database": os.getenv("DB_NAME"),
+            "user": os.getenv("DB_UNAME"),       # default is often 'postgres'
+            "password": os.getenv("DB_PWD"),
+            "port": os.getenv("DB_PORT")                 # default PostgreSQL port
+        }
+		result = psycopg2.connect(**db_params)
+	else:
+		result = sqlite3.connect(app.config['DATABASE'])
 	return result
 
 
 def getdb():
 	"""Opens a new database connection if there is none yet for the
 	current application context."""
-	if not hasattr(g, 'sqlitedb'):
-		g.sqlitedb = connectdb()
-	return g.sqlitedb
+	if not hasattr(g, 'db'):
+		g.db = connectdb()
+	return g.db
 
 
 @app.teardown_appcontext
 def closedb(error):
 	"""Closes the database again at the end of the request."""
-	if hasattr(g, 'sqlitedb'):
-		g.sqlitedb.close()
+	if hasattr(g, 'db'):
+		g.db.close()
 
 @app.route('/annotate/get_data_psv')
 def get_data_psv():
 	username = session['username']
 	db = getdb()
-	cur = db.execute(
-		'SELECT * FROM entries WHERE username = ? ORDER BY sentno ASC',
-		(username, )
-	)
-	rows = cur.fetchall()
+	cmd = 'SELECT * FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(db_blank)
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd, (username,))
+			rows = cur.fetchall()
+	else:
+		cur = db.execute(cmd, (username,))
+		rows = cur.fetchall()
 	output_dir = "tmp"
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
@@ -280,11 +312,14 @@ def firstunannotated(username):
 	"""Return index of first unannotated sentence,
 	according to the prioritized order."""
 	db = getdb()
-	cur = db.execute(
-			'select id from entries where username = ? '
-			'order by sentno asc',
-			(username, ))
-	entries = {a[0] for a in cur}
+	cmd = 'SELECT id FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(db_blank)
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd, (username,))
+			entries = {a[0] for a in cur}
+	else:
+		cur = db.execute(cmd, (username,))
+		entries = {a[0] for a in cur}
 	# sentno=prioritized index, lineno=original index
 	for sentno, (_, _, _, id) in enumerate(QUEUE, 1):
 		if id not in entries:
@@ -295,28 +330,29 @@ def firstunannotated(username):
 def numannotated(username):
 	"""Number of unannotated sentences for an annotator."""
 	db = getdb()
-	cur = db.execute('select count(sentno) from entries where username = ?',
-			(username, ))
-	result = cur.fetchone()
+	cmd = 'SELECT count(sentno) FROM entries WHERE username = {0}'.format(db_blank)
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd, (username,))
+			result = cur.fetchone()
+	else:
+		cur = db.execute(cmd, (username,))
+		result = cur.fetchone()
 	return result[0]
 
 
 def getannotation(username, id):
 	"""Fetch annotation of a single sentence from database."""
 	db = getdb()
-	if app.config['CGELVALIDATE'] is None:
-		cur = db.execute(
-				'select tree, nbest '
-				'from entries '
-				'where username = ? and id = ? ',
-				(username, id))
+	selection = 'cgel_tree, nbest' if app.config['CGELVALIDATE'] else 'tree, nbest'
+	cmd = 'select {0} from entries where username = {1} and id = {1}'.format(selection, db_blank)
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd, (username, id))
+			entry = cur.fetchone()
 	else:
-		cur = db.execute(
-				'select cgel_tree, nbest '
-				'from entries '
-				'where username = ? and id = ? ',
-				(username, id))
-	entry = cur.fetchone()
+		cur = db.execute(cmd, (username, id))
+		entry = cur.fetchone()
 	return (None, 0) if entry is None else (entry[0], entry[1])
 
 
@@ -324,22 +360,35 @@ def readannotations(username=None):
 	"""Get all annotations, or ones by a given annotator."""
 	db = getdb()
 	if username is None:
-		cur = db.execute(
-				'select sentno, tree from entries '
-				'order by sentno asc')
+		cmd = 'select sentno, tree from entries order by sentno asc'
+		if app.config['DATABASE'] == 'remote':
+			with db.cursor() as cur:
+				cur.execute(cmd)
+				entries = cur.fetchall()
+		else:
+			cur = db.execute(cmd)
+			entries = cur.fetchall()
 	else:
-		cur = db.execute(
-				'select sentno, tree from entries where username = ? '
-				'order by sentno asc',
-				(username, ))
-	entries = cur.fetchall()
+		cmd = 'select sentno, tree from entries where username = {0} order by sentno asc'.format(db_blank)
+		if app.config['DATABASE'] == 'remote':
+			with db.cursor() as cur:
+				cur.execute(cmd, (username,))
+				entries = cur.fetchall()
+		else:
+			cur = db.execute(cmd, (username,))
+			entries = cur.fetchall()
 	return OrderedDict(entries)
 
 
 def addentry(id, sentno, tree, cgel_tree, actions):
 	"""Add an annotation to the database."""
 	db = getdb()
-	db.execute(
+	if app.config['DATABASE'] == 'remote':
+		query = 'INSERT INTO entries VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+		with db.cursor() as cur:
+			cur.execute(query, (id, sentno, session['username'], tree, cgel_tree, *actions, datetime.now().strftime('%F %H:%M:%S')))
+	else:
+		db.execute(
 			'insert or replace into entries '
 			'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			(id, sentno, session['username'], tree, cgel_tree, *actions,
@@ -387,10 +436,14 @@ def get_id():
 	id = None
 	# verify that the ID is unique 
 	db = getdb()
-	cur = db.execute(
-		'SELECT id FROM entries ORDER BY sentno ASC'
-	)
-	entries = cur.fetchall()
+	cmd = 'SELECT id FROM entries ORDER BY sentno ASC'
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd)
+			entries = cur.fetchall()
+	else:
+		cur = db.execute(cmd)
+		entries = cur.fetchall()
 	existing_ids = {entry[0] for entry in entries} | {entry[3] for entry in QUEUE}
 	while id is None or id in existing_ids:
 		id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
@@ -409,10 +462,14 @@ def direct_entry():
 	elif not sentid:
 		return jsonify({'error': 'Sentence ID is empty.'})
 	db = getdb()
-	cur = db.execute(
-		'SELECT id FROM entries ORDER BY sentno ASC'
-	)
-	entries = cur.fetchall()
+	cmd = 'SELECT id FROM entries ORDER BY sentno ASC'
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd)
+			entries = cur.fetchall()
+	else:
+		cur = db.execute(cmd)
+		entries = cur.fetchall()
 	existing_ids = {entry[0] for entry in entries} | {entry[3] for entry in QUEUE}
 	if sentid in existing_ids:
 		return jsonify({'error': 'Sentence ID already exists in the database or queue.'})
@@ -568,9 +625,12 @@ def undoaccept():
 	sentid = request.json.get('sentid', 0)
 	username = session['username']
 	db = getdb()
-	db.execute(
-	'DELETE FROM entries WHERE username = ? AND id = ?',
-	(username, sentid))
+	cmd = 'DELETE FROM entries WHERE username = {0} AND id = {0}'.format(db_blank)
+	if app.config['DATABASE'] == 'remote':
+		with db.cursor() as cur:
+			cur.execute(cmd, (username, sentid))
+	else:
+		db.execute(cmd, (username, sentid))
 	db.commit()
 	return jsonify({"success": True})
 
@@ -928,15 +988,17 @@ def reattach():
 					).lstrip('t').split('_')
 			newparent = int(newparent)
 			y = dt.nodes[newparent]
+			children = list(y)
 			label = y.label
+			new_top_label = label
 			if isinstance(y[0], int):
-				raise ValueError('cannot add node under POS tag')
-			else:
-				children = list(y)
-				y[:] = []
-				y[:] = [Tree(label, children)]
-				tree = canonicalize(dt.nodes[0])
-				dt = DrawTree(tree, senttok)  # kludge..
+				old_pos = LABELRE.match(label).group(1)
+				new_pos = app.config['PROJ_POS'].get(old_pos, 'Clause')
+				new_top_label = new_pos + "-Head"
+			y[:] = [Tree(label, children)]
+			y.label = new_top_label
+			tree = canonicalize(dt.nodes[0])
+			dt = DrawTree(tree, senttok)  # kludge..
 		elif data.get('nodeid', '').startswith('newlabel_'):
 			# splice in a new node under parentid
 			_treeid, newparent = data.get('newparent', ''
