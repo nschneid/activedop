@@ -42,6 +42,8 @@
 		window.location.href = '/annotate/annotate/' + sentno;
 	}
 	function undoAccept() {
+		// Change text of button to "Reverting..." to indicate that the action is being processed
+		$('#undo').text('Reverting...');
 		var sentid = $('#sentid').val();
 		var sentno = $('#sentno').val();
 		$.ajax({
