@@ -530,7 +530,7 @@ function accept() {
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		success: function(response, textStatus, jqXHR) {
-			var responseURL = response.redirect_url;
+			var responseURL = response.redirect;
 			var responseError = response.error;
 			// Handle the redirect
 			if (responseURL) {

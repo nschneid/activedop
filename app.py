@@ -1206,11 +1206,17 @@ def accept():
 		msg = treeobj.validate()
 		if 'ERROR' in msg or 'WARNING' in msg:
 			flash('Your annotation for sentence %d was stored %r but may contain errors. Please click Validate to check.' % (sentno, actions))
-			return redirect(url_for('annotate', sentno=sentno))
+			if request.method == 'POST':
+				return jsonify({'redirect': url_for('annotate', sentno=sentno)})
+			else:
+				return redirect(url_for('annotate', sentno=sentno))
 	flash('Your annotation for sentence %d was stored %r' % (sentno, actions))
-	return (redirect(url_for('annotate', sentno=1))
-		if sentno >= len(SENTENCES)
-		else redirect(url_for('annotate', sentno=sentno+1)))
+	if request.method == 'POST':
+		return jsonify({'redirect': url_for('annotate', sentno=1) if sentno >= len(SENTENCES) else url_for('annotate', sentno=sentno+1)})
+	else:
+		return (redirect(url_for('annotate', sentno=1))
+			if sentno >= len(SENTENCES)
+			else redirect(url_for('annotate', sentno=sentno+1)))
 
 @app.route('/annotate/context/<int:lineno>')
 def context(lineno):
