@@ -120,15 +120,11 @@ else:
 def refreshqueue(username):
 	""""Ensures that user can view annotations of sentences not in the 'initpriorities' queue.
 	These sentences are shown first, before the prioritized queue."""
-	db = getdb()
 	cmd = 'SELECT id, sentno, cgel_tree FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(db_blank)
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd, (username,))
-			dbentries = cur.fetchall()
-	else:
-		cur = db.execute(cmd, (username,))
-		dbentries = cur.fetchall()
+	db = getdb()
+	cur = db.cursor()
+	cur.execute(cmd, (username,))
+	dbentries = cur.fetchall()
 	queue_ids = [entry[3] for entry in QUEUE]
 	for row in dbentries:
 		id = row[0]
@@ -150,13 +146,9 @@ def initpriorities(username):
 	sentfilename = app.config['SENTENCES']
 	db = getdb()
 	cmd = 'SELECT id FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(db_blank)
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd, (username,))
-			dbentries = cur.fetchall()
-	else:
-		cur = db.execute(cmd, (username,))
-		dbentries = cur.fetchall()
+	cur = db.cursor()
+	cur.execute(cmd, (username,))
+	dbentries = cur.fetchall()
 	dbentryids = {a[0] for a in dbentries}
 	if sentfilename is None:
 		raise ValueError('SENTENCES not configured')
@@ -284,15 +276,11 @@ def closedb(error):
 @app.route('/annotate/get_data_psv')
 def get_data_psv():
 	username = session['username']
-	db = getdb()
 	cmd = 'SELECT * FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(db_blank)
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd, (username,))
-			rows = cur.fetchall()
-	else:
-		cur = db.execute(cmd, (username,))
-		rows = cur.fetchall()
+	db = getdb()
+	cur = db.cursor()
+	cur.execute(cmd, (username,))
+	rows = cur.fetchall()
 	output_dir = "tmp"
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
@@ -313,13 +301,9 @@ def firstunannotated(username):
 	according to the prioritized order."""
 	db = getdb()
 	cmd = 'SELECT id FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(db_blank)
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd, (username,))
-			entries = {a[0] for a in cur}
-	else:
-		cur = db.execute(cmd, (username,))
-		entries = {a[0] for a in cur}
+	cur = db.cursor() 
+	cur.execute(cmd, (username,))
+	entries = {a[0] for a in cur}
 	# sentno=prioritized index, lineno=original index
 	for sentno, (_, _, _, id) in enumerate(QUEUE, 1):
 		if id not in entries:
@@ -331,13 +315,9 @@ def numannotated(username):
 	"""Number of unannotated sentences for an annotator."""
 	db = getdb()
 	cmd = 'SELECT count(sentno) FROM entries WHERE username = {0}'.format(db_blank)
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd, (username,))
-			result = cur.fetchone()
-	else:
-		cur = db.execute(cmd, (username,))
-		result = cur.fetchone()
+	cur = db.cursor()
+	cur.execute(cmd, (username,))
+	result = cur.fetchone()
 	return result[0]
 
 
@@ -346,37 +326,23 @@ def getannotation(username, id):
 	db = getdb()
 	selection = 'cgel_tree, nbest' if app.config['CGELVALIDATE'] else 'tree, nbest'
 	cmd = 'select {0} from entries where username = {1} and id = {1}'.format(selection, db_blank)
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd, (username, id))
-			entry = cur.fetchone()
-	else:
-		cur = db.execute(cmd, (username, id))
-		entry = cur.fetchone()
+	cur = db.cursor()
+	cur.execute(cmd, (username, id))
+	entry = cur.fetchone()
 	return (None, 0) if entry is None else (entry[0], entry[1])
 
 
 def readannotations(username=None):
 	"""Get all annotations, or ones by a given annotator."""
 	db = getdb()
+	cur = db.cursor()
 	if username is None:
 		cmd = 'select sentno, tree from entries order by sentno asc'
-		if app.config['DATABASE'] == 'remote':
-			with db.cursor() as cur:
-				cur.execute(cmd)
-				entries = cur.fetchall()
-		else:
-			cur = db.execute(cmd)
-			entries = cur.fetchall()
+		cur.execute(cmd)
 	else:
 		cmd = 'select sentno, tree from entries where username = {0} order by sentno asc'.format(db_blank)
-		if app.config['DATABASE'] == 'remote':
-			with db.cursor() as cur:
-				cur.execute(cmd, (username,))
-				entries = cur.fetchall()
-		else:
-			cur = db.execute(cmd, (username,))
-			entries = cur.fetchall()
+		cur.execute(cmd, (username,))
+	entries = cur.fetchall()
 	return OrderedDict(entries)
 
 
@@ -437,13 +403,9 @@ def get_id():
 	# verify that the ID is unique 
 	db = getdb()
 	cmd = 'SELECT id FROM entries ORDER BY sentno ASC'
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd)
-			entries = cur.fetchall()
-	else:
-		cur = db.execute(cmd)
-		entries = cur.fetchall()
+	cur = db.cursor()
+	cur.execute(cmd)
+	entries = cur.fetchall()
 	existing_ids = {entry[0] for entry in entries} | {entry[3] for entry in QUEUE}
 	while id is None or id in existing_ids:
 		id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
@@ -463,13 +425,9 @@ def direct_entry():
 		return jsonify({'error': 'Sentence ID is empty.'})
 	db = getdb()
 	cmd = 'SELECT id FROM entries ORDER BY sentno ASC'
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd)
-			entries = cur.fetchall()
-	else:
-		cur = db.execute(cmd)
-		entries = cur.fetchall()
+	cur = db.cursor()
+	cur.execute(cmd)
+	entries = cur.fetchall()
 	existing_ids = {entry[0] for entry in entries} | {entry[3] for entry in QUEUE}
 	if sentid in existing_ids:
 		return jsonify({'error': 'Sentence ID already exists in the database or queue.'})
@@ -624,13 +582,10 @@ def annotate(sentno):
 def undoaccept():
 	sentid = request.json.get('sentid', 0)
 	username = session['username']
-	db = getdb()
 	cmd = 'DELETE FROM entries WHERE username = {0} AND id = {0}'.format(db_blank)
-	if app.config['DATABASE'] == 'remote':
-		with db.cursor() as cur:
-			cur.execute(cmd, (username, sentid))
-	else:
-		db.execute(cmd, (username, sentid))
+	db = getdb()
+	cur = db.cursor()
+	cur.execute(cmd, (username, sentid))
 	db.commit()
 	return jsonify({"success": True})
 
