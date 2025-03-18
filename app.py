@@ -120,7 +120,7 @@ else:
 def refreshqueue(username):
 	""""Ensures that user can view annotations of sentences not in the 'initpriorities' queue.
 	These sentences are shown first, before the prioritized queue."""
-	cmd = 'SELECT id, sentno, cgel_tree FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(DB_BLANK)
+	cmd = f'SELECT id, sentno, cgel_tree FROM entries WHERE username = {DB_BLANK} ORDER BY sentno ASC'
 	db = getdb()
 	cur = db.cursor()
 	cur.execute(cmd, (username,))
@@ -145,7 +145,7 @@ def initpriorities(username):
 	Sentences with saved annotations are included first in the order and are not re-parsed."""
 	sentfilename = app.config['SENTENCES']
 	db = getdb()
-	cmd = 'SELECT id FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(DB_BLANK)
+	cmd = f'SELECT id FROM entries WHERE username = {DB_BLANK} ORDER BY sentno ASC'
 	cur = db.cursor()
 	cur.execute(cmd, (username,))
 	dbentries = cur.fetchall()
@@ -276,7 +276,7 @@ def closedb(error):
 @app.route('/annotate/get_data_psv')
 def get_data_psv():
 	username = session['username']
-	cmd = 'SELECT * FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(DB_BLANK)
+	cmd = f'SELECT * FROM entries WHERE username = {DB_BLANK} ORDER BY sentno ASC'
 	db = getdb()
 	cur = db.cursor()
 	cur.execute(cmd, (username,))
@@ -300,7 +300,7 @@ def firstunannotated(username):
 	"""Return index of first unannotated sentence,
 	according to the prioritized order."""
 	db = getdb()
-	cmd = 'SELECT id FROM entries WHERE username = {0} ORDER BY sentno ASC'.format(DB_BLANK)
+	cmd = f'SELECT id FROM entries WHERE username = {DB_BLANK} ORDER BY sentno ASC'
 	cur = db.cursor() 
 	cur.execute(cmd, (username,))
 	entries = {a[0] for a in cur}
@@ -314,7 +314,7 @@ def firstunannotated(username):
 def numannotated(username):
 	"""Number of unannotated sentences for an annotator."""
 	db = getdb()
-	cmd = 'SELECT count(sentno) FROM entries WHERE username = {0}'.format(DB_BLANK)
+	cmd = f'SELECT count(sentno) FROM entries WHERE username = {DB_BLANK}'
 	cur = db.cursor()
 	cur.execute(cmd, (username,))
 	result = cur.fetchone()
@@ -325,7 +325,7 @@ def getannotation(username, id):
 	"""Fetch annotation of a single sentence from database."""
 	db = getdb()
 	selection = 'cgel_tree, nbest' if app.config['CGELVALIDATE'] else 'tree, nbest'
-	cmd = 'select {0} from entries where username = {1} and id = {1}'.format(selection, DB_BLANK)
+	cmd = f'select {selection} from entries where username = {DB_BLANK} and id = {DB_BLANK}'
 	cur = db.cursor()
 	cur.execute(cmd, (username, id))
 	entry = cur.fetchone()
@@ -340,7 +340,7 @@ def readannotations(username=None):
 		cmd = 'select sentno, tree from entries order by sentno asc'
 		cur.execute(cmd)
 	else:
-		cmd = 'select sentno, tree from entries where username = {0} order by sentno asc'.format(DB_BLANK)
+		cmd = f'select sentno, tree from entries where username = {DB_BLANK} order by sentno asc'
 		cur.execute(cmd, (username,))
 	entries = cur.fetchall()
 	return OrderedDict(entries)
@@ -582,7 +582,7 @@ def annotate(sentno):
 def undoaccept():
 	sentid = request.json.get('sentid', 0)
 	username = session['username']
-	cmd = 'DELETE FROM entries WHERE username = {0} AND id = {0}'.format(DB_BLANK)
+	cmd = f'DELETE FROM entries WHERE username = {DB_BLANK} AND id = {DB_BLANK}'
 	db = getdb()
 	cur = db.cursor()
 	cur.execute(cmd, (username, sentid))
