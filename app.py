@@ -463,6 +463,44 @@ def login():
 	return render_template(
 			'login.html', error=error, totalsents=len(SENTENCES))
 
+def loadgrammar(username):
+	_, lang = os.path.split(os.path.basename(app.config['GRAMMAR']))
+	app.logger.info('Loading grammar %r', lang)
+	if username in WORKERS and isinstance(WORKERS[username], ProcessPoolExecutor):
+		WORKERS[username].shutdown(wait=False)
+	pool = ProcessPoolExecutor(max_workers=1)
+	future = pool.submit(
+			worker.loadgrammar,
+			app.config['GRAMMAR'], app.config['LIMIT'])
+	future.result()
+	app.logger.info('Grammar %r loaded.', lang)
+	# train on annotated sentences
+	annotations = readannotations()
+	if annotations:
+		app.logger.info('training on %d previously annotated sentences',
+				len(annotations))
+		trees, sents = [], []
+		headrules = pool.submit(worker.getprop, 'headrules').result()
+		for block in annotations.values():
+			# HOTFIX for ROOT error
+			blocklns = block.splitlines()
+			for iln,blockln in enumerate(blocklns):
+				if '\tROOT\t' in blockln and '\t0\t' not in blockln:
+					blocklns[iln] = blocklns[iln].replace('\tROOT\t', '\tXXX-XXX\t')
+			block = '\n'.join(blocklns)
+
+			item = exporttree(block.splitlines())
+			canonicalize(item.tree)
+			if headrules:
+				applyheadrules(item.tree, headrules)
+			trees.append(item.tree)
+			sents.append(item.sent)
+		if False and app.config['DEBUG']:
+			future = NoFuture(worker.augment, trees, sents)
+		else:
+			future = pool.submit(worker.augment, trees, sents)
+		future.result()
+	WORKERS[username] = pool
 
 @app.route('/annotate/dologin')
 def dologin():
@@ -472,7 +510,7 @@ def dologin():
 				'<!doctype html>'
 				'<title>redirect</title>'
 				'You were logged in successfully. ')
-		if username in WORKERS:
+		if username in WORKERS and isinstance(WORKERS[username], ProcessPoolExecutor):
 			try:
 				_ = WORKERS[username].submit(
 						worker.getprop, 'headrules').result()
@@ -482,50 +520,8 @@ def dologin():
 				yield "<script>window.location.replace('%s');</script>" % url
 				return
 		yield 'Loading grammar; this will take a few seconds ...'
-		_, lang = os.path.split(os.path.basename(app.config['GRAMMAR']))
-		app.logger.info('Loading grammar %r', lang)
-		pool = ProcessPoolExecutor(max_workers=1)
-		if False and app.config['DEBUG']:
-			from discodop.treesearch import NoFuture
-			future = NoFuture(
-					worker.loadgrammar,
-					app.config['GRAMMAR'], app.config['LIMIT'])
-		else:
-			future = pool.submit(
-					worker.loadgrammar,
-					app.config['GRAMMAR'], app.config['LIMIT'])
-		future.result()
-		app.logger.info('Grammar %r loaded.', lang)
-		# train on annotated sentences
-		annotations = readannotations()
-		if annotations:
-			app.logger.info('training on %d previously annotated sentences',
-					len(annotations))
-			trees, sents = [], []
-			headrules = pool.submit(worker.getprop, 'headrules').result()
-			for block in annotations.values():
-				# HOTFIX for ROOT error
-				blocklns = block.splitlines()
-				for iln,blockln in enumerate(blocklns):
-					if '\tROOT\t' in blockln and '\t0\t' not in blockln:
-						blocklns[iln] = blocklns[iln].replace('\tROOT\t', '\tXXX-XXX\t')
-				block = '\n'.join(blocklns)
-
-				item = exporttree(block.splitlines())
-				canonicalize(item.tree)
-				if headrules:
-					applyheadrules(item.tree, headrules)
-				trees.append(item.tree)
-				sents.append(item.sent)
-			if False and app.config['DEBUG']:
-				future = NoFuture(worker.augment, trees, sents)
-			else:
-				future = pool.submit(worker.augment, trees, sents)
-			future.result()
-		WORKERS[username] = pool
+		loadgrammar(username)	
 		yield "<script>window.location.replace('%s');</script>" % url
-		# return "<script>window.location.replace('%s');</script>" % url
-
 	nexturl = request.args.get('next')
 	if not is_safe_url(nexturl) or 'username' not in session:
 		return abort(400)
@@ -587,6 +583,8 @@ def undoaccept():
 	cur = db.cursor()
 	cur.execute(cmd, (username, sentid))
 	db.commit()
+	# reload the grammar
+	loadgrammar(username)
 	return jsonify({"success": True})
 
 @app.route('/retokenize', methods=['POST'])
@@ -756,7 +754,7 @@ def edit():
 	msg = ''
 	if request.args.get('annotated') == '1': # there is a saved tree
 		msg = Markup('<font color=red>You have already annotated '
-				'this sentence.</font><button id="undo" onclick="undoAccept()">Delete tree from database</button>')
+				'this sentence.</font><button id="undo" onclick="undoAccept()">Revert (deletes annotation)</button>')
 		id = QUEUE[sentno - 1][3]
 		treestr, n = getannotation(username, id) # get tree from database
 		treeobj = ActivedopTree.from_str(treestr)
