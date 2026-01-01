@@ -10,11 +10,13 @@ Paper: http://www.aclweb.org/anthology/C18-2009
 Installation instructions (MacOS and Linux)
 -------------------------------------------
 
+Requires Python 3.10-11 to install. 
+
 0. (Recommended): Create and activate a venv virtual Python environment:
 
 .. code-block:: bash
 
-   python3 -m venv .venv
+   python3.11 -m venv .venv
    . .venv/bin/activate
 
 1. Install submodule requirements:
