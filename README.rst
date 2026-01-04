@@ -10,11 +10,13 @@ Paper: http://www.aclweb.org/anthology/C18-2009
 Installation instructions (MacOS and Linux)
 -------------------------------------------
 
+Requires Python 3.10-11 to install. 
+
 0. (Recommended): Create and activate a venv virtual Python environment:
 
 .. code-block:: bash
 
-   python3 -m venv .venv
+   python3.11 -m venv .venv
    . .venv/bin/activate
 
 1. Install submodule requirements:
@@ -22,7 +24,7 @@ Installation instructions (MacOS and Linux)
 .. code-block:: bash
 
    pip install setuptools
-   pip install cython
+   pip install cython==3.0.12
 
 2. Install submodules:
 
@@ -109,10 +111,36 @@ Running the demo on a toy treebank and annotation task:
   open browser at http://localhost:5000/
   username "JoeAnnotator", password "example"
 
+Configuration
+-------------
+
 Edit "settings.cfg" to use a different grammar and sentences to annotate,
 and to configure usernames and passwords.
 Note that the treebank on which the grammar is based needs to be available,
 in the paths specified in the grammar parameter file.
+
+Annotators have the option to export the annotated trees as LaTeX/PDF files.
+To use a local LaTeX installation for PDF generation, set the
+`LATEX_SERVICE` configuration option to "local".
+To use a remote LaTeX service, set `LATEX_SERVICE` to "remote", and set the
+`LATEX_SERVICE_URL` and `LATEX_CREDS` environment variables accordingly.
+
+The remote LaTeX service should accept POST requests with JSON payloads of the form
+
+.. code-block:: bash
+   {
+      "latex_code": "<latex code>",
+   }
+
+and return the generated PDF as binary content.
+
+The `LATEX_CREDS` value should be a string of the form "username:password",
+to be used for HTTP Basic Authentication with the remote LaTeX service.
+
+The local LaTeX installation needs to have the `pdflatex` command available in the system PATH.
+
+Input sentences
+----------------
 
 Sentences need to be segmented, one sentence per line. For best results,
 tokenize the sentences to annotate according to treebank conventions.
