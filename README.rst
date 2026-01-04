@@ -24,7 +24,7 @@ Requires Python 3.10-11 to install.
 .. code-block:: bash
 
    pip install setuptools
-   pip install cython
+   pip install cython==3.0.12
 
 2. Install submodules:
 
