@@ -49,6 +49,7 @@ from flask import (Flask, Markup, Response, jsonify, request, session, g, flash,
 		redirect, url_for, render_template, send_file, send_from_directory,
 		stream_with_context)
 import numpy as np
+import requests
 from sklearn.tree import DecisionTreeClassifier
 from discodop.tree import (Tree, DrawTree, DrawDependencies, ParentedTree,
 		writediscbrackettree)
@@ -1257,14 +1258,40 @@ def download_pdf():
 	output_dir = "tmp"
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
+	
+	pdf_path = os.path.join(output_dir, "tree.pdf")
 
-	with open(os.path.join(output_dir, "file.tex"), 'w') as latex_file:
-		latex_file.write(cgel_latex)
+	latex_service = app.config.get('LATEX_SERVICE', 'local')
+	
+	if latex_service == 'local':
+		with open(os.path.join(output_dir, "tree.tex"), 'w') as latex_file:
+			latex_file.write(cgel_latex)
 
-	subprocess.run(['pdflatex', '-output-directory', output_dir, os.path.join(output_dir, "file.tex")])
+		subprocess.run(['pdflatex', '-output-directory', output_dir, os.path.join(output_dir, "tree.tex")])
+			
+	elif latex_service == 'remote':
+		latex_url = os.getenv("LATEX_SERVICE_URL", '')
+		latex_creds = os.getenv('LATEX_CREDS', '')
+		# Prepare the request
+		headers = {
+			"Content-Type": "application/json"
+		}
+		auth = tuple(latex_creds.split(':')) # Handle basic auth
 
-	pdf_path = os.path.join(output_dir, "file.pdf")
+		payload = {
+			"latex_code": cgel_latex
+		}
 
+		# Make the request and save the PDF
+		response = requests.post(
+			latex_url,
+			auth=auth,
+			headers=headers,
+			json=payload
+		)
+		with open(f"{output_dir}/tree.pdf", 'wb') as f:
+			f.write(response.content)
+		
 	return send_file(pdf_path, as_attachment=True, attachment_filename='downloaded_file.pdf')
 
 @app.route('/annotate/exportcgeltree')
